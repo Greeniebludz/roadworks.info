@@ -7,7 +7,16 @@
   <style>#map{height:100vh;margin:0}</style>
 </head>
 <body>
-  <div id="map"></div>
+  <div style="padding:8px;background:#fff;position:fixed;top:10px;left:10px;z-index:1000;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.2)">
+  <label><strong>Filter:</strong></label>
+  <select id="statusFilter">
+    <option value="">All</option>
+    <option value="Planned">Planned</option>
+    <option value="Ongoing">Ongoing</option>
+    <option value="Completed">Completed</option>
+  </select>
+</div>
+<div id="map"></div>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <!-- MarkerCluster plugin -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />

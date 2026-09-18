@@ -1,0 +1,4 @@
+[
+  {"id":"perm-123","title":"Road resurfacing","lat":51.412,"lon":-0.743,"start":"2026-09-20","end":"2026-09-22","status":"Planned"},
+  {"id":"perm-456","title":"Utility works","lat":51.5,"lon":-0.6,"start":"2026-09-18","end":"2026-09-19","status":"Ongoing"}
+]

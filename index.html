@@ -9,6 +9,55 @@
 <body>
   <div id="map"></div>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- MarkerCluster plugin -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
+<script>
+  const map = L.map('map').setView([51.4, -0.7], 10);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Use relative path (same repo) for now
+  const dataUrl = 'sample-roadworks.json';
+
+  // Create a marker cluster group
+  const markers = L.markerClusterGroup();
+
+  function formatPopup(item) {
+    const start = item.start || 'N/A';
+    const end = item.end || 'N/A';
+    const permit = item.id ? `<a href="#" onclick="window.open('https://example.com/permit/${item.id}','_blank')">${item.id}</a>` : 'N/A';
+    return `
+      <div style="min-width:200px">
+        <strong>${item.title}</strong><br/>
+        <small>${item.status} • ${start} → ${end}</small>
+        <hr style="margin:6px 0"/>
+        <div>${item.description || ''}</div>
+        <div style="margin-top:6px;font-size:12px;color:#555">Permit: ${permit}</div>
+      </div>`;
+  }
+
+  fetch(dataUrl)
+    .then(r => r.json())
+    .then(items => {
+      items.forEach(i => {
+        if (!i.lat || !i.lon) return;
+        const m = L.marker([i.lat, i.lon]);
+        m.bindPopup(formatPopup(i));
+        markers.addLayer(m);
+      });
+      map.addLayer(markers);
+      if (items.length) {
+        const group = L.featureGroup(items.filter(i=>i.lat&&i.lon).map(i=>L.marker([i.lat,i.lon])));
+        map.fitBounds(group.getBounds().pad(0.2));
+      }
+    })
+    .catch(e => console.error('Failed to load data', e));
+</script>
+
   <script>
     const map = L.map('map').setView([51.4, -0.7], 10);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

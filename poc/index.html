@@ -3,8 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>Roadworks.info — POC Workspace</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- MarkerCluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+
   <link rel="stylesheet" href="style.css">
+
+  <!-- Prevent indexing -->
+  <meta name="robots" content="noindex, nofollow">
 </head>
+
 <body>
 
   <header>
@@ -18,13 +30,26 @@
 
   <section id="controls">
     <h2>Controls</h2>
-    <button id="loadDataBtn">Load Sample Data</button>
+
+    <label><strong>Filter:</strong></label>
+    <select id="statusFilter">
+      <option value="">All</option>
+      <option value="Planned">Planned</option>
+      <option value="Ongoing">Ongoing</option>
+      <option value="Completed">Completed</option>
+    </select>
+
+    <button id="loadDataBtn">Reload Data</button>
   </section>
 
   <section id="output">
     <h2>Debug Output</h2>
     <pre id="debug"></pre>
   </section>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
   <script src="app.js"></script>
 </body>

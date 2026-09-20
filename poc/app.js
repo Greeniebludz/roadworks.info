@@ -110,7 +110,8 @@ function mapSMtoPOC(sm) {
     end: o.actual_end_date_time || o.proposed_end_date,
     lat: lat,
     lon: lon,
-    description: `${o.work_category || ""} — ${o.traffic_management_type || ""}`
+    description: `${o.work_category || ""} — ${o.traffic_management_type || ""}`,
+    usrn: o.usrn || null
   };
 }
 

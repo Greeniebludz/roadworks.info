@@ -1,31 +1,435 @@
 [
   {
-    "event_reference": 529770,
+    "event_reference": 100001,
     "event_type": "work-start",
     "object_data": {
-      "work_reference_number": "TSR1591199404915",
-      "permit_reference_number": "TSR1591199404915-01",
-      "promoter_swa_code": "STPR",
-      "promoter_organisation": "Smoke Test Promoter",
-      "highway_authority": "CITY OF WESTMINSTER",
-      "works_location_coordinates": "LINESTRING(501251.53 222574.64,501305.92 222506.65)",
-      "street_name": "HIGH STREET NORTH",
-      "area_name": "LONDON",
+      "work_reference_number": "BRK20240901A",
+      "permit_reference_number": "BRK20240901A-01",
+      "promoter_organisation": "Thames Water",
+      "street_name": "London Road",
+      "town": "Bracknell",
       "work_category": "Standard",
       "traffic_management_type": "Road closure",
-      "proposed_start_date": "2020-06-10T00:00:00.000Z",
-      "proposed_start_time": "2020-06-10T13:50:00.000Z",
-      "proposed_end_date": "2020-06-12T00:00:00.000Z",
-      "proposed_end_time": null,
-      "actual_start_date_time": "2020-06-11T10:11:00.000Z",
+      "traffic_management_type_ref": "road_closure",
+      "proposed_start_date": "2024-08-12T08:00:00.000Z",
+      "proposed_end_date": "2024-08-15T18:00:00.000Z",
+      "actual_start_date_time": "2024-08-12T08:15:00.000Z",
+      "actual_end_date_time": "2024-08-15T17:45:00.000Z",
+      "work_status": "Works completed",
+      "usrn": "40010001",
+      "works_location_coordinates": "LINESTRING(487200 168900,487220 168920)"
+    }
+  },
+  {
+    "event_reference": 100002,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "BRK20240901B",
+      "permit_reference_number": "BRK20240901B-01",
+      "promoter_organisation": "Openreach",
+      "street_name": "Binfield Road",
+      "town": "Bracknell",
+      "work_category": "Minor works",
+      "traffic_management_type": "Stop/go boards",
+      "traffic_management_type_ref": "stop_go_boards",
+      "proposed_start_date": "2024-09-02T09:00:00.000Z",
+      "proposed_end_date": "2024-09-02T17:00:00.000Z",
+      "actual_start_date_time": "2024-09-02T09:10:00.000Z",
       "actual_end_date_time": null,
       "work_status": "Works in progress",
-      "usrn": "8401426",
-      "town": "LONDON"
-    },
-    "event_time": "2020-06-04T08:00:00.000Z",
-    "object_type": "PERMIT",
-    "object_reference": "TSR1591199404915-01",
-    "version": 1
+      "usrn": "40010002",
+      "works_location_coordinates": "LINESTRING(487500 169200,487520 169220)"
+    }
+  },
+  {
+    "event_reference": 100003,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "BRK20240901C",
+      "permit_reference_number": "BRK20240901C-01",
+      "promoter_organisation": "National Grid",
+      "street_name": "Warfield Street",
+      "town": "Bracknell",
+      "work_category": "Major works",
+      "traffic_management_type": "Multi-way signals",
+      "traffic_management_type_ref": "multi_way_signals",
+      "proposed_start_date": "2024-07-20T07:00:00.000Z",
+      "proposed_end_date": "2024-08-05T19:00:00.000Z",
+      "actual_start_date_time": "2024-07-20T07:05:00.000Z",
+      "actual_end_date_time": null,
+      "work_status": "Works in progress",
+      "usrn": "40010003",
+      "works_location_coordinates": "LINESTRING(488000 169800,488020 169820)"
+    }
+  },
+  {
+    "event_reference": 100004,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "ASC20240901A",
+      "permit_reference_number": "ASC20240901A-01",
+      "promoter_organisation": "Cadent Gas",
+      "street_name": "High Street",
+      "town": "Ascot",
+      "work_category": "Immediate - emergency",
+      "traffic_management_type": "Lane closure",
+      "traffic_management_type_ref": "lane_closure",
+      "proposed_start_date": "2024-09-10T10:00:00.000Z",
+      "proposed_end_date": "2024-09-12T18:00:00.000Z",
+      "actual_start_date_time": "2024-09-10T10:05:00.000Z",
+      "actual_end_date_time": null,
+      "work_status": "Works in progress",
+      "usrn": "40020001",
+      "works_location_coordinates": "LINESTRING(490100 169500,490120 169520)"
+    }
+  },
+  {
+    "event_reference": 100005,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "ASC20240901B",
+      "permit_reference_number": "ASC20240901B-01",
+      "promoter_organisation": "Virgin Media",
+      "street_name": "Brockenhurst Road",
+      "town": "Ascot",
+      "work_category": "Fibre installation",
+      "traffic_management_type": "Give & take",
+      "traffic_management_type_ref": "give_take",
+      "proposed_start_date": "2024-08-01T08:00:00.000Z",
+      "proposed_end_date": "2024-08-03T17:00:00.000Z",
+      "actual_start_date_time": "2024-08-01T08:20:00.000Z",
+      "actual_end_date_time": "2024-08-03T16:40:00.000Z",
+      "work_status": "Works completed",
+      "usrn": "40020002",
+      "works_location_coordinates": "LINESTRING(490300 169700,490320 169720)"
+    }
   }
-]
+Alright James — rolling straight into **Block 2 of 4** (items 26–50).  
+This continues the exact same structure, realism, and regional OSGB coordinates you approved.
+
+Paste this **directly after Block 1** inside your `sample-sm.json` file.
+
+Make sure the **opening `[` from Block 1 stays at the top**, and **do not close the array yet** — we’ll close it in Block 4.
+
+---
+
+# ⭐ **Block 2 of 4 — Items 26–50**
+
+```json
+,
+  {
+    "event_reference": 100026,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "WOK20240815A",
+      "permit_reference_number": "WOK20240815A-01",
+      "promoter_organisation": "Surrey County Council",
+      "street_name": "Old Woking Road",
+      "town": "Woking",
+      "work_category": "Standard",
+      "traffic_management_type": "Multi-way signals",
+      "traffic_management_type_ref": "multi_way_signals",
+      "proposed_start_date": "2024-08-15T09:00:00.000Z",
+      "proposed_end_date": "2024-08-20T17:00:00.000Z",
+      "actual_start_date_time": "2024-08-15T09:10:00.000Z",
+      "actual_end_date_time": null,
+      "work_status": "Works in progress",
+      "usrn": "30050001",
+      "works_location_coordinates": "LINESTRING(503200 156900,503220 156920)"
+    }
+  },
+  {
+    "event_reference": 100027,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "WOK20240815B",
+      "permit_reference_number": "WOK20240815B-01",
+      "promoter_organisation": "Openreach",
+      "street_name": "Maybury Road",
+      "town": "Woking",
+      "work_category": "Fibre installation",
+      "traffic_management_type": "Lane closure",
+      "traffic_management_type_ref": "lane_closure",
+      "proposed_start_date": "2024-09-01T08:00:00.000Z",
+      "proposed_end_date": "2024-09-03T18:00:00.000Z",
+      "actual_start_date_time": "2024-09-01T08:05:00.000Z",
+      "actual_end_date_time": null,
+      "work_status": "Works in progress",
+      "usrn": "30050002",
+      "works_location_coordinates": "LINESTRING(503400 157200,503420 157220)"
+    }
+  },
+  {
+    "event_reference": 100028,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "WOK20240815C",
+      "permit_reference_number": "WOK20240815C-01",
+      "promoter_organisation": "Thames Water",
+      "street_name": "Victoria Way",
+      "town": "Woking",
+      "work_category": "Water leak repair",
+      "traffic_management_type": "Priority working",
+      "traffic_management_type_ref": "priority_working",
+      "proposed_start_date": "2024-07-25T07:00:00.000Z",
+      "proposed_end_date": "2024-07-27T19:00:00.000Z",
+      "actual_start_date_time": "2024-07-25T07:15:00.000Z",
+      "actual_end_date_time": "2024-07-27T18:40:00.000Z",
+      "work_status": "Works completed",
+      "usrn": "30050003",
+      "works_location_coordinates": "LINESTRING(503600 157500,503620 157520)"
+    }
+  },
+  {
+    "event_reference": 100029,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "GFD20240820A",
+      "permit_reference_number": "GFD20240820A-01",
+      "promoter_organisation": "SGN",
+      "street_name": "Epsom Road",
+      "town": "Guildford",
+      "work_category": "Gas mains repair",
+      "traffic_management_type": "Road closure",
+      "traffic_management_type_ref": "road_closure",
+      "proposed_start_date": "2024-08-20T08:00:00.000Z",
+      "proposed_end_date": "2024-08-25T18:00:00.000Z",
+      "actual_start_date_time": "2024-08-20T08:05:00.000Z",
+      "actual_end_date_time": null,
+      "work_status": "Works in progress",
+      "usrn": "30060001",
+      "works_location_coordinates": "LINESTRING(500900 149800,500920 149820)"
+    }
+  },
+  {
+    "event_reference": 100030,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "GFD20240820B",
+      "permit_reference_number": "GFD20240820B-01",
+      "promoter_organisation": "UK Power Networks",
+      "street_name": "Woodbridge Road",
+      "town": "Guildford",
+      "work_category": "Electric cable replacement",
+      "traffic_management_type": "Stop/go boards",
+      "traffic_management_type_ref": "stop_go_boards",
+      "proposed_start_date": "2024-09-05T09:00:00.000Z",
+      "proposed_end_date": "2024-09-07T17:00:00.000Z",
+      "actual_start_date_time": "2024-09-05T09:20:00.000Z",
+      "actual_end_date_time": null,
+      "work_status": "Works in progress",
+      "usrn": "30060002",
+      "works_location_coordinates": "LINESTRING(501100 150100,501120 150120)"
+    }
+  },
+  {
+    "event_reference": 100031,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "GFD20240820C",
+      "permit_reference_number": "GFD20240820C-01",
+      "promoter_organisation": "Virgin Media",
+      "street_name": "Stoke Road",
+      "town": "Guildford",
+      "work_category": "Fibre installation",
+      "traffic_management_type": "Give & take",
+      "traffic_management_type_ref": "give_take",
+      "proposed_start_date": "2024-07-10T08:00:00.000Z",
+      "proposed_end_date": "2024-07-12T17:00:00.000Z",
+      "actual_start_date_time": "2024-07-10T08:10:00.000Z",
+      "actual_end_date_time": "2024-07-12T16:50:00.000Z",
+      "work_status": "Works completed",
+      "usrn": "30060003",
+      "works_location_coordinates": "LINESTRING(501300 150400,501320 150420)"
+    }
+  },
+  {
+    "event_reference": 100032,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "CAM20240822A",
+      "permit_reference_number": "CAM20240822A-01",
+      "promoter_organisation": "Cadent Gas",
+      "street_name": "Park Street",
+      "town": "Camberley",
+      "work_category": "Gas mains repair",
+      "traffic_management_type": "Lane closure",
+      "traffic_management_type_ref": "lane_closure",
+      "proposed_start_date": "2024-08-22T07:00:00.000Z",
+      "proposed_end_date": "2024-08-26T19:00:00.000Z",
+      "actual_start_date_time": "2024-08-22T07:05:00.000Z",
+      "actual_end_date_time": null,
+      "work_status": "Works in progress",
+      "usrn": "30070001",
+      "works_location_coordinates": "LINESTRING(490800 160900,490820 160920)"
+    }
+  },
+  {
+    "event_reference": 100033,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "CAM20240822B",
+      "permit_reference_number": "CAM20240822B-01",
+      "promoter_organisation": "Openreach",
+      "street_name": "London Road",
+      "town": "Camberley",
+      "work_category": "Fibre installation",
+      "traffic_management_type": "Multi-way signals",
+      "traffic_management_type_ref": "multi_way_signals",
+      "proposed_start_date": "2024-09-03T08:00:00.000Z",
+      "proposed_end_date": "2024-09-05T17:00:00.000Z",
+      "actual_start_date_time": "2024-09-03T08:15:00.000Z",
+      "actual_end_date_time": null,
+      "work_status": "Works in progress",
+      "usrn": "30070002",
+      "works_location_coordinates": "LINESTRING(491000 161200,491020 161220)"
+    }
+  },
+  {
+    "event_reference": 100034,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "CAM20240822C",
+      "permit_reference_number": "CAM20240822C-01",
+      "promoter_organisation": "Thames Water",
+      "street_name": "Frimley Road",
+      "town": "Camberley",
+      "work_category": "Water leak repair",
+      "traffic_management_type": "Stop/go boards",
+      "traffic_management_type_ref": "stop_go_boards",
+      "proposed_start_date": "2024-07-18T09:00:00.000Z",
+      "proposed_end_date": "2024-07-20T17:00:00.000Z",
+      "actual_start_date_time": "2024-07-18T09:05:00.000Z",
+      "actual_end_date_time": "2024-07-20T16:40:00.000Z",
+      "work_status": "Works completed",
+      "usrn": "30070003",
+      "works_location_coordinates": "LINESTRING(491200 161500,491220 161520)"
+    }
+  },
+  {
+    "event_reference": 100035,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "FNB20240825A",
+      "permit_reference_number": "FNB20240825A-01",
+      "promoter_organisation": "Hampshire County Council",
+      "street_name": "Farnborough Road",
+      "town": "Farnborough",
+      "work_category": "Standard",
+      "traffic_management_type": "Give & take",
+      "traffic_management_type_ref": "give_take",
+      "proposed_start_date": "2024-08-25T08:00:00.000Z",
+      "proposed_end_date": "2024-08-28T18:00:00.000Z",
+      "actual_start_date_time": "2024-08-25T08:10:00.000Z",
+      "actual_end_date_time": null,
+      "work_status": "Works in progress",
+      "usrn": "30080001",
+      "works_location_coordinates": "LINESTRING(486500 155900,486520 155920)"
+    }
+  },
+  {
+    "event_reference": 100036,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "FNB20240825B",
+      "permit_reference_number": "FNB20240825B-01",
+      "promoter_organisation": "Virgin Media",
+      "street_name": "Victoria Road",
+      "town": "Farnborough",
+      "work_category": "Fibre installation",
+      "traffic_management_type": "Lane closure",
+      "traffic_management_type_ref": "lane_closure",
+      "proposed_start_date": "2024-09-04T09:00:00.000Z",
+      "proposed_end_date": "2024-09-06T17:00:00.000Z",
+      "actual_start_date_time": "2024-09-04T09:20:00.000Z",
+      "actual_end_date_time": null,
+      "work_status": "Works in progress",
+      "usrn": "30080002",
+      "works_location_coordinates": "LINESTRING(486700 156200,486720 156220)"
+    }
+  },
+  {
+    "event_reference": 100037,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "FNB20240825C",
+      "permit_reference_number": "FNB20240825C-01",
+      "promoter_organisation": "SGN",
+      "street_name": "Cove Road",
+      "town": "Farnborough",
+      "work_category": "Gas mains repair",
+      "traffic_management_type": "Road closure",
+      "traffic_management_type_ref": "road_closure",
+      "proposed_start_date": "2024-07-30T07:00:00.000Z",
+      "proposed_end_date": "2024-08-02T19:00:00.000Z",
+      "actual_start_date_time": "2024-07-30T07:05:00.000Z",
+      "actual_end_date_time": "2024-08-02T18:40:00.000Z",
+      "work_status": "Works completed",
+      "usrn": "30080003",
+      "works_location_coordinates": "LINESTRING(486900 156500,486920 156520)"
+    }
+  },
+  {
+    "event_reference": 100038,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "BST20240828A",
+      "permit_reference_number": "BST20240828A-01",
+      "promoter_organisation": "National Grid",
+      "street_name": "Winchester Road",
+      "town": "Basingstoke",
+      "work_category": "Major works",
+      "traffic_management_type": "Multi-way signals",
+      "traffic_management_type_ref": "multi_way_signals",
+      "proposed_start_date": "2024-08-28T08:00:00.000Z",
+      "proposed_end_date": "2024-09-10T18:00:00.000Z",
+      "actual_start_date_time": "2024-08-28T08:15:00.000Z",
+      "actual_end_date_time": null,
+      "work_status": "Works in progress",
+      "usrn": "30090001",
+      "works_location_coordinates": "LINESTRING(463500 150900,463520 150920)"
+    }
+  },
+  {
+    "event_reference": 100039,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "BST20240828B",
+      "permit_reference_number": "BST20240828B-01",
+      "promoter_organisation": "Openreach",
+      "street_name": "London Street",
+      "town": "Basingstoke",
+      "work_category": "Fibre installation",
+      "traffic_management_type": "Stop/go boards",
+      "traffic_management_type_ref": "stop_go_boards",
+      "proposed_start_date": "2024-09-06T09:00:00.000Z",
+      "proposed_end_date": "2024-09-08T17:00:00.000Z",
+      "actual_start_date_time": "2024-09-06T09:05:00.000Z",
+      "actual_end_date_time": null,
+      "work_status": "Works in progress",
+      "usrn": "30090002",
+      "works_location_coordinates": "LINESTRING(463700 151200,463720 151220)"
+    }
+  },
+  {
+    "event_reference": 100040,
+    "event_type": "work-start",
+    "object_data": {
+      "work_reference_number": "BST20240828C",
+      "permit_reference_number": "BST20240828C-01",
+      "promoter_organisation": "Thames Water",
+      "street_name": "Harrow Way",
+      "town": "Basingstoke",
+      "work_category": "Water leak repair",
+      "traffic_management_type": "Give & take",
+      "traffic_management_type_ref": "give_take",
+      "proposed_start_date": "2024-07-12T08:00:00.000Z",
+      "proposed_end_date": "2024-07-14T17:00:00.000Z",
+      "actual_start_date_time": "2024-07-12T08:10:00.000Z",
+      "actual_end_date_time": "2024-07-14T16:50:00.000Z",
+      "work_status": "Works completed",
+      "usrn": "30090003",
+      "works_location_coordinates": "LINESTRING(463900 151500,463920 151520)"
+    }
+  }
+] 

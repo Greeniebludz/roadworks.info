@@ -66,7 +66,9 @@ function loadData() {
 
   fetch(dataUrl)
     .then(r => r.json())
-    .then(items => {
+    .then(raw => {
+  const items = raw.map(mapSMtoPOC);
+
    const startDate = document.getElementById("startDate").value;
 const endDate = document.getElementById("endDate").value;
 

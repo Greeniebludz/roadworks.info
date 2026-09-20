@@ -261,7 +261,7 @@ map.on("zoomend", () => {
   const zoom = map.getZoom();
 
   markers.eachLayer(marker => {
-    if (zoom >= 14) {
+    if (zoom >= 16) {
       marker.setIcon(marker.tmIcon);
     } else {
       marker.setIcon(marker.dotIcon);

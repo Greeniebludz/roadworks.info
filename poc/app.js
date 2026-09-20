@@ -12,6 +12,50 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 const markers = L.markerClusterGroup();
+const iconSet = {
+  road_closure: L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  }),
+
+  multi_way_signals: L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
+    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  }),
+
+  stop_go_boards: L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
+    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  }),
+
+  give_take: L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  }),
+
+  lane_closure: L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png',
+    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  }),
+
+  default: L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
+    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  })
+};
+
 
 function formatPopup(item) {
   const start = item.start || 'N/A';
@@ -82,6 +126,19 @@ function osgbToWgs84(easting, northing) {
 
 function mapSMtoPOC(sm) {
   const o = sm.object_data;
+    // Normalise TM type
+  const tm = (o.current_traffic_management_type_ref ||
+              o.traffic_management_type_ref ||
+              o.traffic_management_type ||
+              "").toLowerCase();
+
+  let tmKey = "default";
+
+  if (tm.includes("road_closure")) tmKey = "road_closure";
+  else if (tm.includes("multi_way_signals")) tmKey = "multi_way_signals";
+  else if (tm.includes("stop")) tmKey = "stop_go_boards";
+  else if (tm.includes("give")) tmKey = "give_take";
+  else if (tm.includes("lane")) tmKey = "lane_closure";
 
   let lat = null;
   let lon = null;
@@ -111,7 +168,8 @@ function mapSMtoPOC(sm) {
     lat: lat,
     lon: lon,
     description: `${o.work_category || ""} — ${o.traffic_management_type || ""}`,
-    usrn: o.usrn || null
+    usrn: o.usrn || null,
+    tmKey: tmKey
   };
 }
 
@@ -146,11 +204,15 @@ const filtered = items.filter(i => {
 });
 
 
-      filtered.forEach(i => {
-        const m = L.marker([i.lat, i.lon]);
-        m.bindPopup(formatPopup(i));
-        markers.addLayer(m);
-      });
+  filtered.forEach(i => {
+  const m = L.marker([i.lat, i.lon], {
+    icon: iconSet[i.tmKey] || iconSet.default
+  });
+
+  m.bindPopup(formatPopup(i));
+  markers.addLayer(m);
+});
+
 
       map.addLayer(markers);
 

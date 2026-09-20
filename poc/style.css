@@ -42,3 +42,11 @@ button:hover {
   border-radius: 6px;
   border: 1px solid #ccc;
 }
+
+/* ⭐ Add this at the bottom */
+.dot-icon {
+  width: 8px;
+  height: 8px;
+  background: #333;
+  border-radius: 50%;
+}

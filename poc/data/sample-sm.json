@@ -103,20 +103,7 @@
       "usrn": "40020002",
       "works_location_coordinates": "LINESTRING(490300 169700,490320 169720)"
     }
-  }
-Alright James — rolling straight into **Block 2 of 4** (items 26–50).  
-This continues the exact same structure, realism, and regional OSGB coordinates you approved.
-
-Paste this **directly after Block 1** inside your `sample-sm.json` file.
-
-Make sure the **opening `[` from Block 1 stays at the top**, and **do not close the array yet** — we’ll close it in Block 4.
-
----
-
-# ⭐ **Block 2 of 4 — Items 26–50**
-
-```json
-,
+  },
   {
     "event_reference": 100026,
     "event_type": "work-start",

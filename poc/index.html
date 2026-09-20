@@ -1,69 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- SUBJECT: Page Metadata -->
   <meta charset="UTF-8">
-  <title>Roadworks.info — POC Workspace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roadworks Map Viewer</title>
 
-  <!-- Leaflet -->
+  <!-- SUBJECT: Leaflet Core CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-  <!-- MarkerCluster -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <!-- SUBJECT: Leaflet Geocoder CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
-  <link rel="stylesheet" href="style.css">
+  <!-- SUBJECT: Your Custom CSS -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f6f8;
+    }
 
-  <!-- Prevent indexing -->
-  <meta name="robots" content="noindex, nofollow">
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #map {
+      width: 100%;
+      height: 500px;
+      background: #ddd;
+      border: 2px solid #00A651;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    #controls {
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #00A651;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #008f45;
+    }
+
+    #output {
+      background: #fff;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    /* SUBJECT: Dot Icon Style */
+    .dot-icon {
+      width: 8px;
+      height: 8px;
+      background: #333;
+      border-radius: 50%;
+    }
+  </style>
 </head>
 
 <body>
 
+  <!-- SUBJECT: Page Header -->
   <header>
-    <h1>Roadworks.info — POC Workspace</h1>
-    <p>This page is hidden from the main site. Build freely.</p>
+    <h1>Roadworks Map Viewer</h1>
   </header>
 
-  <section id="map-section">
-    <div id="map"></div>
-  </section>
+  <!-- SUBJECT: Map Container -->
+  <div id="map"></div>
 
-  <section id="controls">
-    <div>
-  <label><strong>Start Date:</strong></label>
-  <input type="date" id="startDate">
-
-  <label style="margin-left:10px;"><strong>End Date:</strong></label>
-  <input type="date" id="endDate">
-</div>
-
-    <h2>Controls</h2>
-
-    <label><strong>Filter:</strong></label>
+  <!-- SUBJECT: Controls -->
+  <div id="controls">
+    <button id="loadDataBtn">Reload Data</button>
     <select id="statusFilter">
-      <option value="">All</option>
-      <option value="Planned">Planned</option>
-      <option value="Ongoing">Ongoing</option>
-      <option value="Completed">Completed</option>
+      <option value="">All Statuses</option>
+      <option value="Works in progress">Works in progress</option>
+      <option value="Works completed">Works completed</option>
     </select>
 
-    <button id="loadDataBtn">Reload Data</button>
-  </section>
+    <input type="date" id="startDate">
+    <input type="date" id="endDate">
+  </div>
 
-  <section id="output">
-    <h2>Debug Output</h2>
-    <pre id="debug"></pre>
-  </section>
+  <!-- SUBJECT: Debug Output -->
+  <pre id="debug"></pre>
 
-  <!-- Scripts -->
+  <!-- SUBJECT: Leaflet Core JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
-  <script src="app.js"></script>
-  
-  <!--Searchbar-->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <!-- SUBJECT: Leaflet Geocoder JS -->
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+  <!-- SUBJECT: Your Main Script -->
+  <script>
+    // ⭐ MAP INITIALISATION
+    const map = L.map('map').setView([51.4, -0.7], 10);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // ⭐ LOCATION SEARCH BOX (Correct Placement)
+    L.Control.geocoder({
+      defaultMarkGeocode: true
+    })
+    .on('markgeocode', function(e) {
+      map.fitBounds(e.geocode.bbox);
+    })
+    .addTo(map);
+
+    // ⭐ Your JS continues below…
+    // (Your full script goes here exactly as you have it)
+  </script>
 
 </body>
 </html>

@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- SUBJECT: Page Metadata -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Roadworks Map Viewer</title>
 
-  <!-- SUBJECT: Leaflet Core CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
-  <!-- SUBJECT: Leaflet Geocoder CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
-  <!-- SUBJECT: Your Custom CSS -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -52,14 +47,6 @@
       background: #008f45;
     }
 
-    #output {
-      background: #fff;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    /* SUBJECT: Dot Icon Style */
     .dot-icon {
       width: 8px;
       height: 8px;
@@ -71,15 +58,12 @@
 
 <body>
 
-  <!-- SUBJECT: Page Header -->
   <header>
     <h1>Roadworks Map Viewer</h1>
   </header>
 
-  <!-- SUBJECT: Map Container -->
   <div id="map"></div>
 
-  <!-- SUBJECT: Controls -->
   <div id="controls">
     <button id="loadDataBtn">Reload Data</button>
     <select id="statusFilter">
@@ -92,25 +76,19 @@
     <input type="date" id="endDate">
   </div>
 
-  <!-- SUBJECT: Debug Output -->
   <pre id="debug"></pre>
 
-  <!-- SUBJECT: Leaflet Core JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-  <!-- SUBJECT: Leaflet Geocoder JS -->
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
-  <!-- SUBJECT: Your Main Script -->
+  <!-- ⭐ Map + Geocoder -->
   <script>
-    // ⭐ MAP INITIALISATION
     const map = L.map('map').setView([51.4, -0.7], 10);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // ⭐ LOCATION SEARCH BOX (Correct Placement)
     L.Control.geocoder({
       defaultMarkGeocode: true
     })
@@ -118,23 +96,10 @@
       map.fitBounds(e.geocode.bbox);
     })
     .addTo(map);
-    <script>
-  const map = L.map('map').setView([51.4, -0.7], 10);
+  </script>
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
-
-  L.Control.geocoder({
-    defaultMarkGeocode: true
-  })
-  .on('markgeocode', function(e) {
-    map.fitBounds(e.geocode.bbox);
-  })
-  .addTo(map);
-
-    <!-- ⭐ Load your external JS -->
-  <script src="poc/script.js"></script>
+  <!-- ⭐ External JS -->
+  <script src="script.js"></script>
 
 </body>
 </html>

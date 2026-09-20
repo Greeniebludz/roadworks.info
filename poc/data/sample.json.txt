@@ -1,0 +1,10 @@
+{
+  "roadworks": [
+    {
+      "id": 1,
+      "location": "Windsor",
+      "status": "active",
+      "description": "Temporary lane closure for resurfacing"
+    }
+  ]
+}

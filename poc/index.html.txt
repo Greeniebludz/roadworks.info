@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Roadworks.info — POC Workspace</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Roadworks.info — POC Workspace</h1>
+    <p>This page is hidden from the main site. Build freely.</p>
+  </header>
+
+  <section id="map-section">
+    <div id="map"></div>
+  </section>
+
+  <section id="controls">
+    <h2>Controls</h2>
+    <button id="loadDataBtn">Load Sample Data</button>
+  </section>
+
+  <section id="output">
+    <h2>Debug Output</h2>
+    <pre id="debug"></pre>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>

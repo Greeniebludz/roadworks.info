@@ -108,19 +108,6 @@ function mapSMtoPOC(sm) {
   };
 }
 
-
-  return {
-    id: o.permit_reference_number || sm.event_reference,
-    title: `${o.street_name || "Unknown Street"} (${o.town || ""})`,
-    status: o.work_status || "Unknown",
-    start: o.actual_start_date_time || o.proposed_start_date,
-    end: o.actual_end_date_time || o.proposed_end_date,
-    lat: lat,
-    lon: lon,
-    description: `${o.work_category || ""} — ${o.traffic_management_type || ""}`
-  };
-}
-
 function loadData() {
   markers.clearLayers();
   debug.textContent = "Loading…";

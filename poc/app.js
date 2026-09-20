@@ -24,6 +24,41 @@ function formatPopup(item) {
       <div>${item.description || ''}</div>
     </div>`;
 }
+function mapSMtoPOC(sm) {
+  const o = sm.object_data;
+
+  // Extract first coordinate pair from LINESTRING
+  let lat = null;
+  let lon = null;
+
+  if (o.works_location_coordinates && o.works_location_coordinates.startsWith("LINESTRING")) {
+    const coords = o.works_location_coordinates
+      .replace("LINESTRING(", "")
+      .replace(")", "")
+      .split(",")[0] // first point only
+      .trim()
+      .split(" ");
+
+    // OSGB36 eastings/northings (we will convert later)
+    const easting = parseFloat(coords[0]);
+    const northing = parseFloat(coords[1]);
+
+    // For now, store raw values
+    lat = northing;
+    lon = easting;
+  }
+
+  return {
+    id: o.permit_reference_number || sm.event_reference,
+    title: `${o.street_name || "Unknown Street"} (${o.town || ""})`,
+    status: o.work_status || "Unknown",
+    start: o.actual_start_date_time || o.proposed_start_date,
+    end: o.actual_end_date_time || o.proposed_end_date,
+    lat: lat,
+    lon: lon,
+    description: `${o.work_category || ""} — ${o.traffic_management_type || ""}`
+  };
+}
 
 function loadData() {
   markers.clearLayers();

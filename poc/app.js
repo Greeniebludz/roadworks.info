@@ -11,7 +11,13 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-const markers = L.markerClusterGroup();
+const markers = L.markerClusterGroup({
+  disableClusteringAtZoom: 14,
+  maxClusterRadius: 50,
+  spiderfyOnMaxZoom: true,
+  removeOutsideVisibleBounds: true
+});
+
 const iconSet = {
   road_closure: L.icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',

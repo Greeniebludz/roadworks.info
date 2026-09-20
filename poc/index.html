@@ -5,9 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Roadworks Map Viewer</title>
 
+  <!-- Leaflet Core CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- Leaflet Geocoder CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
+  <!-- Leaflet MarkerCluster CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+
+  <!-- Custom CSS -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -66,6 +74,7 @@
 
   <div id="controls">
     <button id="loadDataBtn">Reload Data</button>
+
     <select id="statusFilter">
       <option value="">All Statuses</option>
       <option value="Works in progress">Works in progress</option>
@@ -78,10 +87,16 @@
 
   <pre id="debug"></pre>
 
+  <!-- Leaflet Core JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Leaflet Geocoder JS -->
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
-  <!-- ⭐ Map + Geocoder -->
+  <!-- Leaflet MarkerCluster JS -->
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
+  <!-- Map + Geocoder -->
   <script>
     const map = L.map('map').setView([51.4, -0.7], 10);
 
@@ -98,7 +113,7 @@
     .addTo(map);
   </script>
 
-  <!-- ⭐ External JS -->
+  <!-- External JS -->
   <script src="script.js"></script>
 
 </body>

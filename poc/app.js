@@ -32,11 +32,27 @@ function loadData() {
   fetch(dataUrl)
     .then(r => r.json())
     .then(items => {
-      const filtered = items.filter(i => {
-        if (!i.lat || !i.lon) return false;
-        if (!statusFilter.value) return true;
-        return i.status === statusFilter.value;
-      });
+   const startDate = document.getElementById("startDate").value;
+const endDate = document.getElementById("endDate").value;
+
+const filtered = items.filter(i => {
+  if (!i.lat || !i.lon) return false;
+
+  // Status filter
+  if (statusFilter.value && i.status !== statusFilter.value) return false;
+
+  // Date filter
+  if (startDate) {
+    if (!i.start || new Date(i.start) < new Date(startDate)) return false;
+  }
+
+  if (endDate) {
+    if (!i.end || new Date(i.end) > new Date(endDate)) return false;
+  }
+
+  return true;
+});
+
 
       filtered.forEach(i => {
         const m = L.marker([i.lat, i.lon]);
@@ -63,5 +79,7 @@ function loadData() {
 document.getElementById("loadDataBtn").addEventListener("click", loadData);
 statusFilter.addEventListener("change", loadData);
 
+startDate.addEventListener("change", loadData);
+endDate.addEventListener("change", loadData);
 // Load on startup
 loadData();

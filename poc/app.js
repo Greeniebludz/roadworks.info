@@ -16,14 +16,20 @@ const markers = L.markerClusterGroup();
 function formatPopup(item) {
   const start = item.start || 'N/A';
   const end = item.end || 'N/A';
+
   return `
     <div style="min-width:200px">
       <strong>${item.title}</strong><br/>
       <small>${item.status} • ${start} → ${end}</small>
       <hr style="margin:6px 0"/>
       <div>${item.description || ''}</div>
+
+      <div style="margin-top:6px;font-size:12px;color:#555">
+        USRN: ${item.usrn || 'N/A'}
+      </div>
     </div>`;
 }
+
 // Convert OSGB36 easting/northing to WGS84 lat/lon
 function osgbToWgs84(easting, northing) {
   const a = 6377563.396;

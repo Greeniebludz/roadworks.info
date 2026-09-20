@@ -2,7 +2,7 @@ const debug = document.getElementById("debug");
 const statusFilter = document.getElementById("statusFilter");
 
 // Correct path to JSON (one folder up)
-const dataUrl = "../sample-roadworks.json";
+const dataUrl = "data/sample-sm.json";
 
 // Initialise map
 const map = L.map('map').setView([51.4, -0.7], 10);

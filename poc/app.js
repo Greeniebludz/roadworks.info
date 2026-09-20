@@ -11,6 +11,15 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
+// ⭐ Put geocoder HERE
+L.Control.geocoder({
+  defaultMarkGeocode: true
+})
+.on('markgeocode', function(e) {
+  map.fitBounds(e.geocode.bbox);
+})
+.addTo(map);
+
 // We keep clustering, but disable it early.
 // Clustering only happens when zoomed OUT.
 const markers = L.markerClusterGroup({
@@ -31,21 +40,6 @@ map.on("zoomend", () => {
     }
   });
 });
-L.Control.geocoder({
-  defaultMarkGeocode: false
-})
-.on('markgeocode', function(e) {
-  const bbox = e.geocode.bbox;
-  const poly = L.polygon([
-    [bbox.getSouthEast().lat, bbox.getSouthEast().lng],
-    [bbox.getNorthEast().lat, bbox.getNorthEast().lng],
-    [bbox.getNorthWest().lat, bbox.getNorthWest().lng],
-    [bbox.getSouthWest().lat, bbox.getSouthWest().lng]
-  ]);
-
-  map.fitBounds(poly.getBounds());
-})
-.addTo(map);
 
 // Tiny dot icon (low zoom)
 const dotIcon = L.divIcon({

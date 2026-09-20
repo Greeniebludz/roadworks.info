@@ -14,10 +14,22 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // We keep clustering, but disable it early.
 // Clustering only happens when zoomed OUT.
 const markers = L.markerClusterGroup({
-  disableClusteringAtZoom: 13,
+  disableClusteringAtZoom: 15,   // was 13
   maxClusterRadius: 40,
   spiderfyOnMaxZoom: true,
   removeOutsideVisibleBounds: true
+});
+
+map.on("zoomend", () => {
+  const zoom = map.getZoom();
+
+  markers.eachLayer(marker => {
+    if (zoom >= 16) {             // was 14
+      marker.setIcon(marker.tmIcon);
+    } else {
+      marker.setIcon(marker.dotIcon);
+    }
+  });
 });
 
 // Tiny dot icon (low zoom)

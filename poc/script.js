@@ -183,7 +183,7 @@ function mapSMtoPOC(sm) {
     lon = wgs.lon;
   }
 
-  return {
+ {
     id: o.permit_reference_number || sm.event_reference,
     title: `${o.street_name || "Unknown Street"} (${o.town || ""})`,
     status: o.work_status || "Unknown",

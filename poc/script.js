@@ -174,7 +174,7 @@ function mapSMtoPOC(sm) {
   };
 }
 
-// ⭐ LOAD DATA
+// ⭐ LOAD DATA — FULLY FIXED VERSION
 function loadData() {
   markers.clearLayers();
   debug.textContent = "Loading…";
@@ -182,32 +182,37 @@ function loadData() {
   fetch(dataUrl)
     .then(r => r.json())
     .then(raw => {
-      const items = raw.features.map(f => mapSMtoPOC({
-    ...f.properties,
-    lat: f.geometry.coordinates[1],
-    lon: f.geometry.coordinates[0]
-});
+
+      // ⭐ FIXED: Properly closed .map() call
+      const items = raw.features.map(f =>
+        mapSMtoPOC({
+          ...f.properties,
+          lat: f.geometry.coordinates[1],
+          lon: f.geometry.coordinates[0]
+        })
+      );
 
       const startDate = document.getElementById("startDate").value;
       const endDate = document.getElementById("endDate").value;
 
-     const filtered = items.filter(i => {
-    if (!i.lat || !i.lon) return false;
+      // ⭐ FIXED: Proper filter callback with return true
+      const filtered = items.filter(i => {
+        if (!i.lat || !i.lon) return false;
 
-    if (statusFilter.value && i.status !== statusFilter.value) return false;
+        if (statusFilter.value && i.status !== statusFilter.value) return false;
 
-    if (startDate) {
-        if (!i.start || new Date(i.start) < new Date(startDate)) return false;
-    }
+        if (startDate) {
+          if (!i.start || new Date(i.start) < new Date(startDate)) return false;
+        }
 
-    if (endDate) {
-        if (!i.end || new Date(i.end) > new Date(endDate)) return false;
-    }
+        if (endDate) {
+          if (!i.end || new Date(i.end) > new Date(endDate)) return false;
+        }
 
-    return true; // ⭐ REQUIRED
-});
+        return true;
+      });
 
-
+      // ⭐ ADD MARKERS
       filtered.forEach(i => {
         const m = L.marker([i.lat, i.lon], {
           icon: dotIcon
@@ -236,7 +241,7 @@ function loadData() {
     });
 }
 
-// ⭐ ICON SWITCHING BASED ON ZOOM HIGHER NUMBER IS CLOSER 14/15 IS BEST
+// ⭐ ICON SWITCHING
 map.on("zoomend", () => {
   const zoom = map.getZoom();
 

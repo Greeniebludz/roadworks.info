@@ -231,12 +231,12 @@ function loadData() {
     });
 }
 
-// ⭐ ICON SWITCHING BASED ON ZOOM HIGHER NUMBER IS CLOSER
+// ⭐ ICON SWITCHING BASED ON ZOOM HIGHER NUMBER IS CLOSER 14/15 IS BEST
 map.on("zoomend", () => {
   const zoom = map.getZoom();
 
   markers.eachLayer(marker => {
-    if (zoom >= 16) {
+    if (zoom >= 14) {
       marker.setIcon(marker.tmIcon);
     } else {
       marker.setIcon(marker.dotIcon);

@@ -126,20 +126,43 @@ function osgbToWgs84(easting, northing) {
 
 // ⭐ SM → POC MAPPER
 function mapSMtoPOC(sm) {
-  const o = sm.object_data;
+  // Always safe, even if object_data is missing
+  const o = sm.object_data || {};
 
-  const tm = (o.current_traffic_management_type_ref ||
-              o.traffic_management_type_ref ||
-              o.traffic_management_type ||
-              "").toLowerCase();
+  // Safely extract TM fields (always a string)
+  const tmRaw =
+    o.current_traffic_management_type_ref ||
+    o.traffic_management_type_ref ||
+    o.traffic_management_type ||
+    "";
 
+  const tm = String(tmRaw).toLowerCase();
+
+  // Map TM → icon key
   let tmKey = "default";
-
   if (tm.includes("road_closure")) tmKey = "road_closure";
   else if (tm.includes("multi_way_signals")) tmKey = "multi_way_signals";
   else if (tm.includes("stop")) tmKey = "stop_go_boards";
   else if (tm.includes("give")) tmKey = "give_take";
   else if (tm.includes("lane")) tmKey = "lane_closure";
+
+  return {
+    id: o.permit_reference_number || sm.event_reference,
+    title: `${o.street_name || "Unknown Street"} (${o.town || ""})`,
+    status: o.work_status || "Unknown",
+    start: o.actual_start_date_time || o.proposed_start_date,
+    end: o.actual_end_date_time || o.proposed_end_date,
+
+    // These come from your GeoJSON Worker
+    lat: sm.lat,
+    lon: sm.lon,
+
+    description: `${o.work_category || ""} — ${o.traffic_management_type || ""}`,
+    usrn: o.usrn || null,
+    tmKey
+  };
+}
+
 
   let lat = null;
   let lon = null;

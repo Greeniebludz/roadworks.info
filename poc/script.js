@@ -1,6 +1,6 @@
 const debug = document.getElementById("debug");
 const statusFilter = document.getElementById("statusFilter");
-const dataUrl = "data/sample-sm.json";
+const dataUrl = "https://geojson-worker.jamesgreen-928.workers.dev";
 
 // ⭐ CLUSTER GROUP
 const markers = L.markerClusterGroup({
@@ -182,7 +182,7 @@ function loadData() {
   fetch(dataUrl)
     .then(r => r.json())
     .then(raw => {
-      const items = raw.map(mapSMtoPOC);
+      const items = = raw.features.map(f => mapSMtoPOC(f.properties));
 
       const startDate = document.getElementById("startDate").value;
       const endDate = document.getElementById("endDate").value;

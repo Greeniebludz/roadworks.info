@@ -182,7 +182,7 @@ function loadData() {
   fetch(dataUrl)
     .then(r => r.json())
     .then(raw => {
-      const items = = raw.features.map(f => mapSMtoPOC({
+      const items = raw.features.map(f => mapSMtoPOC({
     ...f.properties,
     lat: f.geometry.coordinates[1],
     lon: f.geometry.coordinates[0]

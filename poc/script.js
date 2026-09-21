@@ -187,21 +187,22 @@ function loadData() {
       const startDate = document.getElementById("startDate").value;
       const endDate = document.getElementById("endDate").value;
 
-      const filtered = items.filter(i => {
-        if (!i.lat || !i.lon) return false;
+     const filtered = items.filter(i => {
+    if (!i.lat || !i.lon) return false;
 
-        if (statusFilter.value && i.status !== statusFilter.value) return false;
+    if (statusFilter.value && i.status !== statusFilter.value) return false;
 
-        if (startDate) {
-          if (!i.start || new Date(i.start) < new Date(startDate)) return false;
-        }
+    if (startDate) {
+        if (!i.start || new Date(i.start) < new Date(startDate)) return false;
+    }
 
-        if (endDate) {
-          if (!i.end || new Date(i.end) > new Date(endDate)) return false;
-        }
+    if (endDate) {
+        if (!i.end || new Date(i.end) > new Date(endDate)) return false;
+    }
 
-        return true;
-      });
+    return true; // ⭐ REQUIRED
+});
+
 
       filtered.forEach(i => {
         const m = L.marker([i.lat, i.lon], {

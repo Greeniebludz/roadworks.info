@@ -163,40 +163,6 @@ function mapSMtoPOC(sm) {
   };
 }
 
-
-  let lat = null;
-  let lon = null;
-
-  if (o.works_location_coordinates && o.works_location_coordinates.startsWith("LINESTRING")) {
-    const coords = o.works_location_coordinates
-      .replace("LINESTRING(", "")
-      .replace(")", "")
-      .split(",")[0]
-      .trim()
-      .split(" ");
-
-    const easting = parseFloat(coords[0]);
-    const northing = parseFloat(coords[1]);
-
-    const wgs = osgbToWgs84(easting, northing);
-    lat = wgs.lat;
-    lon = wgs.lon;
-  }
-
- {
-    id: o.permit_reference_number || sm.event_reference,
-    title: `${o.street_name || "Unknown Street"} (${o.town || ""})`,
-    status: o.work_status || "Unknown",
-    start: o.actual_start_date_time || o.proposed_start_date,
-    end: o.actual_end_date_time || o.proposed_end_date,
-    lat: lat,
-    lon: lon,
-    description: `${o.work_category || ""} — ${o.traffic_management_type || ""}`,
-    usrn: o.usrn || null,
-    tmKey: tmKey
-  };
-}
-
 // ⭐ LOAD DATA — FULLY FIXED VERSION
 function loadData() {
   markers.clearLayers();

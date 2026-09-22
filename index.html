@@ -1,71 +1,389 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Roadworks.info — Coming Soon</title>
+  <meta charset="UTF-8" />
+  <title>Roadworks.info – Coming Soon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root {
+      --bg-main: #050608;
+      --bg-accent: #0b0f16;
+      --text-main: #ffffff;
+      --text-muted: #b3b9c7;
+      --accent-orange: #ff7a1a;
+      --accent-green: #3af58b;
+      --accent-red: #ff3b3b;
+      --border-soft: #1b2230;
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      background: #F4F6F8;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding-top: 8%;
-      color: #333333;
+      font-family: var(--font-main);
+      background: radial-gradient(circle at top, #111827 0, #020617 55%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
     }
 
-    .logo {
-      max-width: 200px;   /* adjust size here */
-      height: auto;
+    .page {
+      max-width: 900px;
+      width: 100%;
+      border-radius: 18px;
+      background: linear-gradient(
+        145deg,
+        rgba(11, 15, 22, 0.95),
+        rgba(5, 6, 8, 0.98)
+      );
+      border: 1px solid var(--border-soft);
+      box-shadow:
+        0 40px 80px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(255, 255, 255, 0.02);
+      padding: 2.5rem 2.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle oracle glow */
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(58, 245, 139, 0.12), transparent 55%),
+        radial-gradient(circle at 80% 100%, rgba(255, 122, 26, 0.12), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-orange);
+      box-shadow: 0 0 12px rgba(255, 122, 26, 0.9);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.4);
+        opacity: 0.4;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-main h1 {
+      font-size: clamp(2.4rem, 3vw + 1.4rem, 3.2rem);
+      line-height: 1.05;
+      margin-bottom: 1rem;
+    }
+
+    .hero-main h1 span.highlight {
+      color: var(--accent-orange);
+    }
+
+    .hero-main h1 span.oracle {
+      color: var(--accent-green);
+      font-style: italic;
+    }
+
+    .hero-main p.lead {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-main p.lead strong {
+      color: var(--text-main);
+    }
+
+    .hero-main .promise {
+      margin-bottom: 1.75rem;
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.85);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .hero-main .promise span {
       display: block;
-      margin: 0 auto 40px auto;
     }
 
-    h1 {
-      font-size: 48px;
-      margin-bottom: 10px;
-      color: #00A651; /* Green */
+    .hero-main .promise span.key {
+      color: var(--accent-orange);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.8rem;
+      margin-bottom: 0.35rem;
     }
 
-    p {
-      font-size: 20px;
-      color: #555;
-      margin: 6px 0;
+    .hero-main .audience {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1.75rem;
     }
 
-    a {
-      color: #00A651; /* Green */
+    .hero-main .audience strong {
+      color: var(--accent-green);
+    }
+
+    .hero-main .launch {
+      font-size: 0.9rem;
+      color: var(--accent-green);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .hero-main .launch span {
+      color: var(--text-muted);
+      text-transform: none;
+      letter-spacing: normal;
+      margin-left: 0.35rem;
+    }
+
+    .hero-side {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 768px) {
+      .hero-side {
+        align-items: center;
+        text-align: center;
+      }
+    }
+
+    .logo-oracle {
+      width: 180px;
+      height: 180px;
+      border-radius: 24px;
+      background: radial-gradient(circle at 30% 0%, #22c55e 0, #0f172a 40%, #020617 80%);
+      border: 2px solid rgba(248, 250, 252, 0.08);
+      box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 0.9),
+        0 18px 40px rgba(0, 0, 0, 0.85);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* simple cone + road motif */
+    .logo-oracle::before {
+      content: "";
+      position: absolute;
+      inset: 18% 20%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #020617 0, #0b1120 40%, #020617 100%);
+      box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.4);
+    }
+
+    .logo-oracle::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 22%;
+      transform: translateX(-50%);
+      width: 34px;
+      height: 70px;
+      background: linear-gradient(180deg, #fed7aa 0, #f97316 40%, #c2410c 100%);
+      border-radius: 4px;
+      box-shadow: 0 0 18px rgba(249, 115, 22, 0.9);
+    }
+
+    .logo-road-lines {
+      position: absolute;
+      inset: 18% 20%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo-road-lines span {
+      width: 6px;
+      height: 12px;
+      margin: 4px;
+      border-radius: 999px;
+      background: rgba(248, 250, 252, 0.85);
+      opacity: 0.9;
+    }
+
+    .brand-name {
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-green);
+    }
+
+    .tagline {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .oracle-line {
+      font-size: 0.9rem;
+      color: var(--accent-orange);
+      font-style: italic;
+      margin-top: 0.35rem;
+    }
+
+    .contact {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .contact a {
+      color: var(--accent-orange);
       text-decoration: none;
-      font-weight: bold;
     }
 
-    a:hover {
+    .contact a:hover {
       text-decoration: underline;
     }
 
-    footer {
-      margin-top: 60px;
-      font-size: 16px;
-      color: #FFB800; /* Amber */
-      font-weight: bold;
+    .footer {
+      margin-top: 2.25rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(30, 41, 59, 0.9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer span.oracle-mark {
+      color: var(--accent-orange);
+      font-weight: 500;
+    }
+
+    .footer span.small {
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
+  <main class="page">
+    <div class="badge">
+      <span class="badge-dot"></span>
+      <span>Roadworks.info · Coming Soon</span>
+    </div>
 
-  <p style="font-size: 22px; color: #444; margin-bottom: 20px;">
-    Fed up with having to sign up to a website to see open data? 
-    Why not just display open data to the open public.  </p>
+    <section class="hero">
+      <div class="hero-main">
+        <h1>
+          <span class="highlight">Roadworks.info</span><br />
+          is breaking the streetworks monopoly.<br />
+          <span class="oracle">The Oracle is awakening.</span>
+        </h1>
 
-  <img class="logo" src="Images/OSO-logo.png" alt="Oracle Road Logo">
+        <p class="lead">
+          <strong>Real‑time roadworks data. Free. Open. No accounts.</strong><br />
+          Built for contractors, utilities, councils — and every outsider who’s been
+          ignored by the big platforms.
+        </p>
 
-  <h1>Roadworks.info</h1>
-  <p>No sign up. No add ons. Free for all. 
-   From your Omniscient Streetworks Oracle, this our future!</p>
-  <p>For enquiries, contact:</p>
-  <p><a href="mailto:contact@roadworks.info">contact@roadworks.info</a></p>
+        <div class="promise">
+          <span class="key">Our promise</span>
+          <span>No sign‑up. No add‑ons. No paywalls. Just the UK’s roadworks — visible to all.</span>
+        </div>
 
-  <footer>
-    Powered by Streetworks Oracle™
-  </footer>
+        <p class="audience">
+          If you dig the holes, fix the pipes, manage the permits, or keep the roads moving,
+          <strong>this platform is for you.</strong>
+        </p>
 
+        <p class="launch">
+          Coming soon
+          <span>— the Omniscient Streetworks Oracle will see everything.</span>
+        </p>
+      </div>
+
+      <div class="hero-side">
+        <div class="logo-oracle">
+          <div class="logo-road-lines">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <div class="brand-name">Roadworks.info</div>
+
+        <p class="tagline">
+          The free alternative the streetworks world has been waiting for.<br />
+          Open data, actually open.
+        </p>
+
+        <p class="oracle-line">
+          Powered by Streetworks Oracle™.
+        </p>
+
+        <p class="contact">
+          For enquiries, contact:<br />
+          <a href="mailto:contact@roadworks.info">contact@roadworks.info</a>
+        </p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span class="oracle-mark">Streetworks Oracle™ · Outsider‑built, outsider‑focused.</span>
+      <span class="small">No sign‑up. No nonsense. Just roadworks.</span>
+    </footer>
+  </main>
 </body>
 </html>

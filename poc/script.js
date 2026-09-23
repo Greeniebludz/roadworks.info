@@ -1,26 +1,57 @@
+const MAPTILER_KEY = "YOUR_KEY";
+
 // --- MAP SETUP ---
 const map = L.map("map").setView([51.4, -0.7], 10);
 
-// Base layer
-const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "&copy; OpenStreetMap contributors"
-}).addTo(map);
+// Basemap layers
+const streets = L.tileLayer(
+  `https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
+  { attribution: "&copy; MapTiler" }
+).addTo(map);
 
-// ⭐ GOOGLE TRAFFIC LAYER
-// Make sure Leaflet.GoogleMutant.js loaded before this
-const googleTraffic = L.gridLayer.googleMutant({
-  type: "roadmap"
-});
-googleTraffic.addGoogleLayer("TrafficLayer");
+const satellite = L.tileLayer(
+  `https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=${MAPTILER_KEY}`,
+  { attribution: "&copy; MapTiler" }
+);
 
-// ⭐ HA BOUNDARIES TEST LAYER (replace with your real GeoJSON later)
+const hybrid = L.tileLayer(
+  `https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=${MAPTILER_KEY}`,
+  { attribution: "&copy; MapTiler" }
+);
+
+const terrain = L.tileLayer(
+  `https://api.maptiler.com/maps/terrain/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
+  { attribution: "&copy; MapTiler" }
+);
+
+const dark = L.tileLayer(
+  `https://api.maptiler.com/maps/darkmatter/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
+  { attribution: "&copy; MapTiler" }
+);
+
+const light = L.tileLayer(
+  `https://api.maptiler.com/maps/positron/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
+  { attribution: "&copy; MapTiler" }
+);
+
+// Traffic layers
+const trafficFlow = L.tileLayer(
+  `https://api.maptiler.com/tiles/traffic/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
+  { attribution: "&copy; MapTiler" }
+);
+
+const trafficIncidents = L.tileLayer(
+  `https://api.maptiler.com/tiles/traffic-incidents/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
+  { attribution: "&copy; MapTiler" }
+);
+
+// HA boundaries
 const haBoundariesLayer = L.layerGroup();
-
-const testPolygon = {
-  "type": "Feature",
-  "geometry": {
-    "type": "Polygon",
-    "coordinates": [[
+L.geoJSON({
+  type: "Feature",
+  geometry: {
+    type: "Polygon",
+    coordinates: [[
       [-0.9, 51.5],
       [-0.7, 51.5],
       [-0.7, 51.4],
@@ -28,57 +59,43 @@ const testPolygon = {
       [-0.9, 51.5]
     ]]
   }
-};
-
-L.geoJSON(testPolygon, {
+}, {
   style: { color: "#0057B8", weight: 2, fillOpacity: 0.1 }
 }).addTo(haBoundariesLayer);
 
-// Expose if you want, but not required now
-window.map = map;
-window.osm = osm;
-window.googleTraffic = googleTraffic;
-window.haBoundariesLayer = haBoundariesLayer;
-
-// --- GLOBALS ---
-const debugEl = document.getElementById("debug");
-
-// Marker cluster for roadworks
+// Marker cluster
 const markers = L.markerClusterGroup();
 map.addLayer(markers);
 
-// --- LAYER CONTROL SETUP ---
-const baseLayers = {
-  "OpenStreetMap": osm
-};
+// Layer control
+L.control.layers(
+  {
+    "Streets": streets,
+    "Satellite": satellite,
+    "Hybrid": hybrid,
+    "Terrain": terrain,
+    "Dark": dark,
+    "Light": light
+  },
+  {
+    "Roadworks": markers,
+    "HA Boundaries": haBoundariesLayer,
+    "Traffic Flow": trafficFlow,
+    "Traffic Incidents": trafficIncidents
+  }
+).addTo(map);
 
-const overlays = {
-  "Roadworks": markers,
-  "HA Boundaries": haBoundariesLayer,
-  "Google Traffic": googleTraffic
-};
+// Legend toggle
+const legendBody = document.getElementById("gl-legend-body");
+const legendToggle = document.getElementById("gl-legend-toggle");
 
-L.control.layers(baseLayers, overlays).addTo(map);
+legendToggle.addEventListener("click", () => {
+  const hidden = legendBody.style.display === "none";
+  legendBody.style.display = hidden ? "block" : "none";
+  legendToggle.textContent = hidden ? "Hide" : "Show";
+});
 
-// --- LEGEND POPULATION ---
-const tmLegendEl = document.getElementById("tm-legend");
-const utilityLegendEl = document.getElementById("utility-legend");
-
-const trafficManagementTypes = [
-  { label: "Lane closure", colour: "#FF9800" },
-  { label: "Road closure", colour: "#D50000" },
-  { label: "Two-way signals", colour: "#3F51B5" },
-  { label: "Multi-way signals", colour: "#673AB7" }
-];
-
-const utilityProviders = [
-  { label: "BT / Openreach", colour: "#1976D2" },
-  { label: "Virgin Media", colour: "#C2185B" },
-  { label: "Water", colour: "#0288D1" },
-  { label: "Gas", colour: "#FFA000" },
-  { label: "Electric", colour: "#7B1FA2" }
-];
-
+// Legend population
 function buildLegendRows(container, items) {
   container.innerHTML = "";
   items.forEach(item => {
@@ -98,45 +115,45 @@ function buildLegendRows(container, items) {
   });
 }
 
-buildLegendRows(tmLegendEl, trafficManagementTypes);
-buildLegendRows(utilityLegendEl, utilityProviders);
+buildLegendRows(document.getElementById("tm-legend"), [
+  { label: "Lane closure", colour: "#FF9800" },
+  { label: "Road closure", colour: "#D50000" },
+  { label: "Two-way signals", colour: "#3F51B5" },
+  { label: "Multi-way signals", colour: "#673AB7" }
+]);
 
-// --- COLLAPSIBLE LEGEND ---
-const legendBody = document.getElementById("gl-legend-body");
-const legendToggle = document.getElementById("gl-legend-toggle");
+buildLegendRows(document.getElementById("utility-legend"), [
+  { label: "BT / Openreach", colour: "#1976D2" },
+  { label: "Virgin Media", colour: "#C2185B" },
+  { label: "Water", colour: "#0288D1" },
+  { label: "Gas", colour: "#FFA000" },
+  { label: "Electric", colour: "#7B1FA2" }
+]);
 
-legendToggle.addEventListener("click", () => {
-  const isHidden = legendBody.style.display === "none";
-  legendBody.style.display = isHidden ? "block" : "none";
-  legendToggle.textContent = isHidden ? "Hide" : "Show";
-});
-
-// --- FILTERS + QUICK RANGE ---
+// Filters + quick range
 const quickRangeEl = document.getElementById("quickRange");
 const statusFilterEl = document.getElementById("statusFilter");
 const startDateEl = document.getElementById("startDate");
 const endDateEl = document.getElementById("endDate");
 const loadDataBtn = document.getElementById("loadDataBtn");
 
-// Internal filter values
 window._filterStart = null;
 window._filterEnd = null;
 
 function applyQuickRange(range) {
   const now = new Date();
-
   let start, end;
 
   if (range === "today") {
     start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   } else if (range === "week") {
-    const day = now.getDay(); // 0 = Sunday
-    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday start
+    const day = now.getDay();
+    const diff = now.getDate() - day + (day === 0 ? -6 : 1);
     start = new Date(now.getFullYear(), now.getMonth(), diff);
     end = new Date(start);
     end.setDate(start.getDate() + 6);
-  } else if (range === "month") {
+  } else {
     start = new Date(now.getFullYear(), now.getMonth(), 1);
     end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
   }
@@ -152,23 +169,21 @@ function applyQuickRange(range) {
   loadData();
 }
 
-quickRangeEl.addEventListener("change", e => {
-  applyQuickRange(e.target.value);
-});
+quickRangeEl.addEventListener("change", e => applyQuickRange(e.target.value));
 
-// --- DATA LOADING (stubbed; replace URL with your Worker) ---
-const DATA_URL = "https://example.com/roadworks.geojson"; // TODO: your real endpoint
+// Data loading (stub)
+const DATA_URL = "https://example.com/roadworks.geojson";
 
 function logDebug(msg) {
   const ts = new Date().toISOString();
-  debugEl.textContent += `[${ts}] ${msg}\n`;
-  debugEl.scrollTop = debugEl.scrollHeight;
+  const el = document.getElementById("debug");
+  el.textContent += `[${ts}] ${msg}\n`;
+  el.scrollTop = el.scrollHeight;
 }
 
 function loadData() {
   logDebug(`Loading data with filters: status=${statusFilterEl.value}, start=${window._filterStart}, end=${window._filterEnd}`);
 
-  // Clear existing markers
   markers.clearLayers();
 
   fetch(DATA_URL)
@@ -177,22 +192,10 @@ function loadData() {
       const features = geojson.features || [];
 
       const filtered = features.filter(f => {
-        const props = f.properties || {};
-        const status = props.status || "";
-        const startDate = props.start_date || null;
-        const endDate = props.end_date || null;
-
-        if (statusFilterEl.value && status !== statusFilterEl.value) {
-          return false;
-        }
-
-        if (window._filterStart && startDate && startDate < window._filterStart) {
-          return false;
-        }
-        if (window._filterEnd && endDate && endDate > window._filterEnd) {
-          return false;
-        }
-
+        const p = f.properties || {};
+        if (statusFilterEl.value && p.status !== statusFilterEl.value) return false;
+        if (window._filterStart && p.start_date < window._filterStart) return false;
+        if (window._filterEnd && p.end_date > window._filterEnd) return false;
         return true;
       });
 
@@ -200,13 +203,12 @@ function loadData() {
         pointToLayer: (feature, latlng) => L.marker(latlng),
         onEachFeature: (feature, layer) => {
           const p = feature.properties || {};
-          const html = `
+          layer.bindPopup(`
             <strong>${p.description || "Roadworks"}</strong><br/>
             Status: ${p.status || "Unknown"}<br/>
             Start: ${p.start_date || "-"}<br/>
             End: ${p.end_date || "-"}
-          `;
-          layer.bindPopup(html);
+          `);
         }
       });
 
@@ -219,19 +221,10 @@ function loadData() {
     });
 }
 
-// Initial quick range + load
 applyQuickRange(quickRangeEl.value);
-
-// Reload button
-loadDataBtn.addEventListener("click", () => {
-  loadData();
-});
+loadDataBtn.addEventListener("click", loadData);
 
 // Geocoder
-L.Control.geocoder({
-  defaultMarkGeocode: true
-})
-  .on("markgeocode", function (e) {
-    map.fitBounds(e.geocode.bbox);
-  })
+L.Control.geocoder({ defaultMarkGeocode: true })
+  .on("markgeocode", e => map.fitBounds(e.geocode.bbox))
   .addTo(map);

@@ -1,154 +1,90 @@
-// ⭐ IMPORTS
-import { TM_ICONS } from "./icons/tmIcons.js";
-import { UTILITY_ICONS } from "./icons/utilityIcons.js";
-import { buildPinSVG } from "./icons/buildPinSVG.js";
+// --- GLOBALS ---
+const debugEl = document.getElementById("debug");
 
-const debug = document.getElementById("debug");
-const statusFilter = document.getElementById("statusFilter");
-const startDateInput = document.getElementById("startDate");
-const endDateInput = document.getElementById("endDate");
-const quickRange = document.getElementById("quickRange");
+// Marker cluster for roadworks
+const markers = L.markerClusterGroup();
 
-const dataUrl = "https://geojson-worker.jamesgreen-928.workers.dev";
+// Attach to map immediately so layer control can see it
+window.map.addLayer(markers);
 
-// ⭐ CLUSTER GROUP
-const markers = L.markerClusterGroup({
-  disableClusteringAtZoom: 11,
-  maxClusterRadius: 40,
-  spiderfyOnMaxZoom: true,
-  removeOutsideVisibleBounds: true
-});
-
-// ⭐ DOT ICON
-const dotIcon = L.divIcon({
-  className: "dot-icon",
-  iconSize: [8, 8]
-});
-
-// ⭐ TM ICON SET
-const iconSet = {
-  road_closure: L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  }),
-  multi_way_signals: L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
-    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  }),
-  stop_go_boards: L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
-    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  }),
-  give_take: L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
-    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  }),
-  lane_closure: L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png',
-    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  }),
-  default: L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
-    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  })
+// --- LAYER CONTROL SETUP ---
+const baseLayers = {
+  "OpenStreetMap": window.osm
 };
 
-// ⭐ POPUP FORMATTER
-function formatPopup(item) {
-  const start = item.start || 'N/A';
-  const end = item.end || 'N/A';
+const overlays = {
+  "Roadworks": markers,
+  "HA Boundaries": window.haBoundariesLayer,
+  "Google Traffic": window.googleTraffic
+};
 
-  return `
-    <div style="min-width:200px">
-      <strong>${item.title}</strong><br/>
-      <small>${item.status} • ${start} → ${end}</small>
-      <hr style="margin:6px 0"/>
-      <div>${item.description || ''}</div>
+L.control.layers(baseLayers, overlays).addTo(window.map);
 
-      <div style="margin-top:6px;font-size:12px;color:#555">
-        USRN: ${item.usrn || 'N/A'}
-      </div>
-    </div>`;
-}
+// --- LEGEND POPULATION (simple demo) ---
+const tmLegendEl = document.getElementById("tm-legend");
+const utilityLegendEl = document.getElementById("utility-legend");
 
-// ⭐ LEGEND POPULATOR
-function addLegendIcons() {
-  const tmLegend = document.getElementById("tm-legend");
-  const utilityLegend = document.getElementById("utility-legend");
+const trafficManagementTypes = [
+  { label: "Lane closure", colour: "#FF9800" },
+  { label: "Road closure", colour: "#D50000" },
+  { label: "Two-way signals", colour: "#3F51B5" },
+  { label: "Multi-way signals", colour: "#673AB7" }
+];
 
-  Object.entries(TM_ICONS).forEach(([key, svg]) => {
+const utilityProviders = [
+  { label: "BT / Openreach", colour: "#1976D2" },
+  { label: "Virgin Media", colour: "#C2185B" },
+  { label: "Water", colour: "#0288D1" },
+  { label: "Gas", colour: "#FFA000" },
+  { label: "Electric", colour: "#7B1FA2" }
+];
+
+function buildLegendRows(container, items) {
+  container.innerHTML = "";
+  items.forEach(item => {
     const row = document.createElement("div");
     row.className = "legend-row";
-    row.innerHTML = `
-      <span class="legend-icon"><svg viewBox="0 0 16 16">${svg}</svg></span>
-      ${formatLabel(key)}
-    `;
-    tmLegend.appendChild(row);
-  });
 
-  Object.entries(UTILITY_ICONS).forEach(([key, svg]) => {
-    const row = document.createElement("div");
-    row.className = "legend-row";
-    row.innerHTML = `
-      <span class="legend-icon"><svg viewBox="0 0 16 16">${svg}</svg></span>
-      ${formatLabel(key)}
-    `;
-    utilityLegend.appendChild(row);
+    const swatch = document.createElement("span");
+    swatch.className = "legend-colour";
+    swatch.style.background = item.colour;
+
+    const label = document.createElement("span");
+    label.textContent = item.label;
+
+    row.appendChild(swatch);
+    row.appendChild(label);
+    container.appendChild(row);
   });
 }
 
-function formatLabel(key) {
-  return key.replace(/([A-Z])/g, " $1").replace(/^\w/, c => c.toUpperCase());
-}
+buildLegendRows(tmLegendEl, trafficManagementTypes);
+buildLegendRows(utilityLegendEl, utilityProviders);
 
-// ⭐ SM → POC MAPPER
-function mapSMtoPOC(sm) {
-  const o = sm.object_data || {};
+// --- COLLAPSIBLE LEGEND ---
+const legendBody = document.getElementById("gl-legend-body");
+const legendToggle = document.getElementById("gl-legend-toggle");
 
-  const tmRaw =
-    o.current_traffic_management_type_ref ||
-    o.traffic_management_type_ref ||
-    o.traffic_management_type ||
-    "";
+legendToggle.addEventListener("click", () => {
+  const isHidden = legendBody.style.display === "none";
+  legendBody.style.display = isHidden ? "block" : "none";
+  legendToggle.textContent = isHidden ? "Hide" : "Show";
+});
 
-  const tm = String(tmRaw).toLowerCase();
+// --- FILTERS + QUICK RANGE ---
+const quickRangeEl = document.getElementById("quickRange");
+const statusFilterEl = document.getElementById("statusFilter");
+const startDateEl = document.getElementById("startDate");
+const endDateEl = document.getElementById("endDate");
+const loadDataBtn = document.getElementById("loadDataBtn");
 
-  let tmKey = "default";
-  if (tm.includes("road_closure")) tmKey = "road_closure";
-  else if (tm.includes("multi_way_signals")) tmKey = "multi_way_signals";
-  else if (tm.includes("stop")) tmKey = "stop_go_boards";
-  else if (tm.includes("give")) tmKey = "give_take";
-  else if (tm.includes("lane")) tmKey = "lane_closure";
+// Internal filter values
+window._filterStart = null;
+window._filterEnd = null;
 
-  return {
-    id: o.permit_reference_number || sm.event_reference,
-    title: `${o.street_name || "Unknown Street"} (${o.town || ""})`,
-    status: o.work_status || "Unknown",
-    start: o.actual_start_date_time || o.proposed_start_date,
-    end: o.actual_end_date_time || o.proposed_end_date,
-    lat: sm.lat,
-    lon: sm.lon,
-    description: `${o.work_category || ""} — ${o.traffic_management_type || ""}`,
-    usrn: o.usrn || null,
-    tmKey
-  };
-}
-
-// ⭐ QUICK RANGE FILTER
 function applyQuickRange(range) {
   const now = new Date();
+
   let start, end;
 
   if (range === "today") {
@@ -157,8 +93,8 @@ function applyQuickRange(range) {
   }
 
   if (range === "week") {
-    const day = now.getDay();
-    const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+    const day = now.getDay(); // 0 = Sunday
+    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday start
     start = new Date(now.getFullYear(), now.getMonth(), diff);
     end = new Date(start);
     end.setDate(start.getDate() + 6);
@@ -174,110 +110,90 @@ function applyQuickRange(range) {
   window._filterStart = fmt(start);
   window._filterEnd = fmt(end);
 
-  startDateInput.value = fmt(start);
-  endDateInput.value = fmt(end);
+  startDateEl.value = fmt(start);
+  endDateEl.value = fmt(end);
 
   loadData();
 }
 
-// ⭐ LOAD DATA
+quickRangeEl.addEventListener("change", e => {
+  applyQuickRange(e.target.value);
+});
+
+// --- DATA LOADING (stubbed; replace URL with your Worker) ---
+const DATA_URL = "https://example.com/roadworks.geojson"; // TODO: your real endpoint
+
+function logDebug(msg) {
+  const ts = new Date().toISOString();
+  debugEl.textContent += `[${ts}] ${msg}\n`;
+  debugEl.scrollTop = debugEl.scrollHeight;
+}
+
 function loadData() {
+  logDebug(`Loading data with filters: status=${statusFilterEl.value}, start=${window._filterStart}, end=${window._filterEnd}`);
+
+  // Clear existing markers
   markers.clearLayers();
-  debug.textContent = "Loading…";
 
-  fetch(dataUrl)
+  // Example fetch – replace with your real Worker URL
+  fetch(DATA_URL)
     .then(r => r.json())
-    .then(raw => {
-      const items = raw.features.map(f =>
-        mapSMtoPOC({
-          ...f.properties,
-          lat: f.geometry.coordinates[1],
-          lon: f.geometry.coordinates[0]
-        })
-      );
+    .then(geojson => {
+      // Filter by status / dates if your properties support it
+      const features = geojson.features || [];
 
-      const startDate = window._filterStart;
-      const endDate = window._filterEnd;
+      const filtered = features.filter(f => {
+        const props = f.properties || {};
+        const status = props.status || "";
+        const startDate = props.start_date || null;
+        const endDate = props.end_date || null;
 
-      const filtered = items.filter(i => {
-        if (!i.lat || !i.lon) return false;
-        if (statusFilter.value && i.status !== statusFilter.value) return false;
+        // Status filter
+        if (statusFilterEl.value && status !== statusFilterEl.value) {
+          return false;
+        }
 
-        const start = i.start ? new Date(i.start) : null;
-        const end = i.end ? new Date(i.end) : null;
-
-        if (startDate && start && start < new Date(startDate)) return false;
-        if (endDate && end && end > new Date(endDate)) return false;
+        // Date filter (simple example; adjust to your schema)
+        if (window._filterStart && startDate && startDate < window._filterStart) {
+          return false;
+        }
+        if (window._filterEnd && endDate && endDate > window._filterEnd) {
+          return false;
+        }
 
         return true;
       });
 
-      filtered.forEach(i => {
-        const svg = buildPinSVG({
-          severity: "medium",
-          tmType: i.tmKey,
-          utilityType: null
-        });
-
-        const icon = L.divIcon({
-          html: svg,
-          className: "gl-pin",
-          iconSize: [32, 32],
-          iconAnchor: [16, 26]
-        });
-
-        const m = L.marker([i.lat, i.lon], { icon });
-
-        m.tmIcon = iconSet[i.tmKey] || iconSet.default;
-        m.dotIcon = dotIcon;
-
-        m.bindPopup(formatPopup(i));
-        markers.addLayer(m);
+      const layer = L.geoJSON(filtered, {
+        pointToLayer: (feature, latlng) => {
+          // Simple marker; you can swap for custom SVG pins later
+          return L.marker(latlng);
+        },
+        onEachFeature: (feature, layer) => {
+          const p = feature.properties || {};
+          const html = `
+            <strong>${p.description || "Roadworks"}</strong><br/>
+            Status: ${p.status || "Unknown"}<br/>
+            Start: ${p.start_date || "-"}<br/>
+            End: ${p.end_date || "-"}
+          `;
+          layer.bindPopup(html);
+        }
       });
 
-      map.addLayer(markers);
-
-      debug.textContent = JSON.stringify(filtered, null, 2);
-
-      if (filtered.length) {
-        const group = L.featureGroup(
-          filtered.map(i => L.marker([i.lat, i.lon]))
-        );
-        map.fitBounds(group.getBounds().pad(0.2));
-      }
+      markers.addLayer(layer);
+      logDebug(`Loaded ${filtered.length} features`);
     })
-    .catch(e => {
-      debug.textContent = "Error loading data: " + e;
+    .catch(err => {
+      console.error(err);
+      logDebug(`Error loading data: ${err.message}`);
     });
 }
 
-// ⭐ ICON SWITCHING
-map.on("zoomend", () => {
-  const zoom = map.getZoom();
+// Initial quick range + load
+applyQuickRange(quickRangeEl.value);
 
-  markers.eachLayer(marker => {
-    if (zoom >= 14) {
-      marker.setIcon(marker.tmIcon);
-    } else {
-      marker.setIcon(marker.dotIcon);
-    }
-  });
-});
-
-// ⭐ EVENT LISTENERS
-document.getElementById("loadDataBtn").addEventListener("click", loadData);
-statusFilter.addEventListener("change", loadData);
-startDateInput.addEventListener("change", loadData);
-endDateInput.addEventListener("change", loadData);
-
-quickRange.addEventListener("change", e => {
-  applyQuickRange(e.target.value);
-});
-
-// ⭐ LEGEND
-addLegendIcons();
-
-// ⭐ INITIAL LOAD — TODAY
-window.addEventListener("DOMContentLoaded", () => {
-  applyQuickRange("today");
+// Reload button
+loadDataBtn.addEventListener("click", () => {
+  loadData();
 });

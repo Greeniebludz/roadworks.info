@@ -1,28 +1,64 @@
+// --- MAP SETUP ---
+const map = L.map("map").setView([51.4, -0.7], 10);
+
+// Base layer
+const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution: "&copy; OpenStreetMap contributors"
+}).addTo(map);
+
+// ⭐ GOOGLE TRAFFIC LAYER
+// Make sure Leaflet.GoogleMutant.js loaded before this
+const googleTraffic = L.gridLayer.googleMutant({
+  type: "roadmap"
+});
+googleTraffic.addGoogleLayer("TrafficLayer");
+
+// ⭐ HA BOUNDARIES TEST LAYER (replace with your real GeoJSON later)
+const haBoundariesLayer = L.layerGroup();
+
+const testPolygon = {
+  "type": "Feature",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [[
+      [-0.9, 51.5],
+      [-0.7, 51.5],
+      [-0.7, 51.4],
+      [-0.9, 51.4],
+      [-0.9, 51.5]
+    ]]
+  }
+};
+
+L.geoJSON(testPolygon, {
+  style: { color: "#0057B8", weight: 2, fillOpacity: 0.1 }
+}).addTo(haBoundariesLayer);
+
+// Expose if you want, but not required now
+window.map = map;
+window.osm = osm;
+window.googleTraffic = googleTraffic;
+window.haBoundariesLayer = haBoundariesLayer;
+
 // --- GLOBALS ---
 const debugEl = document.getElementById("debug");
 
 // Marker cluster for roadworks
 const markers = L.markerClusterGroup();
-
-// Attach to map immediately so layer control can see it
-if (window.map && typeof window.map.addLayer === "function") {
-  window.map.addLayer(markers);
-} else {
-  console.error("Map is not ready when script.js ran");
-}
+map.addLayer(markers);
 
 // --- LAYER CONTROL SETUP ---
 const baseLayers = {
-  "OpenStreetMap": window.osm
+  "OpenStreetMap": osm
 };
 
 const overlays = {
   "Roadworks": markers,
-  "HA Boundaries": window.haBoundariesLayer,
-  "Google Traffic": window.googleTraffic
+  "HA Boundaries": haBoundariesLayer,
+  "Google Traffic": googleTraffic
 };
 
-L.control.layers(baseLayers, overlays).addTo(window.map);
+L.control.layers(baseLayers, overlays).addTo(map);
 
 // --- LEGEND POPULATION ---
 const tmLegendEl = document.getElementById("tm-legend");
@@ -88,22 +124,19 @@ window._filterEnd = null;
 
 function applyQuickRange(range) {
   const now = new Date();
+
   let start, end;
 
   if (range === "today") {
     start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  }
-
-  if (range === "week") {
+  } else if (range === "week") {
     const day = now.getDay(); // 0 = Sunday
     const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday start
     start = new Date(now.getFullYear(), now.getMonth(), diff);
     end = new Date(start);
     end.setDate(start.getDate() + 6);
-  }
-
-  if (range === "month") {
+  } else if (range === "month") {
     start = new Date(now.getFullYear(), now.getMonth(), 1);
     end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
   }
@@ -193,3 +226,12 @@ applyQuickRange(quickRangeEl.value);
 loadDataBtn.addEventListener("click", () => {
   loadData();
 });
+
+// Geocoder
+L.Control.geocoder({
+  defaultMarkGeocode: true
+})
+  .on("markgeocode", function (e) {
+    map.fitBounds(e.geocode.bbox);
+  })
+  .addTo(map);

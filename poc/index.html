@@ -5,17 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Roadworks Map Viewer</title>
 
-  <!--⭐ Leaflet Core CSS -->
+  <!-- Leaflet Core CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-  <!--⭐ Leaflet Geocoder CSS -->
+  <!-- Leaflet Geocoder CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
-  <!--⭐ Leaflet MarkerCluster CSS -->
+  <!-- Leaflet MarkerCluster CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
 
-  <!--⭐ Custom CSS -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -29,49 +28,12 @@
       margin-bottom: 20px;
     }
 
-    #gl-legend {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  background: white;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  width: 180px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-.legend-section {
-  margin-bottom: 12px;
-}
-
-.legend-section h4 {
-  margin: 0 0 6px;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.legend-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 4px;
-}
-
-.legend-colour {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  margin-right: 8px;
-  border: 1px solid #ccc;
-}
-
-.legend-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 6px;
-}
+    #controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      align-items: center;
+    }
 
     #map {
       width: 100%;
@@ -80,13 +42,7 @@
       border: 2px solid #00A651;
       border-radius: 8px;
       margin-bottom: 20px;
-    }
-
-    #controls {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-      align-items: center;
+      position: relative;
     }
 
     button {
@@ -102,11 +58,49 @@
       background: #008f45;
     }
 
-    .dot-icon {
-      width: 8px;
-      height: 8px;
-      background: #333;
-      border-radius: 50%;
+    /* Legend */
+    #gl-legend {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      width: 180px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      z-index: 9999;
+    }
+
+    .legend-section {
+      margin-bottom: 12px;
+    }
+
+    .legend-section h4 {
+      margin: 0 0 6px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .legend-colour {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      margin-right: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .legend-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 6px;
     }
   </style>
 </head>
@@ -116,46 +110,17 @@
   <header>
     <h1>Roadworks.info Map Viewer</h1>
   </header>
-  <!-- ⭐ FILTERS AT TOP -->
-<div id="controls">
+
+  <!-- FILTERS -->
+  <div id="controls">
     <button id="loadDataBtn">Reload Data</button>
 
-  function applyQuickRange(range) {
-  const now = new Date();
+    <select id="quickRange">
+      <option value="today">Today</option>
+      <option value="week">This Week</option>
+      <option value="month">This Month</option>
+    </select>
 
-  let start, end;
-
-  if (range === "today") {
-    start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  }
-
-  if (range === "week") {
-    const day = now.getDay(); // 0 = Sunday
-    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday start
-    start = new Date(now.getFullYear(), now.getMonth(), diff);
-    end = new Date(start);
-    end.setDate(start.getDate() + 6);
-  }
-
-  if (range === "month") {
-    start = new Date(now.getFullYear(), now.getMonth(), 1);
-    end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  }
-
-  // Internal filter format (yyyy-mm-dd)
-  const fmt = d => d.toISOString().split("T")[0];
-
-  // ⭐ Internal filter values (used by loadData)
-  window._filterStart = fmt(start);
-  window._filterEnd = fmt(end);
-
-  // ⭐ Update UI (browser will convert to dd/mm/yyyy automatically)
-  document.getElementById("startDate").value = fmt(start);
-  document.getElementById("endDate").value = fmt(end);
-
-  loadData();
-}
     <select id="statusFilter">
       <option value="">All Statuses</option>
       <option value="Works in progress">Works in progress</option>
@@ -165,53 +130,52 @@
     <input type="date" id="startDate">
     <input type="date" id="endDate">
   </div>
-<!-- ⭐ MAP BELOW FILTERS -->  
-  <div id="map"></div>
+
+  <!-- MAP -->
+  <div id="map">
+    <div id="gl-legend">
+      <h3>Legend</h3>
+
+      <div class="legend-section">
+        <h4>Delay Severity</h4>
+        <div class="legend-row">
+          <span class="legend-colour" style="background:#00C853"></span> Minimal
+        </div>
+        <div class="legend-row">
+          <span class="legend-colour" style="background:#FFB300"></span> Moderate
+        </div>
+        <div class="legend-row">
+          <span class="legend-colour" style="background:#D50000"></span> Severe
+        </div>
+        <div class="legend-row">
+          <span class="legend-colour" style="background:#9E9E9E"></span> No Delay
+        </div>
+      </div>
+
+      <div class="legend-section">
+        <h4>Traffic Management</h4>
+        <div id="tm-legend"></div>
+      </div>
+
+      <div class="legend-section">
+        <h4>Utility Provider</h4>
+        <div id="utility-legend"></div>
+      </div>
+    </div>
+  </div>
+
   <pre id="debug"></pre>
-  
-<!-- ⭐ LEGEND -->
-<div id="gl-legend">
-  <h3>Legend</h3>
 
-  <div class="legend-section">
-    <h4>Delay Severity</h4>
-    <div class="legend-row">
-      <span class="legend-colour" style="background:#00C853"></span> Minimal
-    </div>
-    <div class="legend-row">
-      <span class="legend-colour" style="background:#FFB300"></span> Moderate
-    </div>
-    <div class="legend-row">
-      <span class="legend-colour" style="background:#D50000"></span> Severe
-    </div>
-    <div class="legend-row">
-      <span class="legend-colour" style="background:#9E9E9E"></span> No Delay
-    </div>
-  </div>
-
-  <div class="legend-section">
-    <h4>Traffic Management</h4>
-    <div id="tm-legend"></div>
-  </div>
-
-  <div class="legend-section">
-    <h4>Utility Provider</h4>
-    <div id="utility-legend"></div>
-  </div>
-</div>
-
-  <pre id="debug"></pre>
-
-  <!--⭐ Leaflet Core JS -->
+  <!-- Leaflet Core JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-  <!--⭐ Leaflet Geocoder JS -->
+  <!-- Leaflet Geocoder JS -->
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
-  <!--⭐ Leaflet MarkerCluster JS -->
+  <!-- Leaflet MarkerCluster JS -->
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
-  <!--⭐ Map + Geocoder -->
+  <!-- Map Setup -->
   <script>
     const map = L.map('map').setView([51.4, -0.7], 10);
 
@@ -228,7 +192,7 @@
     .addTo(map);
   </script>
 
-  <!--⭐ External JS -->
+  <!-- External JS -->
   <script src="script.js"></script>
 
 </body>

@@ -9,9 +9,9 @@ const dataUrl = "https://geojson-worker.jamesgreen-928.workers.dev";
 // ⭐ DEFAULT DATE FILTERS TO TODAY (UTC)
 const today = new Date();
 const utc = new Date(Date.UTC(
-  today.getUTCFullYear(),
+  today.getUTCDate(),
   today.getUTCMonth(),
-  today.getUTCDate()
+  today.getUTCFullyear()
 ));
 
 const formatted = utc.toISOString().split("T")[0];

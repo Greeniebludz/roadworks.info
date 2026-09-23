@@ -1,4 +1,4 @@
-const MAPTILER_KEY = "84APRuB9gcvyT3xzXkKa";
+const MAPTILER_KEY = "YOUR_KEY_HERE";
 
 // --- MAP SETUP ---
 const map = L.map("map").setView([51.4, -0.7], 10);
@@ -34,7 +34,13 @@ const light = L.tileLayer(
   { attribution: "&copy; MapTiler" }
 );
 
-// Traffic layers
+// ⭐ Traffic Base Map (required for traffic overlays)
+const trafficBase = L.tileLayer(
+  `https://api.maptiler.com/maps/traffic/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
+  { attribution: "&copy; MapTiler" }
+);
+
+// ⭐ Traffic overlays
 const trafficFlow = L.tileLayer(
   `https://api.maptiler.com/tiles/traffic/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
   { attribution: "&copy; MapTiler" }
@@ -71,6 +77,7 @@ map.addLayer(markers);
 L.control.layers(
   {
     "Streets": streets,
+    "Traffic Base": trafficBase,
     "Satellite": satellite,
     "Hybrid": hybrid,
     "Terrain": terrain,
@@ -78,10 +85,10 @@ L.control.layers(
     "Light": light
   },
   {
-    "Roadworks": markers,
-    "HA Boundaries": haBoundariesLayer,
     "Traffic Flow": trafficFlow,
-    "Traffic Incidents": trafficIncidents
+    "Traffic Incidents": trafficIncidents,
+    "Roadworks": markers,
+    "HA Boundaries": haBoundariesLayer
   }
 ).addTo(map);
 

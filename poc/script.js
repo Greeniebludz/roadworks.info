@@ -16,8 +16,14 @@ const utc = new Date(Date.UTC(
 
 const formatted = utc.toISOString().split("T")[0];
 
-document.getElementById("startDate").value = formatted;
-document.getElementById("endDate").value = formatted;
+window.onload = () => {
+  document.getElementById("startDate").value = formatted;
+  document.getElementById("endDate").value = formatted;
+
+  // ⭐ Immediately load today's works
+  loadData();
+};
+
 
 // ⭐ CLUSTER GROUP
 const markers = L.markerClusterGroup({

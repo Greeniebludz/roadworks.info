@@ -33,7 +33,6 @@
       gap: 10px;
       margin-bottom: 15px;
       align-items: center;
-      flex-wrap: wrap;
     }
 
     #map {
@@ -47,13 +46,12 @@
     }
 
     button {
-      padding: 8px 16px;
+      padding: 10px 20px;
       background: #00A651;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 14px;
     }
 
     button:hover {
@@ -84,16 +82,16 @@
 
     #gl-legend-header h3 {
       margin: 0;
-      font-size: 16px;
+      font-size: 14px;
     }
 
     #gl-legend-toggle {
-      padding: 4px 10px;
       font-size: 12px;
-      background: #eee;
-      color: #333;
+      padding: 4px 8px;
       border-radius: 4px;
       border: 1px solid #ccc;
+      background: #f4f4f4;
+      cursor: pointer;
     }
 
     .legend-section {
@@ -110,7 +108,6 @@
       display: flex;
       align-items: center;
       margin-bottom: 4px;
-      font-size: 13px;
     }
 
     .legend-colour {
@@ -121,16 +118,20 @@
       border: 1px solid #ccc;
     }
 
+    .legend-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 6px;
+    }
+
     #debug {
-      font-family: monospace;
-      font-size: 11px;
+      font-size: 12px;
       background: #111;
       color: #0f0;
       padding: 8px;
       height: 120px;
       overflow-y: auto;
-      border-radius: 6px;
-      white-space: pre;
+      white-space: pre-wrap;
     }
   </style>
 </head>
@@ -210,65 +211,10 @@
   <!-- Leaflet MarkerCluster JS -->
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
-  <!-- Load GoogleMutant BEFORE any googleMutant calls -->
+  <!-- GoogleMutant plugin -->
   <script src="https://unpkg.com/leaflet.gridlayer.googlemutant/Leaflet.GoogleMutant.js"></script>
 
-  <!-- Map Setup -->
-  <script>
-    // Create map
-    const map = L.map('map').setView([51.4, -0.7], 10);
-
-    // Base layer
-    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    // ⭐ GOOGLE TRAFFIC LAYER (plugin must be loaded above)
-    const googleTraffic = L.gridLayer.googleMutant({
-      type: "roadmap"
-    });
-    googleTraffic.addGoogleLayer("TrafficLayer");
-    // Don't add by default; let layer control handle it
-    // map.addLayer(googleTraffic); // optional
-
-    // ⭐ HA BOUNDARIES TEST LAYER (replace with real GeoJSON later)
-    const haBoundariesLayer = L.layerGroup();
-
-    const testPolygon = {
-      "type": "Feature",
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-0.9, 51.5],
-          [-0.7, 51.5],
-          [-0.7, 51.4],
-          [-0.9, 51.4],
-          [-0.9, 51.5]
-        ]]
-      }
-    };
-
-    L.geoJSON(testPolygon, {
-      style: { color: "#0057B8", weight: 2, fillOpacity: 0.1 }
-    }).addTo(haBoundariesLayer);
-
-    // Expose layers globally so script.js can attach them
-    window.map = map;
-    window.osm = osm;
-    window.googleTraffic = googleTraffic;
-    window.haBoundariesLayer = haBoundariesLayer;
-
-    // Geocoder
-    L.Control.geocoder({
-      defaultMarkGeocode: true
-    })
-    .on('markgeocode', function(e) {
-      map.fitBounds(e.geocode.bbox);
-    })
-    .addTo(map);
-  </script>
-
-  <!-- External JS -->
+  <!-- Your app logic -->
   <script src="script.js"></script>
 
 </body>

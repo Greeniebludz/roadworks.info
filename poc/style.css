@@ -50,3 +50,51 @@ button:hover {
   background: #333;
   border-radius: 50%;
 }
+#gl-legend {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-family: sans-serif;
+  font-size: 14px;
+  width: 180px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+#gl-legend h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.legend-section {
+  margin-bottom: 12px;
+}
+
+.legend-section h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.legend-colour {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  margin-right: 8px;
+  border: 1px solid #ccc;
+}
+
+.legend-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 6px;
+}

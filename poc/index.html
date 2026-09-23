@@ -120,12 +120,42 @@
 <div id="controls">
     <button id="loadDataBtn">Reload Data</button>
 
-  <select id="quickRange">
-  <option value="today">Today</option>
-  <option value="week">This Week</option>
-  <option value="month">This Month</option>
-</select>
+  function applyQuickRange(range) {
+  const now = new Date();
 
+  let start, end;
+
+  if (range === "today") {
+    start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  }
+
+  if (range === "week") {
+    const day = now.getDay(); // 0 = Sunday
+    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday start
+    start = new Date(now.getFullYear(), now.getMonth(), diff);
+    end = new Date(start);
+    end.setDate(start.getDate() + 6);
+  }
+
+  if (range === "month") {
+    start = new Date(now.getFullYear(), now.getMonth(), 1);
+    end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  }
+
+  // Internal filter format (yyyy-mm-dd)
+  const fmt = d => d.toISOString().split("T")[0];
+
+  // ⭐ Internal filter values (used by loadData)
+  window._filterStart = fmt(start);
+  window._filterEnd = fmt(end);
+
+  // ⭐ Update UI (browser will convert to dd/mm/yyyy automatically)
+  document.getElementById("startDate").value = fmt(start);
+  document.getElementById("endDate").value = fmt(end);
+
+  loadData();
+}
     <select id="statusFilter">
       <option value="">All Statuses</option>
       <option value="Works in progress">Works in progress</option>

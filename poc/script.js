@@ -1,67 +1,15 @@
-// ⭐ NEW — IMPORT TRIANGLE PIN SYSTEM
+// ⭐ IMPORTS
 import { TM_ICONS } from "./icons/tmIcons.js";
 import { UTILITY_ICONS } from "./icons/utilityIcons.js";
 import { buildPinSVG } from "./icons/buildPinSVG.js";
+
 const debug = document.getElementById("debug");
 const statusFilter = document.getElementById("statusFilter");
+const startDateInput = document.getElementById("startDate");
+const endDateInput = document.getElementById("endDate");
+const quickRange = document.getElementById("quickRange");
+
 const dataUrl = "https://geojson-worker.jamesgreen-928.workers.dev";
-
-function applyQuickRange(range) {
-  const now = new Date();
-
-  let start, end;
-
-  if (range === "today") {
-    start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  }
-
-  if (range === "week") {
-    const day = now.getDay(); // 0 = Sunday
-    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday start
-    start = new Date(now.getFullYear(), now.getMonth(), diff);
-    end = new Date(start);
-    end.setDate(start.getDate() + 6);
-  }
-
-  if (range === "month") {
-    start = new Date(now.getFullYear(), now.getMonth(), 1);
-    end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  }
-
-  // Internal filter format (yyyy-mm-dd)
-  const fmt = d => d.toISOString().split("T")[0];
-
-  // Set internal values
-  window._filterStart = fmt(start);
-  window._filterEnd = fmt(end);
-
-  // Update UI (browser will convert to dd/mm/yyyy automatically)
-  document.getElementById("startDate").value = fmt(start);
-  document.getElementById("endDate").value = fmt(end);
-
-  loadData();
-}
-
-
-// ⭐ DEFAULT DATE FILTERS TO TODAY (UTC)
-const today = new Date();
-const utc = new Date(Date.UTC(
-  today.getUTCDate(),
-  today.getUTCMonth(),
-  today.getUTCFullyear()
-));
-
-const formatted = utc.toISOString().split("T")[0];
-
-window.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("startDate").value = formatted;
-  document.getElementById("endDate").value = formatted;
-
-  // ⭐ Immediately load today's works
-  loadData();
-});
-
 
 // ⭐ CLUSTER GROUP
 const markers = L.markerClusterGroup({
@@ -135,103 +83,40 @@ function formatPopup(item) {
     </div>`;
 }
 
-// ⭐ OSGB → WGS84 CONVERTER
-function osgbToWgs84(easting, northing) {
-  const a = 6377563.396;
-  const b = 6356256.909;
-  const F0 = 0.9996012717;
-  const lat0 = 49 * Math.PI / 180;
-  const lon0 = -2 * Math.PI / 180;
-  const N0 = -100000;
-  const E0 = 400000;
-  const e2 = 1 - (b * b) / (a * a);
-  const n = (a - b) / (a + b);
-
-  let lat = lat0;
-  let M = 0;
-
-  do {
-    lat = (northing - N0 - M) / (a * F0) + lat;
-    const Ma = (1 + n + (5 / 4) * n * n + (5 / 4) * n * n * n) * (lat - lat0);
-    const Mb = (3 * n + 3 * n * n + (21 / 8) * n * n * n) * Math.sin(lat - lat0) * Math.cos(lat + lat0);
-    const Mc = ((15 / 8) * n * n + (15 / 8) * n * n * n) * Math.sin(2 * (lat - lat0)) * Math.cos(2 * (lat + lat0));
-    const Md = (35 / 24) * n * n * n * Math.sin(3 * (lat - lat0)) * Math.cos(3 * (lat + lat0));
-    M = b * F0 * (Ma - Mb + Mc - Md);
-  } while (northing - N0 - M >= 0.00001);
-
-  const sinLat = Math.sin(lat);
-  const cosLat = Math.cos(lat);
-  const nu = a * F0 / Math.sqrt(1 - e2 * sinLat * sinLat);
-  const rho = a * F0 * (1 - e2) / Math.pow(1 - e2 * sinLat * sinLat, 1.5);
-  const eta2 = nu / rho - 1;
-
-  const tanLat = Math.tan(lat);
-  const VII = tanLat / (2 * rho * nu);
-  const VIII = tanLat / (24 * rho * Math.pow(nu, 3)) * (5 + 3 * tanLat * tanLat + eta2 - 9 * tanLat * tanLat * eta2);
-  const IX = tanLat / (720 * rho * Math.pow(nu, 5)) * (61 + 90 * tanLat * tanLat + 45 * Math.pow(tanLat, 4));
-  const X = 1 / (cosLat * nu);
-  const XI = 1 / (6 * cosLat * Math.pow(nu, 3)) * (nu / rho + 2 * tanLat * tanLat);
-  const XII = 1 / (120 * cosLat * Math.pow(nu, 5)) * (5 + 28 * tanLat * tanLat + 24 * Math.pow(tanLat, 4));
-  const XIIA = 1 / (5040 * cosLat * Math.pow(nu, 7)) * (61 + 662 * tanLat * tanLat + 1320 * Math.pow(tanLat, 4) + 720 * Math.pow(tanLat, 6));
-
-  const dE = easting - E0;
-
-  const latRad = lat - VII * dE * dE + VIII * Math.pow(dE, 4) - IX * Math.pow(dE, 6);
-  const lonRad = lon0 + X * dE - XI * Math.pow(dE, 3) + XII * Math.pow(dE, 5) - XIIA * Math.pow(dE, 7);
-
-  return {
-    lat: latRad * 180 / Math.PI,
-    lon: lonRad * 180 / Math.PI
-  };
-}
-// ⭐ NEW — LEGEND POPULATOR
+// ⭐ LEGEND POPULATOR
 function addLegendIcons() {
   const tmLegend = document.getElementById("tm-legend");
   const utilityLegend = document.getElementById("utility-legend");
 
-  // Traffic Management Icons
   Object.entries(TM_ICONS).forEach(([key, svg]) => {
     const row = document.createElement("div");
     row.className = "legend-row";
-
     row.innerHTML = `
-      <span class="legend-icon">
-        <svg viewBox="0 0 16 16">${svg}</svg>
-      </span>
+      <span class="legend-icon"><svg viewBox="0 0 16 16">${svg}</svg></span>
       ${formatLabel(key)}
     `;
-
     tmLegend.appendChild(row);
   });
 
-  // Utility Icons
   Object.entries(UTILITY_ICONS).forEach(([key, svg]) => {
     const row = document.createElement("div");
     row.className = "legend-row";
-
     row.innerHTML = `
-      <span class="legend-icon">
-        <svg viewBox="0 0 16 16">${svg}</svg>
-      </span>
+      <span class="legend-icon"><svg viewBox="0 0 16 16">${svg}</svg></span>
       ${formatLabel(key)}
     `;
-
     utilityLegend.appendChild(row);
   });
 }
 
 function formatLabel(key) {
-  return key
-    .replace(/([A-Z])/g, " $1")
-    .replace(/^\w/, c => c.toUpperCase());
+  return key.replace(/([A-Z])/g, " $1").replace(/^\w/, c => c.toUpperCase());
 }
 
 // ⭐ SM → POC MAPPER
 function mapSMtoPOC(sm) {
-  // Always safe, even if object_data is missing
   const o = sm.object_data || {};
 
-  // Safely extract TM fields (always a string)
   const tmRaw =
     o.current_traffic_management_type_ref ||
     o.traffic_management_type_ref ||
@@ -240,7 +125,6 @@ function mapSMtoPOC(sm) {
 
   const tm = String(tmRaw).toLowerCase();
 
-  // Map TM → icon key
   let tmKey = "default";
   if (tm.includes("road_closure")) tmKey = "road_closure";
   else if (tm.includes("multi_way_signals")) tmKey = "multi_way_signals";
@@ -254,18 +138,49 @@ function mapSMtoPOC(sm) {
     status: o.work_status || "Unknown",
     start: o.actual_start_date_time || o.proposed_start_date,
     end: o.actual_end_date_time || o.proposed_end_date,
-
-    // These come from your GeoJSON Worker
     lat: sm.lat,
     lon: sm.lon,
-
     description: `${o.work_category || ""} — ${o.traffic_management_type || ""}`,
     usrn: o.usrn || null,
     tmKey
   };
 }
 
-// ⭐ LOAD DATA — FULLY FIXED VERSION
+// ⭐ QUICK RANGE FILTER
+function applyQuickRange(range) {
+  const now = new Date();
+  let start, end;
+
+  if (range === "today") {
+    start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  }
+
+  if (range === "week") {
+    const day = now.getDay();
+    const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+    start = new Date(now.getFullYear(), now.getMonth(), diff);
+    end = new Date(start);
+    end.setDate(start.getDate() + 6);
+  }
+
+  if (range === "month") {
+    start = new Date(now.getFullYear(), now.getMonth(), 1);
+    end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  }
+
+  const fmt = d => d.toISOString().split("T")[0];
+
+  window._filterStart = fmt(start);
+  window._filterEnd = fmt(end);
+
+  startDateInput.value = fmt(start);
+  endDateInput.value = fmt(end);
+
+  loadData();
+}
+
+// ⭐ LOAD DATA
 function loadData() {
   markers.clearLayers();
   debug.textContent = "Loading…";
@@ -273,8 +188,6 @@ function loadData() {
   fetch(dataUrl)
     .then(r => r.json())
     .then(raw => {
-
-      // ⭐ FIXED: Properly closed .map() call
       const items = raw.features.map(f =>
         mapSMtoPOC({
           ...f.properties,
@@ -282,55 +195,38 @@ function loadData() {
           lon: f.geometry.coordinates[0]
         })
       );
-      
+
       const startDate = window._filterStart;
       const endDate = window._filterEnd;
 
-
-      // ⭐ FIXED: Proper filter callback with return true
       const filtered = items.filter(i => {
         if (!i.lat || !i.lon) return false;
-
         if (statusFilter.value && i.status !== statusFilter.value) return false;
 
-        if (startDate) {
-          if (!i.start || new Date(i.start) < new Date(startDate)) return false;
-        }
+        const start = i.start ? new Date(i.start) : null;
+        const end = i.end ? new Date(i.end) : null;
 
-        if (endDate) {
-          if (!i.end || new Date(i.end) > new Date(endDate)) return false;
-        }
+        if (startDate && start && start < new Date(startDate)) return false;
+        if (endDate && end && end > new Date(endDate)) return false;
 
         return true;
       });
 
-    // ⭐ ADD MARKERS
-filtered.forEach(i => {
+      filtered.forEach(i => {
+        const svg = buildPinSVG({
+          severity: "medium",
+          tmType: i.tmKey,
+          utilityType: null
+        });
 
-  // ⭐ NEW — TRIANGLE PIN
-  const svg = buildPinSVG({
-    severity: "medium",        // TODO: map severity later
-    tmType: i.tmKey,           // your TM mapping already done
-    utilityType: null          // TODO: add utility mapping later
-  });
+        const icon = L.divIcon({
+          html: svg,
+          className: "gl-pin",
+          iconSize: [32, 32],
+          iconAnchor: [16, 26]
+        });
 
-  const icon = L.divIcon({
-    html: svg,
-    className: "gl-pin",
-    iconSize: [32, 32],
-    iconAnchor: [16, 26]
-  });
-
-  const m = L.marker([i.lat, i.lon], { icon });
-
-  m.tmIcon = iconSet[i.tmKey] || iconSet.default;
-  m.dotIcon = dotIcon;
-
-  m.bindPopup(formatPopup(i));
-  markers.addLayer(m);
-});
-
-
+        const m = L.marker([i.lat, i.lon], { icon });
 
         m.tmIcon = iconSet[i.tmKey] || iconSet.default;
         m.dotIcon = dotIcon;
@@ -371,11 +267,17 @@ map.on("zoomend", () => {
 // ⭐ EVENT LISTENERS
 document.getElementById("loadDataBtn").addEventListener("click", loadData);
 statusFilter.addEventListener("change", loadData);
-startDate.addEventListener("change", loadData);
-endDate.addEventListener("change", loadData);
+startDateInput.addEventListener("change", loadData);
+endDateInput.addEventListener("change", loadData);
 
-// ⭐ NEW — BUILD LEGEND
+quickRange.addEventListener("change", e => {
+  applyQuickRange(e.target.value);
+});
+
+// ⭐ LEGEND
 addLegendIcons();
 
-// ⭐ INITIAL LOAD
-loadData();
+// ⭐ INITIAL LOAD — TODAY
+window.addEventListener("DOMContentLoaded", () => {
+  applyQuickRange("today");
+});

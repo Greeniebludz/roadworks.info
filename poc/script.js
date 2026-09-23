@@ -36,7 +36,7 @@ const light = L.tileLayer(
 
 // Traffic layers
 const trafficFlow = L.tileLayer(
-  `https://api.maptiler.com/tiles/traffic/{z}/{x}/{y}.png?key=${84APRuB9gcvyT3xzXkKa}`,
+  `https://api.maptiler.com/tiles/traffic/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
   { attribution: "&copy; MapTiler" }
 );
 

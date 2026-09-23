@@ -1,4 +1,4 @@
-const MAPTILER_KEY = "YOUR_KEY";
+const MAPTILER_KEY = "84APRuB9gcvyT3xzXkKa";
 
 // --- MAP SETUP ---
 const map = L.map("map").setView([51.4, -0.7], 10);
@@ -36,7 +36,7 @@ const light = L.tileLayer(
 
 // Traffic layers
 const trafficFlow = L.tileLayer(
-  `https://api.maptiler.com/tiles/traffic/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
+  `https://api.maptiler.com/tiles/traffic/{z}/{x}/{y}.png?key=${84APRuB9gcvyT3xzXkKa}`,
   { attribution: "&copy; MapTiler" }
 );
 

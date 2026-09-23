@@ -19,7 +19,7 @@ function applyQuickRange(range) {
   if (range === "week") {
     const day = now.getDay(); // 0 = Sunday
     const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday start
-    start = new Date(now.setDate(diff));
+    start = new Date(now.getFullYear(), now.getMonth(), diff);
     end = new Date(start);
     end.setDate(start.getDate() + 6);
   }
@@ -29,14 +29,20 @@ function applyQuickRange(range) {
     end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
   }
 
-  // Format YYYY-MM-DD
+  // Internal filter format (yyyy-mm-dd)
   const fmt = d => d.toISOString().split("T")[0];
 
+  // Set internal values
+  window._filterStart = fmt(start);
+  window._filterEnd = fmt(end);
+
+  // Update UI (browser will convert to dd/mm/yyyy automatically)
   document.getElementById("startDate").value = fmt(start);
   document.getElementById("endDate").value = fmt(end);
 
   loadData();
 }
+
 
 // ⭐ DEFAULT DATE FILTERS TO TODAY (UTC)
 const today = new Date();
@@ -276,9 +282,10 @@ function loadData() {
           lon: f.geometry.coordinates[0]
         })
       );
+      
+      const startDate = window._filterStart;
+      const endDate = window._filterEnd;
 
-      const startDate = document.getElementById("startDate").value;
-      const endDate = document.getElementById("endDate").value;
 
       // ⭐ FIXED: Proper filter callback with return true
       const filtered = items.filter(i => {

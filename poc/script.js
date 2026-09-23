@@ -5,7 +5,11 @@ const debugEl = document.getElementById("debug");
 const markers = L.markerClusterGroup();
 
 // Attach to map immediately so layer control can see it
-window.map.addLayer(markers);
+if (window.map && typeof window.map.addLayer === "function") {
+  window.map.addLayer(markers);
+} else {
+  console.error("Map is not ready when script.js ran");
+}
 
 // --- LAYER CONTROL SETUP ---
 const baseLayers = {
@@ -20,7 +24,7 @@ const overlays = {
 
 L.control.layers(baseLayers, overlays).addTo(window.map);
 
-// --- LEGEND POPULATION (simple demo) ---
+// --- LEGEND POPULATION ---
 const tmLegendEl = document.getElementById("tm-legend");
 const utilityLegendEl = document.getElementById("utility-legend");
 
@@ -84,7 +88,6 @@ window._filterEnd = null;
 
 function applyQuickRange(range) {
   const now = new Date();
-
   let start, end;
 
   if (range === "today") {
@@ -135,11 +138,9 @@ function loadData() {
   // Clear existing markers
   markers.clearLayers();
 
-  // Example fetch – replace with your real Worker URL
   fetch(DATA_URL)
     .then(r => r.json())
     .then(geojson => {
-      // Filter by status / dates if your properties support it
       const features = geojson.features || [];
 
       const filtered = features.filter(f => {
@@ -148,12 +149,10 @@ function loadData() {
         const startDate = props.start_date || null;
         const endDate = props.end_date || null;
 
-        // Status filter
         if (statusFilterEl.value && status !== statusFilterEl.value) {
           return false;
         }
 
-        // Date filter (simple example; adjust to your schema)
         if (window._filterStart && startDate && startDate < window._filterStart) {
           return false;
         }
@@ -165,10 +164,7 @@ function loadData() {
       });
 
       const layer = L.geoJSON(filtered, {
-        pointToLayer: (feature, latlng) => {
-          // Simple marker; you can swap for custom SVG pins later
-          return L.marker(latlng);
-        },
+        pointToLayer: (feature, latlng) => L.marker(latlng),
         onEachFeature: (feature, layer) => {
           const p = feature.properties || {};
           const html = `

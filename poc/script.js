@@ -6,6 +6,19 @@ const debug = document.getElementById("debug");
 const statusFilter = document.getElementById("statusFilter");
 const dataUrl = "https://geojson-worker.jamesgreen-928.workers.dev";
 
+// ⭐ DEFAULT DATE FILTERS TO TODAY (UTC)
+const today = new Date();
+const utc = new Date(Date.UTC(
+  today.getUTCFullYear(),
+  today.getUTCMonth(),
+  today.getUTCDate()
+));
+
+const formatted = utc.toISOString().split("T")[0];
+
+document.getElementById("startDate").value = formatted;
+document.getElementById("endDate").value = formatted;
+
 // ⭐ CLUSTER GROUP
 const markers = L.markerClusterGroup({
   disableClusteringAtZoom: 11,

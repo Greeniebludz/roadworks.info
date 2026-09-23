@@ -6,6 +6,38 @@ const debug = document.getElementById("debug");
 const statusFilter = document.getElementById("statusFilter");
 const dataUrl = "https://geojson-worker.jamesgreen-928.workers.dev";
 
+function applyQuickRange(range) {
+  const now = new Date();
+
+  let start, end;
+
+  if (range === "today") {
+    start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  }
+
+  if (range === "week") {
+    const day = now.getDay(); // 0 = Sunday
+    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday start
+    start = new Date(now.setDate(diff));
+    end = new Date(start);
+    end.setDate(start.getDate() + 6);
+  }
+
+  if (range === "month") {
+    start = new Date(now.getFullYear(), now.getMonth(), 1);
+    end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  }
+
+  // Format YYYY-MM-DD
+  const fmt = d => d.toISOString().split("T")[0];
+
+  document.getElementById("startDate").value = fmt(start);
+  document.getElementById("endDate").value = fmt(end);
+
+  loadData();
+}
+
 // ⭐ DEFAULT DATE FILTERS TO TODAY (UTC)
 const today = new Date();
 const utc = new Date(Date.UTC(

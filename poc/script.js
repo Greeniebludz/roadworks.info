@@ -1,4 +1,4 @@
-const MAPTILER_KEY = "YOUR_KEY_HERE";
+const MAPTILER_KEY = "84APRuB9gcvyT3xzXkKa";
 
 // --- MAP SETUP ---
 const map = L.map("map").setView([51.4, -0.7], 10);

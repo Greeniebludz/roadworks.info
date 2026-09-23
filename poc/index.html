@@ -176,67 +176,63 @@
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
   <!-- Load GoogleMutant BEFORE map code -->
-<script src="https://unpkg.com/leaflet.gridlayer.googlemutant/Leaflet.GoogleMutant.js"></script>
-
-<script>
-  const map = L.map('map').setView([51.4, -0.7], 10);
-
-  // Base layer
-  const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
-
-  // ⭐ GOOGLE TRAFFIC LAYER
-  const googleTraffic = L.gridLayer.googleMutant({
-    type: "roadmap"
-  });
-
-  googleTraffic.addGoogleLayer("TrafficLayer");
-
-  // ⭐ HA BOUNDARIES LAYER
-  const haBoundariesLayer = L.layerGroup();
-
-  fetch("data/ha_boundaries.geojson")
-    .then(r => r.json())
-    .then(geo => {
-      L.geoJSON(geo, {
-        style: {
-          color: "#0057B8",
-          weight: 2,
-          fillOpacity: 0.1
-        }
-      }).addTo(haBoundariesLayer);
-    });
-
-  // ⭐ Add your overlays
-  const overlays = {
-    "Roadworks": markers,          // from script.js
-    "HA Boundaries": haBoundariesLayer,
-    "Google Traffic": googleTraffic
-  };
-
-  const baseLayers = {
-    "OpenStreetMap": osm
-  };
-
-  // ⭐ Layer control
-  L.control.layers(baseLayers, overlays).addTo(map);
-
-  // Geocoder
-  L.Control.geocoder({
-    defaultMarkGeocode: true
-  })
-  .on('markgeocode', function(e) {
-    map.fitBounds(e.geocode.bbox);
-  })
-  .addTo(map);
-</script>
-
-
-  <!-- External JS -->
   <script src="https://unpkg.com/leaflet.gridlayer.googlemutant/Leaflet.GoogleMutant.js"></script>
 
+  <!-- Map Setup -->
+  <script>
+    const map = L.map('map').setView([51.4, -0.7], 10);
+
+    // Base layer
+    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // ⭐ GOOGLE TRAFFIC LAYER
+    const googleTraffic = L.gridLayer.googleMutant({
+      type: "roadmap"
+    });
+    googleTraffic.addGoogleLayer("TrafficLayer");
+
+    // ⭐ HA BOUNDARIES TEST LAYER (replace with your real GeoJSON later)
+    const haBoundariesLayer = L.layerGroup();
+
+    const testPolygon = {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-0.9, 51.5],
+          [-0.7, 51.5],
+          [-0.7, 51.4],
+          [-0.9, 51.4],
+          [-0.9, 51.5]
+        ]]
+      }
+    };
+
+    L.geoJSON(testPolygon, {
+      style: { color: "#0057B8", weight: 2, fillOpacity: 0.1 }
+    }).addTo(haBoundariesLayer);
+
+    // ⭐ Expose layers globally so script.js can attach them
+    window.osm = osm;
+    window.googleTraffic = googleTraffic;
+    window.haBoundariesLayer = haBoundariesLayer;
+    window.map = map;
+
+    // Geocoder
+    L.Control.geocoder({
+      defaultMarkGeocode: true
+    })
+    .on('markgeocode', function(e) {
+      map.fitBounds(e.geocode.bbox);
+    })
+    .addTo(map);
+  </script>
+
+  <!-- External JS -->
   <script src="script.js"></script>
 
 </body>
 </html>
+

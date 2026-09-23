@@ -246,21 +246,32 @@ function loadData() {
         return true;
       });
 
-     // ⭐ NEW — TRIANGLE PIN
-const svg = buildPinSVG({
-  severity: "medium",        // TODO: map severity later
-  tmType: i.tmKey,           // your TM mapping already done
-  utilityType: null          // TODO: add utility mapping later
+    // ⭐ ADD MARKERS
+filtered.forEach(i => {
+
+  // ⭐ NEW — TRIANGLE PIN
+  const svg = buildPinSVG({
+    severity: "medium",        // TODO: map severity later
+    tmType: i.tmKey,           // your TM mapping already done
+    utilityType: null          // TODO: add utility mapping later
+  });
+
+  const icon = L.divIcon({
+    html: svg,
+    className: "gl-pin",
+    iconSize: [32, 32],
+    iconAnchor: [16, 26]
+  });
+
+  const m = L.marker([i.lat, i.lon], { icon });
+
+  m.tmIcon = iconSet[i.tmKey] || iconSet.default;
+  m.dotIcon = dotIcon;
+
+  m.bindPopup(formatPopup(i));
+  markers.addLayer(m);
 });
 
-const icon = L.divIcon({
-  html: svg,
-  className: "gl-pin",
-  iconSize: [32, 32],
-  iconAnchor: [16, 26]
-});
-
-const m = L.marker([i.lat, i.lon], { icon });
 
 
         m.tmIcon = iconSet[i.tmKey] || iconSet.default;

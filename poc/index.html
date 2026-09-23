@@ -47,12 +47,13 @@
     }
 
     button {
-      padding: 10px 20px;
+      padding: 8px 16px;
       background: #00A651;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      font-size: 14px;
     }
 
     button:hover {
@@ -78,25 +79,21 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      cursor: pointer;
+      margin-bottom: 8px;
     }
 
     #gl-legend-header h3 {
       margin: 0;
-      font-size: 15px;
+      font-size: 16px;
     }
 
     #gl-legend-toggle {
+      padding: 4px 10px;
       font-size: 12px;
-      color: #00A651;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      padding: 0;
-    }
-
-    #gl-legend-body {
-      margin-top: 10px;
+      background: #eee;
+      color: #333;
+      border-radius: 4px;
+      border: 1px solid #ccc;
     }
 
     .legend-section {
@@ -113,6 +110,7 @@
       display: flex;
       align-items: center;
       margin-bottom: 4px;
+      font-size: 13px;
     }
 
     .legend-colour {
@@ -123,20 +121,16 @@
       border: 1px solid #ccc;
     }
 
-    .legend-icon {
-      width: 24px;
-      height: 24px;
-      margin-right: 6px;
-    }
-
     #debug {
-      font-size: 12px;
-      background: #fff;
-      border-radius: 6px;
+      font-family: monospace;
+      font-size: 11px;
+      background: #111;
+      color: #0f0;
       padding: 8px;
-      border: 1px solid #ddd;
-      max-height: 150px;
-      overflow: auto;
+      height: 120px;
+      overflow-y: auto;
+      border-radius: 6px;
+      white-space: pre;
     }
   </style>
 </head>
@@ -154,7 +148,7 @@
     <select id="quickRange">
       <option value="today">Today</option>
       <option value="week">This Week</option>
-      <option value="month" selected>This Month</option>
+      <option value="month">This Month</option>
     </select>
 
     <select id="statusFilter">
@@ -216,11 +210,12 @@
   <!-- Leaflet MarkerCluster JS -->
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
-  <!-- GoogleMutant -->
+  <!-- Load GoogleMutant BEFORE any googleMutant calls -->
   <script src="https://unpkg.com/leaflet.gridlayer.googlemutant/Leaflet.GoogleMutant.js"></script>
 
-  <!-- Map Setup (base + layers, exposed globally) -->
+  <!-- Map Setup -->
   <script>
+    // Create map
     const map = L.map('map').setView([51.4, -0.7], 10);
 
     // Base layer
@@ -228,13 +223,15 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // GOOGLE TRAFFIC LAYER
+    // ⭐ GOOGLE TRAFFIC LAYER (plugin must be loaded above)
     const googleTraffic = L.gridLayer.googleMutant({
       type: "roadmap"
     });
     googleTraffic.addGoogleLayer("TrafficLayer");
+    // Don't add by default; let layer control handle it
+    // map.addLayer(googleTraffic); // optional
 
-    // HA BOUNDARIES TEST LAYER (replace with real GeoJSON later)
+    // ⭐ HA BOUNDARIES TEST LAYER (replace with real GeoJSON later)
     const haBoundariesLayer = L.layerGroup();
 
     const testPolygon = {
@@ -255,7 +252,7 @@
       style: { color: "#0057B8", weight: 2, fillOpacity: 0.1 }
     }).addTo(haBoundariesLayer);
 
-    // Expose globally for script.js
+    // Expose layers globally so script.js can attach them
     window.map = map;
     window.osm = osm;
     window.googleTraffic = googleTraffic;

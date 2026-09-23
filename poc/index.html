@@ -33,6 +33,7 @@
       gap: 10px;
       margin-bottom: 15px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     #map {
@@ -68,9 +69,34 @@
       border-radius: 8px;
       border: 1px solid #ddd;
       font-size: 14px;
-      width: 180px;
+      width: 220px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       z-index: 9999;
+    }
+
+    #gl-legend-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    #gl-legend-header h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    #gl-legend-toggle {
+      font-size: 12px;
+      color: #00A651;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    #gl-legend-body {
+      margin-top: 10px;
     }
 
     .legend-section {
@@ -102,6 +128,16 @@
       height: 24px;
       margin-right: 6px;
     }
+
+    #debug {
+      font-size: 12px;
+      background: #fff;
+      border-radius: 6px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      max-height: 150px;
+      overflow: auto;
+    }
   </style>
 </head>
 
@@ -118,7 +154,7 @@
     <select id="quickRange">
       <option value="today">Today</option>
       <option value="week">This Week</option>
-      <option value="month">This Month</option>
+      <option value="month" selected>This Month</option>
     </select>
 
     <select id="statusFilter">
@@ -134,32 +170,37 @@
   <!-- MAP -->
   <div id="map">
     <div id="gl-legend">
-      <h3>Legend</h3>
-
-      <div class="legend-section">
-        <h4>Delay Severity</h4>
-        <div class="legend-row">
-          <span class="legend-colour" style="background:#00C853"></span> Minimal
-        </div>
-        <div class="legend-row">
-          <span class="legend-colour" style="background:#FFB300"></span> Moderate
-        </div>
-        <div class="legend-row">
-          <span class="legend-colour" style="background:#D50000"></span> Severe
-        </div>
-        <div class="legend-row">
-          <span class="legend-colour" style="background:#9E9E9E"></span> No Delay
-        </div>
+      <div id="gl-legend-header">
+        <h3>Legend</h3>
+        <button id="gl-legend-toggle">Hide</button>
       </div>
 
-      <div class="legend-section">
-        <h4>Traffic Management</h4>
-        <div id="tm-legend"></div>
-      </div>
+      <div id="gl-legend-body">
+        <div class="legend-section">
+          <h4>Delay Severity</h4>
+          <div class="legend-row">
+            <span class="legend-colour" style="background:#00C853"></span> Minimal
+          </div>
+          <div class="legend-row">
+            <span class="legend-colour" style="background:#FFB300"></span> Moderate
+          </div>
+          <div class="legend-row">
+            <span class="legend-colour" style="background:#D50000"></span> Severe
+          </div>
+          <div class="legend-row">
+            <span class="legend-colour" style="background:#9E9E9E"></span> No Delay
+          </div>
+        </div>
 
-      <div class="legend-section">
-        <h4>Utility Provider</h4>
-        <div id="utility-legend"></div>
+        <div class="legend-section">
+          <h4>Traffic Management</h4>
+          <div id="tm-legend"></div>
+        </div>
+
+        <div class="legend-section">
+          <h4>Utility Provider</h4>
+          <div id="utility-legend"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -175,10 +216,10 @@
   <!-- Leaflet MarkerCluster JS -->
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
-  <!-- Load GoogleMutant BEFORE map code -->
+  <!-- GoogleMutant -->
   <script src="https://unpkg.com/leaflet.gridlayer.googlemutant/Leaflet.GoogleMutant.js"></script>
 
-  <!-- Map Setup -->
+  <!-- Map Setup (base + layers, exposed globally) -->
   <script>
     const map = L.map('map').setView([51.4, -0.7], 10);
 
@@ -187,13 +228,13 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // ⭐ GOOGLE TRAFFIC LAYER
+    // GOOGLE TRAFFIC LAYER
     const googleTraffic = L.gridLayer.googleMutant({
       type: "roadmap"
     });
     googleTraffic.addGoogleLayer("TrafficLayer");
 
-    // ⭐ HA BOUNDARIES TEST LAYER (replace with your real GeoJSON later)
+    // HA BOUNDARIES TEST LAYER (replace with real GeoJSON later)
     const haBoundariesLayer = L.layerGroup();
 
     const testPolygon = {
@@ -214,11 +255,11 @@
       style: { color: "#0057B8", weight: 2, fillOpacity: 0.1 }
     }).addTo(haBoundariesLayer);
 
-    // ⭐ Expose layers globally so script.js can attach them
+    // Expose globally for script.js
+    window.map = map;
     window.osm = osm;
     window.googleTraffic = googleTraffic;
     window.haBoundariesLayer = haBoundariesLayer;
-    window.map = map;
 
     // Geocoder
     L.Control.geocoder({
@@ -235,4 +276,3 @@
 
 </body>
 </html>
-

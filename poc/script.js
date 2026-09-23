@@ -16,13 +16,13 @@ const utc = new Date(Date.UTC(
 
 const formatted = utc.toISOString().split("T")[0];
 
-window.onload = () => {
+window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("startDate").value = formatted;
   document.getElementById("endDate").value = formatted;
 
   // ⭐ Immediately load today's works
   loadData();
-};
+});
 
 
 // ⭐ CLUSTER GROUP

@@ -1,3 +1,7 @@
+// ⭐ NEW — IMPORT TRIANGLE PIN SYSTEM
+import { TM_ICONS } from "./icons/tmIcons.js";
+import { UTILITY_ICONS } from "./icons/utilityIcons.js";
+import { buildPinSVG } from "./icons/buildPinSVG.js";
 const debug = document.getElementById("debug");
 const statusFilter = document.getElementById("statusFilter");
 const dataUrl = "https://geojson-worker.jamesgreen-928.workers.dev";
@@ -123,6 +127,47 @@ function osgbToWgs84(easting, northing) {
     lon: lonRad * 180 / Math.PI
   };
 }
+// ⭐ NEW — LEGEND POPULATOR
+function addLegendIcons() {
+  const tmLegend = document.getElementById("tm-legend");
+  const utilityLegend = document.getElementById("utility-legend");
+
+  // Traffic Management Icons
+  Object.entries(TM_ICONS).forEach(([key, svg]) => {
+    const row = document.createElement("div");
+    row.className = "legend-row";
+
+    row.innerHTML = `
+      <span class="legend-icon">
+        <svg viewBox="0 0 16 16">${svg}</svg>
+      </span>
+      ${formatLabel(key)}
+    `;
+
+    tmLegend.appendChild(row);
+  });
+
+  // Utility Icons
+  Object.entries(UTILITY_ICONS).forEach(([key, svg]) => {
+    const row = document.createElement("div");
+    row.className = "legend-row";
+
+    row.innerHTML = `
+      <span class="legend-icon">
+        <svg viewBox="0 0 16 16">${svg}</svg>
+      </span>
+      ${formatLabel(key)}
+    `;
+
+    utilityLegend.appendChild(row);
+  });
+}
+
+function formatLabel(key) {
+  return key
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^\w/, c => c.toUpperCase());
+}
 
 // ⭐ SM → POC MAPPER
 function mapSMtoPOC(sm) {
@@ -201,11 +246,22 @@ function loadData() {
         return true;
       });
 
-      // ⭐ ADD MARKERS
-      filtered.forEach(i => {
-        const m = L.marker([i.lat, i.lon], {
-          icon: dotIcon
-        });
+     // ⭐ NEW — TRIANGLE PIN
+const svg = buildPinSVG({
+  severity: "medium",        // TODO: map severity later
+  tmType: i.tmKey,           // your TM mapping already done
+  utilityType: null          // TODO: add utility mapping later
+});
+
+const icon = L.divIcon({
+  html: svg,
+  className: "gl-pin",
+  iconSize: [32, 32],
+  iconAnchor: [16, 26]
+});
+
+const m = L.marker([i.lat, i.lon], { icon });
+
 
         m.tmIcon = iconSet[i.tmKey] || iconSet.default;
         m.dotIcon = dotIcon;
@@ -248,6 +304,9 @@ document.getElementById("loadDataBtn").addEventListener("click", loadData);
 statusFilter.addEventListener("change", loadData);
 startDate.addEventListener("change", loadData);
 endDate.addEventListener("change", loadData);
+
+// ⭐ NEW — BUILD LEGEND
+addLegendIcons();
 
 // ⭐ INITIAL LOAD
 loadData();

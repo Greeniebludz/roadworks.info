@@ -83,20 +83,30 @@ function loadPins() {
         onEachFeature: (feature, layer) => {
           const p = feature.properties || {};
           layer.bindPopup(`
-            <strong>${p.street_name || "Unknown street"}</strong><br/>
-            ${p.town || ""}<br/>
-            <strong>Status:</strong> ${p.work_status || "Unknown"}<br/>
-            <strong>Promoter:</strong> ${p.promoter_organisation || "-"}<br/>
-            <strong>TM:</strong> ${p.traffic_management_type || "-"}<br/>
-            <strong>Start:</strong> ${p.proposed_start_date || "-"}<br/>
-            <strong>End:</strong> ${p.proposed_end_date || "-"}<br/>
-            <strong>Ref:</strong> ${p.work_reference_number || p.permit_reference_number || "-"}
-          `);
-        }
-      }).addTo(roadworksLayer);
-    })
-    .catch(err => console.error("Error loading pins:", err));
-}
+  <div style="font-size:14px; line-height:1.4;">
+    <strong style="font-size:16px;">${p.street_name || "Unknown street"}</strong><br/>
+    ${p.town || ""}<br/><br/>
+
+    <strong>Event:</strong> ${p.event_type || "-"}<br/>
+    <strong>Status:</strong> ${p.work_status || "-"}<br/>
+    <strong>Activity:</strong> ${p.activity_type || "-"}<br/>
+    <strong>Category:</strong> ${p.work_category || "-"}<br/>
+    <strong>TM Type:</strong> ${p.traffic_management_type || "-"}<br/>
+    <strong>Promoter:</strong> ${p.promoter_organisation || "-"}<br/>
+    <strong>Highway Authority:</strong> ${p.highway_authority || "-"}<br/><br/>
+
+    <strong>Start:</strong> ${p.proposed_start_date || p.actual_start_date_time || "-"}<br/>
+    <strong>End:</strong> ${p.proposed_end_date || p.actual_end_date_time || "-"}<br/><br/>
+
+    <strong>Work Ref:</strong> ${p.work_reference_number || "-"}<br/>
+    <strong>Permit Ref:</strong> ${p.permit_reference_number || "-"}<br/><br/>
+
+    <strong>Traffic Sensitive:</strong> ${p.is_traffic_sensitive || "-"}<br/>
+    <strong>TTRO Required:</strong> ${p.is_ttro_required || "-"}<br/>
+    <strong>Footway Closed:</strong> ${p.close_footway || "-"}<br/>
+  </div>
+`);
+
 
 loadPins();
 

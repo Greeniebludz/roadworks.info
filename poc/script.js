@@ -105,7 +105,7 @@ function loadPins() {
     <strong>TTRO Required:</strong> ${p.is_ttro_required || "-"}<br/>
     <strong>Footway Closed:</strong> ${p.close_footway || "-"}<br/>
   </div>
-`);
+);
 
 
 loadPins();

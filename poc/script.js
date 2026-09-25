@@ -61,7 +61,7 @@ fetch("https://xyzpxojfbjmnczqdbhxw.supabase.co/storage/v1/object/public/ha-boun
     L.geoJSON(geo, {
       style: {
         color: "#0057B8",
-        weight: 2,
+        weight: 10,
         fillOpacity: 0
       }
     }).addTo(haBoundariesLayer);

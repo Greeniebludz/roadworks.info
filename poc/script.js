@@ -96,7 +96,7 @@ const roadworksLayer = L.layerGroup();
 const DATA_URL = "https://sm-push-listener.jamesgreen-928.workers.dev/roadworks";
 
 function loadPins() {
-  fetch(https://getlatestpermit.jamesgreen-928.workers.dev/)
+  fetch("https://getlatestpermit.jamesgreen-928.workers.dev/")
     .then(r => r.json())
     .then(geojson => {
       const layer = L.geoJSON(geojson, {

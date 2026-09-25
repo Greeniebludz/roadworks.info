@@ -50,12 +50,14 @@ const trafficIncidents = L.tileLayer(
   { attribution: "&copy; MapTiler" }
 );
 
-// --- HA BOUNDARIES ---
+// --- HA BOUNDARIES + LABELS ---
 const haBoundariesLayer = L.layerGroup();
 
 fetch("https://xyzpxojfbjmnczqdbhxw.supabase.co/storage/v1/object/public/ha-boundaries/DABoundaries.json")
   .then(r => r.json())
   .then(geo => {
+
+    // Draw boundaries
     L.geoJSON(geo, {
       style: {
         color: "#0057B8",
@@ -63,6 +65,27 @@ fetch("https://xyzpxojfbjmnczqdbhxw.supabase.co/storage/v1/object/public/ha-boun
         fillOpacity: 0
       }
     }).addTo(haBoundariesLayer);
+
+    // Add labels INSIDE the same layer group
+    L.geoJSON(geo, {
+      onEachFeature: (feature, layer) => {
+        const name =
+          feature.properties?.name ||
+          feature.properties?.NAME ||
+          feature.properties?.district ||
+          "Unknown";
+
+        const centroid = layer.getBounds().getCenter();
+
+        L.marker(centroid, {
+          icon: L.divIcon({
+            className: "ha-label",
+            html: `<div>${name}</div>`
+          })
+        }).addTo(haBoundariesLayer);
+      }
+    });
+
   });
 
 haBoundariesLayer.addTo(map);

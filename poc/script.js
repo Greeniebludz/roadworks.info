@@ -51,20 +51,18 @@ const trafficIncidents = L.tileLayer(
 );
 
 // --- HA BOUNDARIES ---
-const haBoundariesLayer = L.layerGroup();
-L.geoJSON({
-  type: "Feature",
-  geometry: {
-    type: "Polygon",
-    coordinates: [[
-      [-0.9, 51.5],
-      [-0.7, 51.5],
-      [-0.7, 51.4],
-      [-0.9, 51.4],
-      [-0.9, 51.5]
-    ]]
-  }
-}, {
+fetch("https://xyzpxojfbjmnczqdbhxw.supabase.co/storage/v1/object/public/ha-boundaries/DABoundaries.json")
+  .then(r => r.json())
+  .then(geo => {
+    L.geoJSON(geo, {
+      style: {
+        color: "#0057B8",
+        weight: 2,
+        fillOpacity: 0
+      }
+    }).addTo(map);
+  });
+, {
   style: { color: "#0057B8", weight: 2, fillOpacity: 0.1 }
 }).addTo(haBoundariesLayer);
 

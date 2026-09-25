@@ -51,6 +51,8 @@ const trafficIncidents = L.tileLayer(
 );
 
 // --- HA BOUNDARIES ---
+const haBoundariesLayer = L.layerGroup();
+
 fetch("https://xyzpxojfbjmnczqdbhxw.supabase.co/storage/v1/object/public/ha-boundaries/DABoundaries.json")
   .then(r => r.json())
   .then(geo => {
@@ -60,16 +62,14 @@ fetch("https://xyzpxojfbjmnczqdbhxw.supabase.co/storage/v1/object/public/ha-boun
         weight: 2,
         fillOpacity: 0
       }
-    }).addTo(map);
+    }).addTo(haBoundariesLayer);
   });
-, {
-  style: { color: "#0057B8", weight: 2, fillOpacity: 0.1 }
-}).addTo(haBoundariesLayer);
+
+haBoundariesLayer.addTo(map);
 
 // --- ROADWORKS PINS ---
 const roadworksLayer = L.layerGroup();
 
-// Load pins
 const DATA_URL = "https://sm-push-listener.jamesgreen-928.workers.dev/roadworks";
 
 function loadPins() {

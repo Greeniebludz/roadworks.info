@@ -7,7 +7,10 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19
 }).addTo(map);
 
-// --- LOAD ROADWORKS FROM YOUR NEW MAP WORKER ---
+// --- PIN LAYER HOLDER ---
+let pinsLayer = null;
+
+// --- LOAD ROADWORKS ---
 async function loadRoadworks() {
   try {
     const res = await fetch("https://roadworks.info/roadworks");
@@ -15,11 +18,16 @@ async function loadRoadworks() {
 
     console.log("Loaded features:", geo.features.length);
 
-    const layer = L.geoJSON(geo, {
+    // Remove old layer
+    if (pinsLayer) {
+      map.removeLayer(pinsLayer);
+    }
+
+    // Create new layer
+    pinsLayer = L.geoJSON(geo, {
       pointToLayer: (feature, latlng) => L.marker(latlng),
       onEachFeature: (feature, layer) => {
         const p = feature.properties || {};
-
         layer.bindPopup(`
           <div style="font-size:14px; line-height:1.4; padding:4px;">
             <strong>Promoter:</strong> ${p.promoter_organisation || "-"}<br/>
@@ -33,10 +41,9 @@ async function loadRoadworks() {
       }
     });
 
-    layer.addTo(map);
-
-    if (layer.getLayers().length > 0) {
-      map.fitBounds(layer.getBounds(), { padding: [50, 50] });
+    // Only show pins if zoomed in enough
+    if (map.getZoom() >= 10) {
+      pinsLayer.addTo(map);
     }
 
   } catch (err) {
@@ -44,8 +51,21 @@ async function loadRoadworks() {
   }
 }
 
-// Initial load
+// --- ZOOM GATE ---
+map.on("zoomend", () => {
+  if (!pinsLayer) return;
+
+  const zoom = map.getZoom();
+
+  if (zoom < 10) {
+    map.removeLayer(pinsLayer);   // hide pins
+  } else {
+    pinsLayer.addTo(map);         // show pins
+  }
+});
+
+// --- INITIAL LOAD ---
 loadRoadworks();
 
-// Refresh every 15 seconds
+// --- REFRESH EVERY 15 SECONDS ---
 setInterval(loadRoadworks, 15000);

@@ -89,7 +89,6 @@ haBoundariesLayer.addTo(map);
 // --- ROADWORKS PINS ---
 const roadworksLayer = L.layerGroup();
 
-const PERMIT = "UE500100698480_15";
 const DATA_URL = `https://getlatestpermit.jamesgreen-928.workers.dev/roadworks?permit=${PERMIT}`;
 
 async function loadPins() {

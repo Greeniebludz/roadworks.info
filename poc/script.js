@@ -50,14 +50,12 @@ const trafficIncidents = L.tileLayer(
   { attribution: "&copy; MapTiler" }
 );
 
-// --- HA BOUNDARIES + LABELS ---
+// --- HA BOUNDARIES ---
 const haBoundariesLayer = L.layerGroup();
 
 fetch("https://xyzpxojfbjmnczqdbhxw.supabase.co/storage/v1/object/public/ha-boundaries/DABoundaries.json")
   .then(r => r.json())
   .then(geo => {
-
-    // Draw boundaries
     L.geoJSON(geo, {
       style: {
         color: "#0057B8",
@@ -66,7 +64,6 @@ fetch("https://xyzpxojfbjmnczqdbhxw.supabase.co/storage/v1/object/public/ha-boun
       }
     }).addTo(haBoundariesLayer);
 
-    // Add labels INSIDE the same layer group
     L.geoJSON(geo, {
       onEachFeature: (feature, layer) => {
         const name =
@@ -85,7 +82,6 @@ fetch("https://xyzpxojfbjmnczqdbhxw.supabase.co/storage/v1/object/public/ha-boun
         }).addTo(haBoundariesLayer);
       }
     });
-
   });
 
 haBoundariesLayer.addTo(map);
@@ -93,47 +89,57 @@ haBoundariesLayer.addTo(map);
 // --- ROADWORKS PINS ---
 const roadworksLayer = L.layerGroup();
 
-const DATA_URL = "https://getlatestpermit.jamesgreen-928.workers.dev/";
+const PERMIT = "UE500100698480_15";
+const DATA_URL = `https://getlatestpermit.jamesgreen-928.workers.dev/roadworks?permit=${PERMIT}`;
 
-function loadPins() {
-  fetch("https://getlatestpermit.jamesgreen-928.workers.dev/")
-    .then(r => r.json())
-    .then(geojson => {
-      const layer = L.geoJSON(geojson, {
-        pointToLayer: (feature, latlng) => L.marker(latlng),
-        onEachFeature: (feature, layer) => {
-          const p = feature.properties || {};
-          layer.bindPopup(`
-            <div style="font-size:14px; line-height:1.4;">
-              <strong style="font-size:16px;">${p.street_name || "Unknown street"}</strong><br/>
-              ${p.town || ""}<br/><br/>
+async function loadPins() {
+  try {
+    const response = await fetch(DATA_URL);
+    const geojson = await response.json();
 
-              <strong>Event:</strong> ${p.event_type || "-"}<br/>
-              <strong>Status:</strong> ${p.work_status || "-"}<br/>
-              <strong>Activity:</strong> ${p.activity_type || "-"}<br/>
-              <strong>Category:</strong> ${p.work_category || "-"}<br/>
-              <strong>TM Type:</strong> ${p.traffic_management_type || "-"}<br/>
-              <strong>Promoter:</strong> ${p.promoter_organisation || "-"}<br/>
-              <strong>Highway Authority:</strong> ${p.highway_authority || "-"}<br/><br/>
+    if (!geojson || !geojson.features) {
+      console.error("Invalid GeoJSON:", geojson);
+      return;
+    }
 
-              <strong>Start:</strong> ${p.proposed_start_date || p.actual_start_date_time || "-"}<br/>
-              <strong>End:</strong> ${p.proposed_end_date || p.actual_end_date_time || "-"}<br/><br/>
+    const layer = L.geoJSON(geojson, {
+      pointToLayer: (feature, latlng) => L.marker(latlng),
+      onEachFeature: (feature, layer) => {
+        const p = feature.properties || {};
 
-              <strong>Work Ref:</strong> ${p.work_reference_number || "-"}<br/>
-              <strong>Permit Ref:</strong> ${p.permit_reference_number || "-"}<br/><br/>
+        layer.bindPopup(`
+          <div style="font-size:14px; line-height:1.4;">
+            <strong style="font-size:16px;">${p.street_name || "Unknown street"}</strong><br/>
+            ${p.town || ""}<br/><br/>
 
-              <strong>Traffic Sensitive:</strong> ${p.is_traffic_sensitive || "-"}<br/>
-              <strong>TTRO Required:</strong> ${p.is_ttro_required || "-"}<br/>
-              <strong>Footway Closed:</strong> ${p.close_footway || "-"}<br/>
-            </div>
-          `);
-        }
-      });
+            <strong>Event:</strong> ${p.event_type || "-"}<br/>
+            <strong>Status:</strong> ${p.work_status || "-"}<br/>
+            <strong>Activity:</strong> ${p.activity_type || "-"}<br/>
+            <strong>Category:</strong> ${p.work_category || "-"}<br/>
+            <strong>TM Type:</strong> ${p.traffic_management_type || "-"}<br/>
+            <strong>Promoter:</strong> ${p.promoter_organisation || "-"}<br/>
+            <strong>Highway Authority:</strong> ${p.highway_authority || "-"}<br/><br/>
 
-      roadworksLayer.clearLayers();
-      roadworksLayer.addLayer(layer);
-    })
-    .catch(err => console.error("Error loading pins:", err));
+            <strong>Start:</strong> ${p.proposed_start_date || p.actual_start_date_time || "-"}<br/>
+            <strong>End:</strong> ${p.proposed_end_date || p.actual_end_date_time || "-"}<br/><br/>
+
+            <strong>Work Ref:</strong> ${p.work_reference_number || "-"}<br/>
+            <strong>Permit Ref:</strong> ${p.permit_reference_number || "-"}<br/><br/>
+
+            <strong>Traffic Sensitive:</strong> ${p.is_traffic_sensitive || "-"}<br/>
+            <strong>TTRO Required:</strong> ${p.is_ttro_required || "-"}<br/>
+            <strong>Footway Closed:</strong> ${p.close_footway || "-"}<br/>
+          </div>
+        `);
+      }
+    });
+
+    roadworksLayer.clearLayers();
+    roadworksLayer.addLayer(layer);
+
+  } catch (err) {
+    console.error("Error loading pins:", err);
+  }
 }
 
 loadPins();

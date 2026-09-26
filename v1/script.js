@@ -16,28 +16,26 @@ async function loadPins() {
 
     console.log("Loaded features:", geo.features.length);
 
-    const layer = L.geoJSON(geo, {
-      pointToLayer: (feature, latlng) => L.marker(latlng),
-      onEachFeature: (feature, layer) => {
- layer.bindPopup(`
-  <div style="font-size:14px; line-height:1.4; padding:4px;">
-    <strong style="font-size:16px;">${p.street_name || "Unknown street"}</strong><br/>
-    ${p.town || ""}<br/><br/>
+const layer = L.geoJSON(geo, {
+  pointToLayer: (feature, latlng) => L.marker(latlng),
+  onEachFeature: (feature, layer) => {
+    const p = feature.properties || {};
 
-    <strong>${p.event_type || "-"}</strong> • ${p.work_status || "-"}<br/>
-    <strong>TM:</strong> ${p.traffic_management_type || "-"}<br/>
-    <strong>Promoter:</strong> ${p.promoter_organisation || "-"}<br/><br/>
+    layer.bindPopup(`
+      <div style="font-size:14px; line-height:1.4; padding:4px;">
+        <strong>Promoter:</strong> ${p.promoter_organisation || "-"}<br/>
+        <strong>TM:</strong> ${p.traffic_management_type || "-"}<br/>
+        <strong>Permit Ref:</strong> ${p.permit_reference_number || "-"}<br/>
+        <strong>Event Status:</strong> ${p.work_status || p.event_type || "-"}<br/>
+        <strong>Proposed Start:</strong> ${p.proposed_start_date || "-"}<br/>
+        <strong>Proposed End:</strong> ${p.proposed_end_date || "-"}
+      </div>
+    `);
+  }
+});
 
-    <strong>Start:</strong> ${p.proposed_start_date || p.actual_start_date_time || "-"}<br/>
-    <strong>End:</strong> ${p.proposed_end_date || p.actual_end_date_time || "-"}<br/><br/>
+layer.addTo(map);   // ✔ CORRECT PLACE
 
-    <strong>Work Ref:</strong> ${p.work_reference_number || "-"}<br/>
-    <strong>Permit Ref:</strong> ${p.permit_reference_number || "-"}
-  </div>
-`);
-
-
-    layer.addTo(map);
 
     if (layer.getLayers().length > 0) {
       map.fitBounds(layer.getBounds(), { padding: [50, 50] });

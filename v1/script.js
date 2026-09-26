@@ -29,15 +29,27 @@ async function loadRoadworks() {
       onEachFeature: (feature, layer) => {
         const p = feature.properties || {};
         layer.bindPopup(`
-          <div style="font-size:14px; line-height:1.4; padding:4px;">
-            <strong>Promoter:</strong> ${p.promoter_organisation || "-"}<br/>
-            <strong>TM:</strong> ${p.traffic_management_type || "-"}<br/>
-            <strong>Permit Ref:</strong> ${p.permit_reference_number || "-"}<br/>
-            <strong>Status:</strong> ${p.permit_status || p.work_status || "-"}<br/>
-            <strong>Start:</strong> ${p.proposed_start_date || "-"}<br/>
-            <strong>End:</strong> ${p.proposed_end_date || "-"}
-          </div>
-        `);
+  <div style="
+    font-size:14px;
+    line-height:1.5;
+    padding:6px 4px;
+    font-family:Arial, sans-serif;
+  ">
+    <div style="font-weight:bold; font-size:16px; margin-bottom:4px;">
+      ${p.permit_status || p.work_status || "Unknown Status"}
+    </div>
+
+    <div><strong>Promoter:</strong> ${p.promoter_organisation || "Not provided"}</div>
+    <div><strong>Traffic Management:</strong> ${p.traffic_management_type || "Not provided"}</div>
+    <div><strong>Permit Ref:</strong> ${p.permit_reference_number || "Not provided"}</div>
+
+    <hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />
+
+    <div><strong>Start:</strong> ${p.proposed_start_date || "Not set"}</div>
+    <div><strong>End:</strong> ${p.proposed_end_date || "Not set"}</div>
+  </div>
+`);
+
       }
     });
 

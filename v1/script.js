@@ -25,33 +25,35 @@ async function loadRoadworks() {
 
     // Create new layer
     pinsLayer = L.geoJSON(geo, {
-      pointToLayer: (feature, latlng) => L.marker(latlng),
-      onEachFeature: (feature, layer) => {
-        const p = feature.properties || {};
-        layer.bindPopup(`
-  <div style="
-    font-size:14px;
-    line-height:1.5;
-    padding:6px 4px;
-    font-family:Arial, sans-serif;
-  ">
-    <div style="font-weight:bold; font-size:16px; margin-bottom:4px;">
-      ${p.permit_status || p.work_status || "Unknown Status"}
-    </div>
+  pointToLayer: (feature, latlng) => L.marker(latlng),
+  onEachFeature: (feature, layer) => {
+    const p = feature.properties || {};
 
-    <div><strong>Promoter:</strong> ${p.promoter_organisation || "Not provided"}</div>
-    <div><strong>Traffic Management:</strong> ${p.traffic_management_type || "Not provided"}</div>
-    <div><strong>Permit Ref:</strong> ${p.permit_reference_number || "Not provided"}</div>
+    const promoter = p.promoter_organisation ? `<div><strong>Promoter:</strong> ${p.promoter_organisation}</div>` : "";
+    const tm = p.traffic_management_type ? `<div><strong>Traffic Management:</strong> ${p.traffic_management_type}</div>` : "";
+    const permitRef = p.permit_reference_number ? `<div><strong>Permit Ref:</strong> ${p.permit_reference_number}</div>` : "";
+    const start = p.proposed_start_date ? `<div><strong>Start:</strong> ${p.proposed_start_date}</div>` : "";
+    const end = p.proposed_end_date ? `<div><strong>End:</strong> ${p.proposed_end_date}</div>` : "";
 
-    <hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />
+    layer.bindPopup(`
+      <div style="font-size:14px; line-height:1.5; padding:6px;">
+        <div style="font-weight:bold; font-size:16px; margin-bottom:6px;">
+          ${p.permit_status || p.work_status || p.event_type || "Event"}
+        </div>
 
-    <div><strong>Start:</strong> ${p.proposed_start_date || "Not set"}</div>
-    <div><strong>End:</strong> ${p.proposed_end_date || "Not set"}</div>
-  </div>
-`);
+        ${promoter}
+        ${tm}
+        ${permitRef}
 
-      }
-    });
+        ${(start || end) ? `<hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />` : ""}
+
+        ${start}
+        ${end}
+      </div>
+    `);
+  }
+});
+
 
     // Only show pins if zoomed in enough
     if (map.getZoom() >= 10) {

@@ -93,7 +93,7 @@ haBoundariesLayer.addTo(map);
 // --- ROADWORKS PINS ---
 const roadworksLayer = L.layerGroup();
 
-const DATA_URL = "https://sm-push-listener.jamesgreen-928.workers.dev/roadworks";
+const DATA_URL = "https://getlatestpermit.jamesgreen-928.workers.dev/";
 
 function loadPins() {
   fetch("https://getlatestpermit.jamesgreen-928.workers.dev/")

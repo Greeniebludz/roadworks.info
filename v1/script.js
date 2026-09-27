@@ -1,6 +1,11 @@
 // --- BASIC MAP ---
 const map = L.map('map').setView([51.5, -0.1], 12);
 
+// --- SEARCH BOX ---
+L.Control.geocoder({
+  defaultMarkGeocode: true
+}).addTo(map);
+
 // Tile layer
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19

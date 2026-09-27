@@ -45,33 +45,39 @@ onEachFeature: (feature, layer) => {
   const permitStatus = p.work_status ? `<div><strong>work_status:</strong> ${p.work_status}</div>` : "";
   const locationType = p.works_location_type ? `<div><strong>Location Type:</strong> ${p.works_location_type}</div>` : "";
 
-  layer.bindPopup(`
-    <div style="font-size:14px; line-height:1.5; padding:6px;">
-      <div style="font-weight:bold; font-size:16px; margin-bottom:6px;">
-        ${p.permit_status || p.work_status || p.event_type || "Event"}
-      </div>
+const title = `
+  <div style="font-weight:bold; font-size:16px; margin-bottom:6px;">
+    ${p.activity_type || "Roadworks"}
+    ${p.work_status ? ` – ${p.work_status}` : ""}
+  </div>
+`;
 
-      ${promoter}
-      ${tm}
-      ${permitRef}
+layer.bindPopup(`
+  <div style="font-size:14px; line-height:1.5; padding:6px;">
+    ${title}
 
-      ${street}
-      ${town}
-      ${ha}
+    ${promoter}
+    ${tm}
+    ${permitRef}
 
-      ${activity}
-      ${workCat}
-      ${roadCat}
-      ${locationType}
+    ${street}
+    ${town}
+    ${ha}
 
-      ${permitStatus}
+    ${activity}
+    ${workCat}
+    ${roadCat}
+    ${locationType}
 
-      ${(start || end) ? `<hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />` : ""}
+    ${permitStatus}
 
-      ${start}
-      ${end}
-    </div>
-  `);
+    ${(start || end) ? `<hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />` : ""}
+
+    ${start}
+    ${end}
+  </div>
+`);
+
 }
     });
 

@@ -42,7 +42,7 @@ onEachFeature: (feature, layer) => {
   const activity = p.activity_type ? `<div><strong>Activity:</strong> ${p.activity_type}</div>` : "";
   const workCat = p.work_category ? `<div><strong>Work Category:</strong> ${p.work_category}</div>` : "";
   const roadCat = p.road_category ? `<div><strong>Road Category:</strong> ${p.road_category}</div>` : "";
-  const conditions = p.permit_conditions ? `<div><strong>Conditions:</strong> ${p.permit_conditions}</div>` : "";
+  const permitStatus = p.work_status ? `<div><strong>Conditions:</strong> ${p.work_status}</div>` : "";
   const locationType = p.works_location_type ? `<div><strong>Location Type:</strong> ${p.works_location_type}</div>` : "";
 
   layer.bindPopup(`

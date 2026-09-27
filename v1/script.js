@@ -25,32 +25,54 @@ async function loadRoadworks() {
     // Create new layer
     pinsLayer = L.geoJSON(geo, {
       pointToLayer: (feature, latlng) => L.marker(latlng),
-      onEachFeature: (feature, layer) => {
-        const p = feature.properties || {};
+onEachFeature: (feature, layer) => {
+  const p = feature.properties || {};
 
-        const promoter = p.promoter_organisation ? `<div><strong>Promoter:</strong> ${p.promoter_organisation}</div>` : "";
-        const tm = p.traffic_management_type ? `<div><strong>Traffic Management:</strong> ${p.traffic_management_type}</div>` : "";
-        const permitRef = p.permit_reference_number ? `<div><strong>Permit Ref:</strong> ${p.permit_reference_number}</div>` : "";
-        const start = p.proposed_start_date ? `<div><strong>Start:</strong> ${p.proposed_start_date}</div>` : "";
-        const end = p.proposed_end_date ? `<div><strong>End:</strong> ${p.proposed_end_date}</div>` : "";
+  // Existing fields
+  const promoter = p.promoter_organisation ? `<div><strong>Promoter:</strong> ${p.promoter_organisation}</div>` : "";
+  const tm = p.traffic_management_type ? `<div><strong>Traffic Management:</strong> ${p.traffic_management_type}</div>` : "";
+  const permitRef = p.permit_reference_number ? `<div><strong>Permit Ref:</strong> ${p.permit_reference_number}</div>` : "";
+  const start = p.proposed_start_date ? `<div><strong>Start:</strong> ${p.proposed_start_date}</div>` : "";
+  const end = p.proposed_end_date ? `<div><strong>End:</strong> ${p.proposed_end_date}</div>` : "";
 
-        layer.bindPopup(`
-          <div style="font-size:14px; line-height:1.5; padding:6px;">
-            <div style="font-weight:bold; font-size:16px; margin-bottom:6px;">
-              ${p.permit_status || p.work_status || p.event_type || "Event"}
-            </div>
+  // ⭐ NEW FIELDS
+  const street = p.street_name ? `<div><strong>Street:</strong> ${p.street_name}</div>` : "";
+  const town = p.town ? `<div><strong>Town:</strong> ${p.town}</div>` : "";
+  const ha = p.highway_authority ? `<div><strong>Highway Authority:</strong> ${p.highway_authority}</div>` : "";
+  const activity = p.activity_type ? `<div><strong>Activity:</strong> ${p.activity_type}</div>` : "";
+  const workCat = p.work_category ? `<div><strong>Work Category:</strong> ${p.work_category}</div>` : "";
+  const roadCat = p.road_category ? `<div><strong>Road Category:</strong> ${p.road_category}</div>` : "";
+  const conditions = p.permit_conditions ? `<div><strong>Conditions:</strong> ${p.permit_conditions}</div>` : "";
+  const locationType = p.works_location_type ? `<div><strong>Location Type:</strong> ${p.works_location_type}</div>` : "";
 
-            ${promoter}
-            ${tm}
-            ${permitRef}
+  layer.bindPopup(`
+    <div style="font-size:14px; line-height:1.5; padding:6px;">
+      <div style="font-weight:bold; font-size:16px; margin-bottom:6px;">
+        ${p.permit_status || p.work_status || p.event_type || "Event"}
+      </div>
 
-            ${(start || end) ? `<hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />` : ""}
+      ${promoter}
+      ${tm}
+      ${permitRef}
 
-            ${start}
-            ${end}
-          </div>
-        `);
-      }
+      ${street}
+      ${town}
+      ${ha}
+
+      ${activity}
+      ${workCat}
+      ${roadCat}
+      ${locationType}
+
+      ${conditions}
+
+      ${(start || end) ? `<hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />` : ""}
+
+      ${start}
+      ${end}
+    </div>
+  `);
+}
     });
 
     // Only show pins if zoomed in enough

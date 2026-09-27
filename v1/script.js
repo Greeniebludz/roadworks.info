@@ -64,7 +64,7 @@ onEachFeature: (feature, layer) => {
       ${roadCat}
       ${locationType}
 
-      ${work_status}
+      ${permitStatus}
 
       ${(start || end) ? `<hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />` : ""}
 

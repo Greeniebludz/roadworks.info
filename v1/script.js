@@ -54,27 +54,50 @@ const title = `
 
 layer.bindPopup(`
   <div style="font-size:14px; line-height:1.5; padding:6px;">
-    ${title}
 
-    ${promoter}
-    ${tm}
-    ${permitRef}
+    <!-- HEADER -->
+    <div style="font-weight:bold; font-size:16px; margin-bottom:6px;">
+      ${p.promoter_organisation || "Unknown Promoter"}
+    </div>
 
-    ${street}
-    ${town}
-    ${ha}
+    <!-- TITLE -->
+    <div style="font-size:15px; font-weight:bold;">
+      ${p.traffic_management_type || "Traffic Management"}
+      <span style="color:#0077cc; font-size:12px;">(what does this mean?)</span>
+    </div>
 
-    ${activity}
-    ${workCat}
-    ${roadCat}
-    ${locationType}
+    <!-- SUB TEXT -->
+    <div style="margin-top:4px;">
+      ${p.works_location_type ? `<div><strong>Location Type:</strong> ${p.works_location_type}</div>` : ""}
+      ${p.work_category ? `<div><strong>Work Category:</strong> ${p.work_category} <span style="color:#0077cc; font-size:12px;">(info)</span></div>` : ""}
+    </div>
 
-    ${permitStatus}
+    <hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />
 
-    ${(start || end) ? `<hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />` : ""}
+    <!-- DATES -->
+    <div>
+      ${p.proposed_start_date ? `<div><strong>Start:</strong> ${new Date(p.proposed_start_date).toLocaleString()}</div>` : ""}
+      ${p.proposed_end_date ? `<div><strong>End:</strong> ${new Date(p.proposed_end_date).toLocaleString()}</div>` : ""}
+    </div>
 
-    ${start}
-    ${end}
+    <hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />
+
+    <!-- LOCATION -->
+    <div>
+      ${p.street_name ? `<div><strong>Street:</strong> ${p.street_name}</div>` : ""}
+      ${p.town ? `<div><strong>Town:</strong> ${p.town}</div>` : ""}
+      ${p.highway_authority ? `<div><strong>Highway Authority:</strong> ${p.highway_authority}</div>` : ""}
+    </div>
+
+    <hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />
+
+    <!-- PERMIT DETAILS -->
+    <div>
+      ${p.permit_reference_number ? `<div><strong>Permit Ref:</strong> ${p.permit_reference_number}</div>` : ""}
+      ${p.permit_status ? `<div><strong>Permit Status:</strong> ${p.permit_status}</div>` : ""}
+      ${p.work_status ? `<div><strong>Work Status:</strong> ${p.work_status}</div>` : ""}
+    </div>
+
   </div>
 `);
 

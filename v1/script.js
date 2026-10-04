@@ -1,6 +1,17 @@
 // --- BASIC MAP ---
 const map = L.map('map').setView([51.5, -0.1], 12);
 
+fetch("/events")   // or whatever your Worker route is
+  .then(res => res.json())
+  .then(events => {
+    events.forEach(ev => {
+      if (ev.geometry_json) {
+        L.geoJSON(ev.geometry_json).addTo(map);
+      }
+    });
+  });
+
+
 // --- SEARCH BOX ---
 L.Control.geocoder({
   defaultMarkGeocode: true

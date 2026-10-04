@@ -1,7 +1,7 @@
 // --- BASIC MAP ---
 const map = L.map('map').setView([51.5, -0.1], 12);
 
-fetch("/events")   // or whatever your Worker route is
+fetch("https://event-processor-v03.jamesgreen-928.workers.dev/")   // or whatever your Worker route is
   .then(res => res.json())
   .then(events => {
     events.forEach(ev => {

@@ -5,7 +5,7 @@ fetch("https://event-processor-v03.jamesgreen-928.workers.dev/")   // or whateve
   .then(res => res.json())
   .then(events => {
     events.forEach(ev => {
-      if (ev.geometry_json) {
+      if (ev.geometry_wgs84) {
         L.geoJSON(ev.geometry_wgs84).addTo(map);
       }
     });

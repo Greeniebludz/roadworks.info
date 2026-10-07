@@ -69,7 +69,7 @@ async function fetchVisibleRoadworks() {
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
-    multi_way_signals: L.icon({
+    multiway_signals: L.icon({
       iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
       shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
@@ -118,7 +118,7 @@ async function fetchVisibleRoadworks() {
       }
 
       const tm = feature.properties?.traffic_management_type || "";
-      const key = tm.toLowerCase().replace(/\s+/g, "_").trim;
+      const key = tm.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace.replace(/_+/g, "_").replace.replace(/^_+|_+$/g, "");
       const icon = iconSet[key] || iconSet.default;
 
       return L.marker(latlng, { icon });
@@ -164,7 +164,7 @@ async function fetchVisibleRoadworks() {
       `);
 
       const tm = p.traffic_management_type || "";
-        const key = tm.toLowerCase().replace(/\s+/g, "_").trim();
+        const key = tm.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace.replace(/_+/g, "_").replace.replace(/^_+|_+$/g, "")
         const icon = iconSet[key] || iconSet.default;
       
       // --- ADD PIN FOR LINESTRING ---
@@ -185,7 +185,7 @@ async function fetchVisibleRoadworks() {
         const centroid = layer.getBounds().getCenter();
 
         const tm = p.traffic_management_type || "";
-        const key = tm.toLowerCase().replace(/\s+/g, "_").trim();
+        const key = tm.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace.replace(/_+/g, "_").replace.replace(/^_+|_+$/g, "")
         const icon = iconSet[key] || iconSet.default;
 
         L.marker(centroid, { icon })

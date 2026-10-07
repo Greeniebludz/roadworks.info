@@ -4,7 +4,7 @@ const map = L.map('map').setView([51.5, -0.1], 12);
 fetch("https://event-processor-v03.jamesgreen-928.workers.dev/")   // or whatever your Worker route is
   .then(res => res.json())
   .then(events => {
-    events.forEach(ev => {
+    events.features.forEach(ev => {
       if (ev.geometry_wgs84) {
         L.geoJSON(ev.geometry_wgs84).addTo(map);
       }

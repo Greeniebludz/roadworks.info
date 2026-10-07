@@ -64,57 +64,75 @@ async function fetchVisibleRoadworks() {
   // --- TM ICON SET ---
   const iconSet = {
     road_closure: L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+      shadowUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
     multiway_signals: L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
-      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
+      shadowUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
     "multi-way signals": L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
-      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
+      shadowUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
     two_way_signals: L.icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
-  shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-}),
-"two-way signals": L.icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
-  shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-}),
+      iconUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+      shadowUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
+    "two-way signals": L.icon({
+      iconUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+      shadowUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
 
     stop_go_boards: L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
-      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
+      shadowUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
     give_take: L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
-      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+      shadowUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
     lane_closure: L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png",
-      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png",
+      shadowUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
     default: L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png",
-      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png",
+      shadowUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
@@ -176,20 +194,18 @@ async function fetchVisibleRoadworks() {
       `);
 
       const tm = p.traffic_management_type || "";
-        const key = tm.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace.replace(/_+/g, "_").replace.replace(/^_+|_+$/g, "")
-        const icon = iconSet[key] || iconSet.default;
-      
+      const key = tm.toLowerCase();
+
+      const icon = iconSet[key] || iconSet.default;
+
       // --- ADD PIN FOR LINESTRING ---
       if (geom.type === "LineString") {
         const coords = geom.coordinates;
         const midpoint = coords[Math.floor(coords.length / 2)];
         const latlng = L.latLng(midpoint[1], midpoint[0]);
-const key = tm.toLowerCase();
-        
+        const key = tm.toLowerCase();
 
-        L.marker(latlng, { icon })
-          .bindPopup(layer.getPopup())
-          .addTo(map);
+        L.marker(latlng, { icon }).bindPopup(layer.getPopup()).addTo(map);
       }
 
       // --- ADD PIN FOR POLYGON ---
@@ -200,9 +216,7 @@ const key = tm.toLowerCase();
         const key = tm.toLowerCase();
         const icon = iconSet[key] || iconSet.default;
 
-        L.marker(centroid, { icon })
-          .bindPopup(layer.getPopup())
-          .addTo(map);
+        L.marker(centroid, { icon }).bindPopup(layer.getPopup()).addTo(map);
       }
     },
   }).addTo(map);

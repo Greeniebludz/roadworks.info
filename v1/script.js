@@ -58,6 +58,52 @@ async function fetchVisibleRoadworks() {
     map.removeLayer(pinsLayer);
   }
 
+// ⭐ DOT ICON
+const dotIcon = L.divIcon({
+  className: "dot-icon",
+  iconSize: [8, 8]
+});
+
+// ⭐ TM ICON SET
+const iconSet = {
+  road_closure: L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  }),
+  multi_way_signals: L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
+    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  }),
+  stop_go_boards: L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
+    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  }),
+  give_take: L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  }),
+  lane_closure: L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png',
+    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  }),
+  default: L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
+    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  })
+};
+
   // Add new layer
   pinsLayer = L.geoJSON(geojson, {
     pointToLayer: (feature, latlng) => L.marker(latlng),

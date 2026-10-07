@@ -84,7 +84,7 @@ async function fetchVisibleRoadworks() {
     </div>
 <hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />
 
-!-- DATES -->
+<!-- DATES -->
     <div>
       ${p.proposed_start_date ? `<div><strong>Start:</strong> ${new Date(p.proposed_start_date).toLocaleString()}</div>` : ""}
       ${p.proposed_end_date ? `<div><strong>End:</strong> ${new Date(p.proposed_end_date).toLocaleString()}</div>` : ""}

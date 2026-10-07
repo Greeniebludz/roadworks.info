@@ -130,7 +130,7 @@ async function fetchVisibleRoadworks() {
       }
 
       const tm = feature.properties?.traffic_management_type || "";
-      const key = tm.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace.replace(/_+/g, "_").replace.replace(/^_+|_+$/g, "");
+      const key = tm.toLowerCase();
       const icon = iconSet[key] || iconSet.default;
 
       return L.marker(latlng, { icon });
@@ -184,7 +184,7 @@ async function fetchVisibleRoadworks() {
         const coords = geom.coordinates;
         const midpoint = coords[Math.floor(coords.length / 2)];
         const latlng = L.latLng(midpoint[1], midpoint[0]);
-
+const key = tm.toLowerCase();
         
 
         L.marker(latlng, { icon })
@@ -197,7 +197,7 @@ async function fetchVisibleRoadworks() {
         const centroid = layer.getBounds().getCenter();
 
         const tm = p.traffic_management_type || "";
-        const key = tm.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace.replace(/_+/g, "_").replace.replace(/^_+|_+$/g, "")
+        const key = tm.toLowerCase();
         const icon = iconSet[key] || iconSet.default;
 
         L.marker(centroid, { icon })

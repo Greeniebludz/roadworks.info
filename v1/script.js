@@ -75,6 +75,13 @@ async function fetchVisibleRoadworks() {
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
+    two_way_signals: L.icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+  shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+}),
+
     stop_go_boards: L.icon({
       iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
       shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
@@ -157,7 +164,7 @@ async function fetchVisibleRoadworks() {
       `);
 
       const tm = p.traffic_management_type || "";
-        const key = tm.toLowerCase().replace(/\s+/g, "_");
+        const key = tm.toLowerCase().replace(/\s+/g, "_").trim();
         const icon = iconSet[key] || iconSet.default;
       
       // --- ADD PIN FOR LINESTRING ---

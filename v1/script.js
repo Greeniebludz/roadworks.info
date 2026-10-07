@@ -118,7 +118,7 @@ async function fetchVisibleRoadworks() {
       }
 
       const tm = feature.properties?.traffic_management_type || "";
-      const key = tm.toLowerCase().replace(/\s+/g, "_");
+      const key = tm.toLowerCase().replace(/\s+/g, "_").trim;
       const icon = iconSet[key] || iconSet.default;
 
       return L.marker(latlng, { icon });
@@ -185,7 +185,7 @@ async function fetchVisibleRoadworks() {
         const centroid = layer.getBounds().getCenter();
 
         const tm = p.traffic_management_type || "";
-        const key = tm.toLowerCase().replace(/\s+/g, "_");
+        const key = tm.toLowerCase().replace(/\s+/g, "_").trim();
         const icon = iconSet[key] || iconSet.default;
 
         L.marker(centroid, { icon })

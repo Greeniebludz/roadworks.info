@@ -32,10 +32,9 @@ async function safeFetchJSON(url) {
 
 // --- FETCH ONLY VISIBLE AREA (with anti-flicker) ---
 async function fetchVisibleRoadworks() {
-  const requestId = ++latestRequestId;   // mark this request as newest
+  const requestId = ++latestRequestId;
 
   const bounds = map.getBounds();
-
   const minLon = bounds.getWest();
   const minLat = bounds.getSouth();
   const maxLon = bounds.getEast();
@@ -45,7 +44,6 @@ async function fetchVisibleRoadworks() {
 
   const geojson = await safeFetchJSON(url);
 
-  // If a newer request has started, ignore this one
   if (requestId !== latestRequestId) {
     console.log("Ignoring stale response", requestId);
     return;
@@ -53,107 +51,108 @@ async function fetchVisibleRoadworks() {
 
   console.log("Loaded features:", geojson.features.length);
 
-  // Remove old layer
   if (pinsLayer) {
     map.removeLayer(pinsLayer);
   }
 
-// ⭐ DOT ICON
-const dotIcon = L.divIcon({
-  className: "dot-icon",
-  iconSize: [8, 8]
-});
+  // --- DOT ICON ---
+  const dotIcon = L.divIcon({
+    className: "dot-icon",
+    iconSize: [8, 8]
+  });
 
-// ⭐ TM ICON SET
-const iconSet = {
-  road_closure: L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  }),
-  multi_way_signals: L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
-    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  }),
-  stop_go_boards: L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
-    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  }),
-  give_take: L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
-    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  }),
-  lane_closure: L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png',
-    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  }),
-  default: L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
-    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  })
-};
+  // --- TM ICON SET ---
+  const iconSet = {
+    road_closure: L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+      shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41]
+    }),
+    multi_way_signals: L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
+      shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41]
+    }),
+    stop_go_boards: L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
+      shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41]
+    }),
+    give_take: L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+      shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41]
+    }),
+    lane_closure: L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png',
+      shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41]
+    }),
+    default: L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
+      shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41]
+    })
+  };
 
-  // Add new layer
+  // --- ADD NEW LAYER ---
   pinsLayer = L.geoJSON(geojson, {
-    pointToLayer: (feature, latlng) => L.marker(latlng),
+    pointToLayer: (feature, latlng) => {
+      const zoom = map.getZoom();
+
+      if (zoom < 14) {
+        return L.marker(latlng, { icon: dotIcon });
+      }
+
+      const tm = feature.properties?.traffic_management_type || "";
+      const key = tm.toLowerCase().replace(/\s+/g, "_");
+      const icon = iconSet[key] || iconSet.default;
+
+      return L.marker(latlng, { icon });
+    },
+
     onEachFeature: (feature, layer) => {
       const p = feature.properties || {};
 
-         layer.bindPopup(`
+      layer.bindPopup(`
         <div style="font-size:14px; line-height:1.5; padding:6px;">
-            <!-- HEADER -->
           <div style="font-weight:bold; font-size:16px; margin-bottom:6px;">
             ${p.promoter_organisation || "Unknown Promoter"}
           </div>
 
-           <!-- TITLE -->
-    <div style="font-size:15px; font-weight:bold;">
-      ${p.traffic_management_type || "Traffic Management"}
-      <span style="color:#0077cc; font-size:12px;">(what does this mean?)</span>
-    </div>
-    
-  <!-- SUB TEXT -->
-<div style="margin-top:4px;"></div>
-  ${p.works_location_type ? `<div><strong>Location Type:</strong> ${p.works_location_type}</div>` : ""}
-      ${p.work_category ? `<div><strong>Work Category:</strong> ${p.work_category} <span style="color:#0077cc; font-size:12px;">(info)</span></div>` : ""}
-    </div>
-<hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />
+          <div style="font-size:15px; font-weight:bold;">
+            ${p.traffic_management_type || "Traffic Management"}
+            <span style="color:#0077cc; font-size:12px;">(what does this mean?)</span>
+          </div>
 
-<!-- DATES -->
-    <div>
-      ${p.proposed_start_date ? `<div><strong>Start:</strong> ${new Date(p.proposed_start_date).toLocaleString()}</div>` : ""}
-      ${p.proposed_end_date ? `<div><strong>End:</strong> ${new Date(p.proposed_end_date).toLocaleString()}</div>` : ""}
-    </div>
+          <div style="margin-top:4px;"></div>
+          ${p.works_location_type ? `<div><strong>Location Type:</strong> ${p.works_location_type}</div>` : ""}
+          ${p.work_category ? `<div><strong>Work Category:</strong> ${p.work_category} <span style="color:#0077cc; font-size:12px;">(info)</span></div>` : ""}
 
-    <hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />
+          <hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />
 
-    <!-- LOCATION -->
-    <div>
-      ${p.street_name ? `<div><strong>Street:</strong> ${p.street_name}</div>` : ""}
-      ${p.town ? `<div><strong>Town:</strong> ${p.town}</div>` : ""}
-      ${p.highway_authority ? `<div><strong>Highway Authority:</strong> ${p.highway_authority}</div>` : ""}
-    </div>
+          ${p.proposed_start_date ? `<div><strong>Start:</strong> ${new Date(p.proposed_start_date).toLocaleString()}</div>` : ""}
+          ${p.proposed_end_date ? `<div><strong>End:</strong> ${new Date(p.proposed_end_date).toLocaleString()}</div>` : ""}
 
-    <hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />
+          <hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />
 
-    <!-- PERMIT DETAILS -->
-     <div>
-      ${p.permit_reference_number ? `<div><strong>Permit Ref:</strong> ${p.permit_reference_number}</div>` : ""}
-      ${p.permit_status ? `<div><strong>Permit Status:</strong> ${p.permit_status}</div>` : ""}
-      ${p.work_status ? `<div><strong>Work Status:</strong> ${p.work_status}</div>` : ""}
-    </div>
-            `);
+          ${p.street_name ? `<div><strong>Street:</strong> ${p.street_name}</div>` : ""}
+          ${p.town ? `<div><strong>Town:</strong> ${p.town}</div>` : ""}
+          ${p.highway_authority ? `<div><strong>Highway Authority:</strong> ${p.highway_authority}</div>` : ""}
+
+          <hr style="margin:8px 0; border:none; border-top:1px solid #ccc;" />
+
+          ${p.permit_reference_number ? `<div><strong>Permit Ref:</strong> ${p.permit_reference_number}</div>` : ""}
+          ${p.permit_status ? `<div><strong>Permit Status:</strong> ${p.permit_status}</div>` : ""}
+          ${p.work_status ? `<div><strong>Work Status:</strong> ${p.work_status}</div>` : ""}
+        </div>
+      `);
     }
   }).addTo(map);
 }

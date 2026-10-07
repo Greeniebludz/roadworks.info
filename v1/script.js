@@ -156,15 +156,17 @@ async function fetchVisibleRoadworks() {
         </div>
       `);
 
+      const tm = p.traffic_management_type || "";
+        const key = tm.toLowerCase().replace(/\s+/g, "_");
+        const icon = iconSet[key] || iconSet.default;
+      
       // --- ADD PIN FOR LINESTRING ---
       if (geom.type === "LineString") {
         const coords = geom.coordinates;
         const midpoint = coords[Math.floor(coords.length / 2)];
         const latlng = L.latLng(midpoint[1], midpoint[0]);
 
-        const tm = p.traffic_management_type || "";
-        const key = tm.toLowerCase().replace(/\s+/g, "_");
-        const icon = iconSet[key] || iconSet.default;
+        
 
         L.marker(latlng, { icon })
           .bindPopup(layer.getPopup())

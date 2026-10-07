@@ -14,6 +14,19 @@ L.Control.geocoder({
 // --- PIN LAYER HOLDER ---
 let pinsLayer = null;
 
+// --- SAFE JSON FETCH ---
+async function safeFetchJSON(url) {
+  const res = await fetch(url);
+  const text = await res.text();
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    console.error("Invalid JSON from Worker:", text);
+    return { type: "FeatureCollection", features: [] };
+  }
+}
+
 // --- FETCH ONLY VISIBLE AREA ---
 async function fetchVisibleRoadworks() {
   const bounds = map.getBounds();
@@ -25,8 +38,7 @@ async function fetchVisibleRoadworks() {
 
   const url = `https://roadworks.info/roadworks?minLon=${minLon}&minLat=${minLat}&maxLon=${maxLon}&maxLat=${maxLat}`;
 
-  const res = await fetch(url);
-  const geojson = await res.json();
+  const geojson = await safeFetchJSON(url);
 
   console.log("Loaded features:", geojson.features.length);
 

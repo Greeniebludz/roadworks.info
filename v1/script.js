@@ -71,6 +71,14 @@ async function fetchVisibleRoadworks() {
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
+    "road closure": L.icon({
+      iconUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+      shadowUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
     multiway_signals: L.icon({
       iconUrl:
         "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
@@ -112,7 +120,7 @@ async function fetchVisibleRoadworks() {
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
-    give_take: L.icon({
+    "some carriageway incursion": L.icon({
       iconUrl:
         "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
       shadowUrl:
@@ -120,7 +128,15 @@ async function fetchVisibleRoadworks() {
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
-    lane_closure: L.icon({
+    "give and take": L.icon({
+      iconUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+      shadowUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
+    "lane closure": L.icon({
       iconUrl:
         "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png",
       shadowUrl:
@@ -143,7 +159,7 @@ async function fetchVisibleRoadworks() {
     pointToLayer: (feature, latlng) => {
       const zoom = map.getZoom();
 
-      if (zoom < 14) {
+      if (zoom < 16) {
         return L.marker(latlng, { icon: dotIcon });
       }
 

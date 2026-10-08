@@ -73,9 +73,73 @@ async function fetchVisibleRoadworks() {
     iconSize: [8, 8],
   });
 
-  const iconSet = {
-    road_closure: L.icon({ iconUrl: "...red.png", shadowUrl: "...shadow.png", iconSize: [25,41], iconAnchor: [12,41] }),
-    default: L.icon({ iconUrl: "...grey.png", shadowUrl: "...shadow.png", iconSize: [25,41], iconAnchor: [12,41] })
+   const iconSet = {
+    road_closure: L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
+    "road closure": L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
+
+    multiway_signals: L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
+      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
+    "multi-way signals": L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
+      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
+
+    two_way_signals: L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
+    "two-way signals": L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
+
+    stop_go_boards: L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
+      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
+
+    "give and take": L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
+
+    "lane closure": L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png",
+      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
+
+    default: L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png",
+      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
   };
 
   // --- GEOJSON LAYER ---
@@ -111,15 +175,48 @@ async function fetchVisibleRoadworks() {
         const p = feature.properties || {};
 
         layer.on("click", () => {
-          const panel = document.getElementById("infoPanel");
-          panel.classList.remove("hidden");
-          panel.innerHTML = `
-            <h2>${p.promoter_organisation || "Unknown Promoter"}</h2>
-            <p>${p.traffic_management_type || "Traffic Management"}</p>
-            ${p.proposed_start_date ? `<p><strong>Start:</strong> ${new Date(p.proposed_start_date).toLocaleString()}</p>` : ""}
-            ${p.proposed_end_date ? `<p><strong>End:</strong> ${new Date(p.proposed_end_date).toLocaleString()}</p>` : ""}
-          `;
-        });
+  const panel = document.getElementById("infoPanel");
+  panel.classList.remove("hidden");
+
+  const friendlyStart = p.proposed_start_date
+    ? new Date(p.proposed_start_date).toLocaleString()
+    : null;
+
+  const friendlyEnd = p.proposed_end_date
+    ? new Date(p.proposed_end_date).toLocaleString()
+    : null;
+
+  panel.innerHTML = `
+    <h2>${p.promoter_organisation || "Unknown Promoter"}</h2>
+
+    <h3 style="margin-top:4px;">
+      ${p.traffic_management_type || "Traffic Management"}
+      <span style="color:#888; font-size:12px;">(what does this mean?)</span>
+    </h3>
+
+    <p>
+      ${locationType || ""}
+      ${workCat ? `<br/><strong>Work Category:</strong> ${p.work_category} <span style="color:#888; font-size:12px;">(what does this mean?)</span>` : ""}
+    </p>
+
+    <hr/>
+
+    ${friendlyStart ? `<p><strong>Start:</strong> ${friendlyStart}</p>` : ""}
+    ${friendlyEnd ? `<p><strong>End:</strong> ${friendlyEnd}</p>` : ""}
+
+    <hr/>
+
+    ${street}
+    ${town}
+    ${ha}
+
+    <hr/>
+
+    ${permitRef}
+    ${permitStatus}
+    ${p.work_status ? `<div><strong>Work Status:</strong> ${p.work_status}</div>` : ""}
+  `;
+});
       }
     }
   ).addTo(map);

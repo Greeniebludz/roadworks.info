@@ -230,7 +230,7 @@ async function fetchVisibleRoadworks() {
 
           L.marker(latlng, { icon })
             .bindPopup(layer.getPopup())
-            .addTo(pinsLayer);
+            .addTo(map);
         }
 
         if (geom && geom.type === "Polygon") {
@@ -246,7 +246,7 @@ async function fetchVisibleRoadworks() {
 
             L.marker(latlng, { icon })
               .bindPopup(layer.getPopup())
-              .addTo(pinsLayer);
+              .addTo(map);
           }
         }
       }

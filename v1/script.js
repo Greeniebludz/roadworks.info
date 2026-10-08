@@ -273,5 +273,54 @@ document.getElementById("showExtents").addEventListener("change", fetchVisibleRo
 map.on("moveend", fetchVisibleRoadworks);
 map.on("zoomend", fetchVisibleRoadworks);
 
+// --- DEFAULT DATE = TODAY ---
+function setDefaultToday() {
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("filterStart").value = today;
+  document.getElementById("filterEnd").value = today;
+}
+setDefaultToday();
+
+// --- QUICK DATE PRESETS ---
+function applyQuickRange(type) {
+  const today = new Date();
+  let start, end;
+
+  if (type === "last14") {
+    start = new Date(today.getTime() - 14 * 86400000);
+    end = today;
+  }
+
+  if (type === "today") {
+    start = today;
+    end = today;
+  }
+
+  if (type === "next7") {
+    start = today;
+    end = new Date(today.getTime() + 7 * 86400000);
+  }
+
+  if (type === "next30") {
+    start = today;
+    end = new Date(today.getTime() + 30 * 86400000);
+  }
+
+  const fmt = d => d.toISOString().split("T")[0];
+
+  document.getElementById("filterStart").value = fmt(start);
+  document.getElementById("filterEnd").value = fmt(end);
+
+  fetchVisibleRoadworks();
+}
+
+// --- QUICK BUTTON EVENTS ---
+document.querySelectorAll("#quickButtons button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    applyQuickRange(btn.dataset.range);
+  });
+});
+
+
 // --- INITIAL LOAD ---
 fetchVisibleRoadworks();

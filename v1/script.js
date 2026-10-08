@@ -82,7 +82,7 @@ async function fetchVisibleRoadworks() {
     }),
     "road closure": L.icon({
       iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png",
-      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow-red.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
@@ -264,6 +264,7 @@ async function fetchVisibleRoadworks() {
 document.getElementById("layersButton").addEventListener("click", () => {
   document.getElementById("layersPanel").classList.toggle("hidden");
 });
+document.getElementById("applyDateFilter").addEventListener("click", fetchVisibleRoadworks);
 
 // --- EXTENTS TOGGLE ---
 document.getElementById("showExtents").addEventListener("change", fetchVisibleRoadworks);

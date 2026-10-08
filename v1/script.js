@@ -178,6 +178,36 @@ async function fetchVisibleRoadworks() {
   const panel = document.getElementById("infoPanel");
   panel.classList.remove("hidden");
 
+  const p = feature.properties || {};
+
+  const locationType = p.works_location_type
+    ? `<div><strong>Location Type:</strong> ${p.works_location_type}</div>`
+    : "";
+
+  const workCat = p.work_category
+    ? `<div><strong>Work Category:</strong> ${p.work_category}</div>`
+    : "";
+
+  const street = p.street_name
+    ? `<div><strong>Street:</strong> ${p.street_name}</div>`
+    : "";
+
+  const town = p.town
+    ? `<div><strong>Town:</strong> ${p.town}</div>`
+    : "";
+
+  const ha = p.highway_authority
+    ? `<div><strong>Highway Authority:</strong> ${p.highway_authority}</div>`
+    : "";
+
+  const permitRef = p.permit_reference_number
+    ? `<div><strong>Permit Ref:</strong> ${p.permit_reference_number}</div>`
+    : "";
+
+  const permitStatus = p.permit_status
+    ? `<div><strong>Permit Status:</strong> ${p.permit_status}</div>`
+    : "";
+
   const friendlyStart = p.proposed_start_date
     ? new Date(p.proposed_start_date).toLocaleString()
     : null;
@@ -195,8 +225,8 @@ async function fetchVisibleRoadworks() {
     </h3>
 
     <p>
-      ${locationType || ""}
-      ${workCat ? `<br/><strong>Work Category:</strong> ${p.work_category} <span style="color:#888; font-size:12px;">(what does this mean?)</span>` : ""}
+      ${locationType}
+      ${workCat ? `${workCat} <span style="color:#888; font-size:12px;">(what does this mean?)</span>` : ""}
     </p>
 
     <hr/>
@@ -217,6 +247,7 @@ async function fetchVisibleRoadworks() {
     ${p.work_status ? `<div><strong>Work Status:</strong> ${p.work_status}</div>` : ""}
   `;
 });
+
       }
     }
   ).addTo(map);

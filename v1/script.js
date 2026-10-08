@@ -199,21 +199,57 @@ async function fetchVisibleRoadworks() {
       },
 
       onEachFeature: (feature, layer) => {
-        const p = feature.properties || {};
+  const p = feature.properties || {};
+  const geom = feature.geometry;
 
-        layer.bindPopup(`
-          <div style="font-size:14px; line-height:1.5; padding:6px;">
-            <div style="font-weight:bold; font-size:16px; margin-bottom:6px;">
-              ${p.promoter_organisation || "Unknown Promoter"}
-            </div>
+  layer.bindPopup(`
+    <div style="font-size:14px; line-height:1.5; padding:6px;">
+      <div style="font-weight:bold; font-size:16px; margin-bottom:6px;">
+        ${p.promoter_organisation || "Unknown Promoter"}
+      </div>
 
-            <div style="font-size:15px; font-weight:bold;">
-              ${p.traffic_management_type || "Traffic Management"}
-            </div>
+      <div style="font-size:15px; font-weight:bold;">
+        ${p.traffic_management_type || "Traffic Management"}
+      </div>
 
-            ${p.proposed_start_date ? `<div><strong>Start:</strong> ${new Date(p.proposed_start_date).toLocaleString()}</div>` : ""}
-            ${p.proposed_end_date ? `<div><strong>End:</strong> ${new Date(p.proposed_end_date).toLocaleString()}</div>` : ""}
-          </div>
+      ${p.proposed_start_date ? `<div><strong>Start:</strong> ${new Date(p.proposed_start_date).toLocaleString()}</div>` : ""}
+      ${p.proposed_end_date ? `<div><strong>End:</strong> ${new Date(p.proposed_end_date).toLocaleString()}</div>` : ""}
+    </div>
+  `);
+
+  // Only add markers for non-Point geometries
+  if (geom.type === "LineString") {
+    const coords = geom.coordinates;
+    const midpoint = coords[Math.floor(coords.length / 2)];
+    const latlng = L.latLng(midpoint[1], midpoint[0]);
+
+    const zoom = map.getZoom();
+    const tm = p.traffic_management_type || "";
+    const key = tm.toLowerCase();
+    const icon = zoom < 14 ? dotIcon : (iconSet[key] || iconSet.default);
+
+    L.marker(latlng, { icon })
+      .bindPopup(layer.getPopup())
+      .addTo(pinsLayer);
+  }
+
+  if (geom.type === "Polygon") {
+    const ring = geom.coordinates[0] || [];
+    if (ring.length > 0) {
+      const bounds = L.latLngBounds(ring.map(([lng, lat]) => [lat, lng]));
+      const latlng = bounds.getCenter();
+
+      const zoom = map.getZoom();
+      const tm = p.traffic_management_type || "";
+      const key = tm.toLowerCase();
+      const icon = zoom < 14 ? dotIcon : (iconSet[key] || iconSet.default);
+
+      L.marker(latlng, { icon })
+        .bindPopup(layer.getPopup())
+        .addTo(pinsLayer);
+    }
+  }
+}
         `);
       }
     }

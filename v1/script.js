@@ -184,6 +184,7 @@ async function fetchVisibleRoadworks() {
         layer.on("click", () => {
   const panel = document.getElementById("infoPanel");
   panel.classList.remove("hidden");
+  infoPanel.classList.remove("collapsed");
 
   const p = feature.properties || {};
 
@@ -280,6 +281,14 @@ function setDefaultToday() {
   document.getElementById("filterEnd").value = today;
 }
 setDefaultToday();
+
+// --- Callout collapse ---
+const infoPanel = document.getElementById("infoPanel");
+const collapseHandle = document.getElementById("infoCollapseHandle");
+
+collapseHandle.addEventListener("click", () => {
+  infoPanel.classList.toggle("collapsed");
+});
 
 // --- QUICK DATE PRESETS ---
 function applyQuickRange(type) {

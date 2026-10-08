@@ -29,19 +29,50 @@ html, body {
 }
 
 /* INFO PANEL */
+/* Info panel base */
 #infoPanel {
   position: absolute;
   top: 60px;
-  left: 10px;
+  left: 0;
   width: 300px;
-  max-height: 70vh;
+  height: calc(100vh - 80px);
+  background: #fff;
+  border-right: 1px solid #ccc;
+  box-shadow: 2px 0 6px rgba(0,0,0,0.15);
   overflow-y: auto;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  padding: 12px;
-  z-index: 1000;
+  transition: transform 0.3s ease;
+  z-index: 9999;
 }
+
+/* Collapsed state */
+#infoPanel.collapsed {
+  transform: translateX(-280px);
+}
+
+/* Collapse handle */
+#infoCollapseHandle {
+  position: absolute;
+  right: -20px;
+  top: 20px;
+  width: 20px;
+  height: 40px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 2px 0 6px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+}
+
+/* Rotate arrow when expanded */
+#infoPanel:not(.collapsed) #infoCollapseHandle {
+  transform: rotate(180deg);
+}
+
 .hidden {
   display: none;
 }

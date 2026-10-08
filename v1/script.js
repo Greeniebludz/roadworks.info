@@ -81,7 +81,7 @@ async function fetchVisibleRoadworks() {
       iconAnchor: [12, 41],
     }),
     "road closure": L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png",
       shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],
@@ -94,27 +94,27 @@ async function fetchVisibleRoadworks() {
       iconAnchor: [12, 41],
     }),
     "multi-way signals": L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
       shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
 
     two_way_signals: L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
       shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
     "two-way signals": L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
       shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],
     }),
 
-    stop_go_boards: L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
+    "Some carriageway incursion": L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
       shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],
@@ -129,6 +129,13 @@ async function fetchVisibleRoadworks() {
 
     "lane closure": L.icon({
       iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png",
+      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+    }),
+
+    "No carriageway incursion": L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-white.png",
       shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
       iconSize: [25, 41],
       iconAnchor: [12, 41],

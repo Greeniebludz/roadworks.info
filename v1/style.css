@@ -64,7 +64,7 @@ html, body {
   position: absolute;
   bottom: 70px;
   left: 10px;
-  background: white;
+  background: rgb(156, 156, 156);
   padding: 10px;
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);

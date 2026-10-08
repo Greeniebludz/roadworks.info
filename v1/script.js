@@ -81,6 +81,7 @@ async function fetchVisibleRoadworks() {
   // --- DOT ICON ---
   const dotIcon = L.divIcon({
     className: "dot-icon",
+    html: '<div style="background-color: #ff0000; border-radius: 50%; border: 2px solid #fff; width: 100%; height: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);"></div>',
     iconSize: [8, 8],
   });
 

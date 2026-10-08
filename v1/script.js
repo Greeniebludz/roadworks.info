@@ -12,6 +12,21 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 let pinsLayer = null;
 let latestRequestId = 0;
 
+// --- SAFE FETCH WITH ERROR HANDLING ---
+async function safeFetchJSON(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error(`Fetch failed: ${response.status}`);
+      return { type: "FeatureCollection", features: [] };
+    }
+    return await response.json();
+  } catch (err) {
+    console.error("Fetch error:", err);
+    return { type: "FeatureCollection", features: [] };
+  }
+}
+
 async function fetchVisibleRoadworks() {
   const requestId = ++latestRequestId;
 
@@ -22,6 +37,7 @@ async function fetchVisibleRoadworks() {
   const maxLat = bounds.getNorth();
 
   const url = `https://roadworks.info/roadworks?minLon=${minLon}&minLat=${minLat}&maxLon=${maxLon}&maxLat=${maxLat}`;
+  console.log("Fetching:", url);
 
   const geojson = await safeFetchJSON(url);
 
@@ -206,3 +222,24 @@ async function fetchVisibleRoadworks() {
   ).addTo(map);
 }
 
+// --- SET QUICK RANGE ---
+function setQuickRange(days) {
+  const today = new Date();
+  document.getElementById("filterStart").value = today.toISOString().split('T')[0];
+
+  const endDate = new Date(today);
+  endDate.setDate(endDate.getDate() + days);
+  document.getElementById("filterEnd").value = endDate.toISOString().split('T')[0];
+
+  fetchVisibleRoadworks();
+}
+
+// --- EVENT LISTENERS ---
+map.on('moveend', fetchVisibleRoadworks);
+map.on('zoomend', fetchVisibleRoadworks);
+
+document.getElementById("filterStart").addEventListener("change", fetchVisibleRoadworks);
+document.getElementById("filterEnd").addEventListener("change", fetchVisibleRoadworks);
+
+// --- INITIAL LOAD ---
+fetchVisibleRoadworks();

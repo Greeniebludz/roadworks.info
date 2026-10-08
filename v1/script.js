@@ -35,6 +35,9 @@ async function fetchVisibleRoadworks() {
   const minLat = bounds.getSouth();
   const maxLon = bounds.getEast();
   const maxLat = bounds.getNorth();
+  
+  const showExtents = document.getElementById("showExtents").checked;
+
 
   const url = `https://roadworks.info/roadworks?minLon=${minLon}&minLat=${minLat}&maxLon=${maxLon}&maxLat=${maxLat}`;
   console.log("Fetching:", url);
@@ -78,7 +81,12 @@ async function fetchVisibleRoadworks() {
     if (endFilter) {
       return workStart <= endFilter;
     }
-
+    
+  // --- GEOMETRY FILTER ---
+  if (!showExtents) {
+    if (geom?.type === "LineString") return false;
+    if (geom?.type === "Polygon") return false;
+  }
     return false;
   });
 
@@ -272,6 +280,8 @@ map.on('zoomend', fetchVisibleRoadworks);
 
 document.getElementById("filterStart").addEventListener("change", fetchVisibleRoadworks);
 document.getElementById("filterEnd").addEventListener("change", fetchVisibleRoadworks);
+document.getElementById("showExtents").addEventListener("change", fetchVisibleRoadworks);
+
 
 // --- INITIAL LOAD ---
 fetchVisibleRoadworks();

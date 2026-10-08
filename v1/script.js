@@ -113,7 +113,7 @@ async function fetchVisibleRoadworks() {
       iconAnchor: [12, 41],
     }),
 
-    "Some carriageway incursion": L.icon({
+    "some_carriageway_incursion": L.icon({
       iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
       shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow-orange.png",
       iconSize: [25, 41],
@@ -134,7 +134,7 @@ async function fetchVisibleRoadworks() {
       iconAnchor: [12, 41],
     }),
 
-    "No carriageway incursion": L.icon({
+    "no_carriageway_incursion": L.icon({
       iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
       shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow-grey.png",
       iconSize: [25, 41],

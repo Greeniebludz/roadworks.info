@@ -2,69 +2,46 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Roadworks V1</title>
+  <title>Roadworks Map</title>
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-  <!-- Geocoder CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-
- <style>
-  html, body { 
-    margin: 0; 
-    padding: 0; 
-    height: 100%; 
-    width: 100%;
-  }
-  #map { 
-    height: 100%; 
-    width: 100%;
-  }
-
-    #filters {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      z-index: 1000;
-      background: white;
-      padding: 10px;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      font-family: sans-serif;
-    }
-  </style>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-  <!-- FILTER BAR -->
-  <div id="filters">
-    <label>Start Date:</label>
-    <input type="date" id="filterStart">
-
-    <label>End Date:</label>
-    <input type="date" id="filterEnd">
-
-    <button onclick="setQuickRange(0)">Today</button>
-    <button onclick="setQuickRange(7)">Next 7 Days</button>
-    <button onclick="setQuickRange(30)">Next 30 Days</button>
+  <!-- SEARCH BAR -->
+  <div id="searchBar">
+    <input type="text" id="searchInput" placeholder="Search roadworks or locations…" />
   </div>
-<label>
-  <input type="checkbox" id="showExtents" checked>
-  Show full extents
-</label>
+
+  <!-- INFO PANEL (left callout) -->
+  <div id="infoPanel" class="hidden"></div>
+
+  <!-- LAYERS BUTTON -->
+  <div id="layersButton">Layers</div>
+
+  <!-- LAYERS PANEL -->
+  <div id="layersPanel" class="hidden">
+    <label>
+      <input type="checkbox" id="showExtents" checked />
+      Show full extents
+    </label>
+  </div>
+
+  <!-- BACK LINK -->
+  <a href="https://roadworks.info" id="backLink">Roadworks.info</a>
 
   <!-- MAP -->
   <div id="map"></div>
 
-  <!-- Load Leaflet FIRST -->
+  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-  <!-- Load Geocoder SECOND -->
-  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-
-  <!-- Your script LAST -->
+  <!-- Custom JS -->
   <script src="script.js"></script>
 
 </body>

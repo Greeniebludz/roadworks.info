@@ -175,7 +175,7 @@ async function fetchVisibleRoadworks() {
 
       onEachFeature: (feature, layer) => {
         const p = feature.properties || {};
-        const geom = feature.geometry;
+       
 
         layer.bindPopup(`
           <div style="font-size:14px; line-height:1.5; padding:6px;">
@@ -196,29 +196,25 @@ async function fetchVisibleRoadworks() {
         const key = tm.toLowerCase();
         const icon = iconSet[key] || iconSet.default;
 
-        const zoom = map.getZoom();
-        const pinIcon = zoom < 14 ? dotIcon : icon;
+        pointToLayer: (feature, latlng) => {
+  const zoom = map.getZoom();
+  const geom = feature.geometry;
+  const tm = feature.properties?.traffic_management_type || "";
+  const key = tm.toLowerCase();
+  const icon = iconSet[key] || iconSet.default;
+  const dotIconToUse = zoom < 14 ? dotIcon : icon;
 
-        // --- LINESTRING PIN ---
-        if (geom.type === "LineString") {
-          const coords = geom.coordinates;
-          const midpoint = coords[Math.floor(coords.length / 2)];
-          const latlng = L.latLng(midpoint[1], midpoint[0]);
+  // For LineString, use midpoint
+  if (geom.type === "LineString") {
+    const coords = geom.coordinates;
+    const midpoint = coords[Math.floor(coords.length / 2)];
+    latlng = L.latLng(midpoint[1], midpoint[0]);
+  }
+  // For Polygon, use centroid (calculated by Leaflet)
+  // latlng is already the center for polygons
 
-          L.marker(latlng, { icon: pinIcon })
-            .bindPopup(layer.getPopup())
-            .addTo(map);
-        }
-
-        // --- POLYGON PIN ---
-        if (geom.type === "Polygon") {
-          const centroid = layer.getBounds().getCenter();
-
-          L.marker(centroid, { icon: pinIcon })
-            .bindPopup(layer.getPopup())
-            .addTo(map);
-        }
-      },
+  return L.marker(latlng, { icon: dotIconToUse });
+},
     }
   ).addTo(map);
 }

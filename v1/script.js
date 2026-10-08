@@ -250,8 +250,8 @@ async function fetchVisibleRoadworks() {
     }
   }
 }
-        `);
-      }
+        
+      
     }
   ).addTo(map);
 }

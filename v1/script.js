@@ -61,19 +61,25 @@ async function fetchVisibleRoadworks() {
 
   // --- FILTER FEATURES BY DATE ---
   const filteredFeatures = geojson.features.filter(f => {
-    const p = f.properties;
+    const p = f.properties || {};
 
     const workStart = p.proposed_start_date ? new Date(p.proposed_start_date).getTime() : null;
     const workEnd = p.proposed_end_date ? new Date(p.proposed_end_date).getTime() : null;
 
-    // If user didn't pick dates → include everything
     if (!startFilter && !endFilter) return true;
-
-    // If work has no dates → exclude
     if (!workStart || !workEnd) return false;
 
-    // Overlap rule
-    return workStart <= endFilter && workEnd >= startFilter;
+    if (startFilter && endFilter) {
+      return workStart <= endFilter && workEnd >= startFilter;
+    }
+    if (startFilter) {
+      return workEnd >= startFilter;
+    }
+    if (endFilter) {
+      return workStart <= endFilter;
+    }
+
+    return false;
   });
 
   console.log("Filtered features:", filteredFeatures.length);
@@ -160,7 +166,26 @@ async function fetchVisibleRoadworks() {
     { type: "FeatureCollection", features: filteredFeatures },
     {
       pointToLayer: (feature, latlng) => {
+        const geom = feature.geometry;
         const zoom = map.getZoom();
+
+        // For LineString, place a marker at the midpoint
+        if (geom && geom.type === "LineString") {
+          const coords = geom.coordinates;
+          const midpoint = coords[Math.floor(coords.length / 2)];
+          latlng = L.latLng(midpoint[1], midpoint[0]);
+        }
+
+        // For Polygon, place a marker at the polygon center
+        if (geom && geom.type === "Polygon") {
+          const ring = geom.coordinates[0] || [];
+          if (ring.length > 0) {
+            const bounds = L.latLngBounds(
+              ring.map(([lng, lat]) => [lat, lng])
+            );
+            latlng = bounds.getCenter();
+          }
+        }
 
         if (zoom < 14) {
           return L.marker(latlng, { icon: dotIcon });
@@ -175,7 +200,6 @@ async function fetchVisibleRoadworks() {
 
       onEachFeature: (feature, layer) => {
         const p = feature.properties || {};
-       
 
         layer.bindPopup(`
           <div style="font-size:14px; line-height:1.5; padding:6px;">
@@ -191,30 +215,7 @@ async function fetchVisibleRoadworks() {
             ${p.proposed_end_date ? `<div><strong>End:</strong> ${new Date(p.proposed_end_date).toLocaleString()}</div>` : ""}
           </div>
         `);
-
-        const tm = p.traffic_management_type || "";
-        const key = tm.toLowerCase();
-        const icon = iconSet[key] || iconSet.default;
-
-        pointToLayer: (feature, latlng) => {
-  const zoom = map.getZoom();
-  const geom = feature.geometry;
-  const tm = feature.properties?.traffic_management_type || "";
-  const key = tm.toLowerCase();
-  const icon = iconSet[key] || iconSet.default;
-  const dotIconToUse = zoom < 14 ? dotIcon : icon;
-
-  // For LineString, use midpoint
-  if (geom.type === "LineString") {
-    const coords = geom.coordinates;
-    const midpoint = coords[Math.floor(coords.length / 2)];
-    latlng = L.latLng(midpoint[1], midpoint[0]);
-  }
-  // For Polygon, use centroid (calculated by Leaflet)
-  // latlng is already the center for polygons
-
-  return L.marker(latlng, { icon: dotIconToUse });
-},
+      }
     }
   ).addTo(map);
 }

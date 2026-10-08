@@ -52,7 +52,7 @@ html, body {
 /* Collapse handle */
 #infoCollapseHandle {
   position: absolute;
-  right: -20px;
+  right: -0;
   top: 20px;
   width: 20px;
   height: 40px;
@@ -66,6 +66,7 @@ html, body {
   cursor: pointer;
   box-shadow: 2px 0 6px rgba(0,0,0,0.15);
   transition: transform 0.3s ease;
+  transform: translateX(100%);
 }
 
 /* Rotate arrow when expanded */
@@ -120,7 +121,7 @@ html, body {
 #dateFilters {
   position: absolute;
   left: 10px;
-  top: 10%;
+  top: 0%;
   transform: translateY(-50%);
   background: rgb(109, 108, 108);
   padding: 12px 16px;

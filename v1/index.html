@@ -29,7 +29,15 @@
 
 <body>
 
-  <!-- FILTER BAR -->
+  <!-- MAP -->
+  <div id="map"></div>
+
+  <!-- Load Leaflet FIRST -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Load Geocoder SECOND -->
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <!-- FILTER BAR -->
   <div id="filters">
     <label>Start Date:</label>
     <input type="date" id="filterStart">
@@ -41,15 +49,6 @@
     <button onclick="setQuickRange(7)">Next 7 Days</button>
     <button onclick="setQuickRange(30)">Next 30 Days</button>
   </div>
-
-  <!-- MAP -->
-  <div id="map"></div>
-
-  <!-- Load Leaflet FIRST -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-  <!-- Load Geocoder SECOND -->
-  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
   <!-- Your script LAST -->
   <script src="script.js"></script>

@@ -1,3 +1,17 @@
+// --- BASIC MAP ---
+const map = L.map('map', {
+  center: [51.5074, -0.1278],
+  zoom: 10
+});
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+// --- GLOBALS ---
+let pinsLayer = null;
+let latestRequestId = 0;
+
 async function fetchVisibleRoadworks() {
   const requestId = ++latestRequestId;
 

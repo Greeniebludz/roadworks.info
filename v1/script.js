@@ -81,7 +81,7 @@ async function fetchVisibleRoadworks() {
     }),
     "road closure": L.icon({
     iconUrl: '/icons/c-icon.jpg',
-            iconSize: [72, 72],],
+            iconSize: [72, 72],
     }),
 
     multiway_signals: L.icon({

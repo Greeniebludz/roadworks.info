@@ -81,7 +81,7 @@ async function fetchVisibleRoadworks() {
     }),
     "road closure": L.icon({
     iconUrl: '/icons/c-icon.jpg',
-            iconSize: [72, 72],
+            iconSize: [32, 32],
     }),
 
     multiway_signals: L.icon({
@@ -104,10 +104,9 @@ async function fetchVisibleRoadworks() {
       iconAnchor: [12, 41],
     }),
     "two-way signals": L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
-      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png",
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
+      iconUrl: '/icons/tsa-icaon.jpg',
+      iconSize: [32, 32],
+  
     }),
 
     "some carriageway incursion": L.icon({

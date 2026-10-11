@@ -1,0 +1,183 @@
+export default {
+  async fetch(request, env) {
+    if (request.method !== "POST") {
+      return new Response("Worker alive", { status: 200 });
+    }
+
+    // SNS sends text/plain but JSON body
+    let sns;
+    try {
+      sns = await request.json();
+    } catch {
+      return new Response("Ignored (not SNS JSON)", { status: 200 });
+    }
+
+    // Handle subscription confirmation
+    if (sns.Type === "SubscriptionConfirmation" && sns.SubscribeURL) {
+      await fetch(sns.SubscribeURL);
+      return new Response("Subscription confirmed", { status: 200 });
+    }
+
+    // Only process Notification events
+    if (sns.Type !== "Notification") {
+      return new Response("Ignored (non-notification)", { status: 200 });
+    }
+
+    // Parse Street Manager message
+    let smEvent;
+    try {
+      smEvent = JSON.parse(sns.Message);
+    } catch {
+      return new Response("Ignored (invalid SNS Message JSON)", {
+        status: 200,
+      });
+    }
+
+    const props = smEvent.object_data || {};
+    const wkt = props.works_location_coordinates || null;
+
+    // -----------------------------
+    // RAW STORAGE
+    // -----------------------------
+    const payload = {
+      id: smEvent.event_reference,
+      topic_arn: sns.TopicArn,
+      raw: smEvent,
+    };
+
+    await fetch(`${env.SUPABASE_URL}/rest/v1/all_events_raw`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: env.SUPABASE_KEY,
+        Authorization: `Bearer ${env.SUPABASE_KEY}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    // -----------------------------
+    // LATEST PROCESSOR
+    // -----------------------------
+
+    const permit_reference_number = props.permit_reference_number || null;
+    const event_reference = smEvent.event_reference || null;
+    const event_type = smEvent.event_type || null;
+    const event_time =
+      smEvent.event_time || sns.Timestamp || new Date().toISOString();
+
+    // Stop here if no permit_reference_number
+    if (!permit_reference_number) {
+      return new Response("History stored (no permit_reference_number)", {
+        status: 200,
+      });
+    }
+
+    // Handle cancellation-type events
+    if (
+      event_type === "PERMIT_CANCELLED" ||
+      event_type === "WORK_STOP" ||
+      event_type === "PERMIT_REFUSED" ||
+      event_type === "PERMIT_REVOKED"
+    ) {
+      await fetch(
+        `${env.SUPABASE_URL}/rest/v1/events_latest?permit_reference_number=eq.${permit_reference_number}`,
+        {
+          method: "DELETE",
+          headers: {
+            apikey: env.SUPABASE_KEY,
+            Authorization: `Bearer ${env.SUPABASE_KEY}`,
+          },
+        },
+      );
+
+      return new Response("Latest removed (cancelled/stopped)", {
+        status: 200,
+      });
+    }
+
+    // -----------------------------
+    // ⭐ NEW: Run PostGIS transform directly from WKT
+    // -----------------------------
+    let geometry_wgs84 = null;
+
+    if (wkt) {
+      const rpcRes = await fetch(
+        `${env.SUPABASE_URL}/rest/v1/rpc/transform_wkt`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: env.SUPABASE_KEY,
+            Authorization: `Bearer ${env.SUPABASE_KEY}`,
+          },
+          body: JSON.stringify({ wkt }),
+        },
+      );
+
+      const rpcBody = await rpcRes.text();
+
+      if (!rpcRes.ok) {
+        console.error("WKT transform failed:", rpcRes.status, rpcBody);
+        return new Response("WKT transform failed", { status: 502 });
+      }
+
+      try {
+        geometry_wgs84 = JSON.parse(rpcBody);
+
+        // Handle an RPC that returns text containing JSON.
+        if (typeof geometry_wgs84 === "string") {
+          geometry_wgs84 = JSON.parse(geometry_wgs84);
+        }
+
+        // ST_GeomFromGeoJSON expects a geometry, not a Feature wrapper.
+        if (geometry_wgs84?.type === "Feature") {
+          geometry_wgs84 = geometry_wgs84.geometry;
+        }
+
+        if (!geometry_wgs84 || typeof geometry_wgs84.type !== "string") {
+          throw new Error("RPC response is not a GeoJSON geometry");
+        }
+      } catch (error) {
+        console.error("Invalid GeoJSON from transform_wkt:", error);
+        return new Response("WKT transform returned invalid GeoJSON", {
+          status: 502,
+        });
+      }
+    }
+
+    // -----------------------------
+    // Write latest
+    // -----------------------------
+    const latestPayload = {
+      permit_reference_number,
+      event_reference,
+      event_time,
+      permit_status: event_type,
+      wkt_raw: wkt,
+      properties: props,
+    };
+
+    if (geometry_wgs84 !== null) {
+      latestPayload.geometry_wgs84 = geometry_wgs84;
+    }
+
+    const latestRes = await fetch(`${env.SUPABASE_URL}/rest/v1/events_latest`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates",
+        apikey: env.SUPABASE_KEY,
+        Authorization: `Bearer ${env.SUPABASE_KEY}`,
+      },
+      body: JSON.stringify(latestPayload),
+    });
+
+    if (!latestRes.ok) {
+      const text = await latestRes.text();
+      console.error("Latest insert failed:", text);
+      return new Response("Latest insert failed", { status: 500 });
+    }
+
+    return new Response("OK (raw + latest + wkt transform)", { status: 200 });
+  },
+};

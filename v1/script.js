@@ -76,15 +76,12 @@ async function fetchVisibleRoadworks() {
    const iconSet = {
     road_closure: L.icon({
       iconUrl: '/icons/c-icon.jpg',
-      
-      iconSize: [72, 72],
+            iconSize: [72, 72],
     
     }),
     "road closure": L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png",
-      shadowUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow-red.png",
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
+    iconUrl: '/icons/c-icon.jpg',
+            iconSize: [72, 72],],
     }),
 
     multiway_signals: L.icon({

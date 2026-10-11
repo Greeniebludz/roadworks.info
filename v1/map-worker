@@ -1,0 +1,371 @@
+import { gunzipSync } from "zlib";
+
+export default {
+  async fetch(request, env) {
+    // --- CORS preflight ---
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          "Access-Control-Max-Age": "86400"
+        }
+      });
+    }
+
+    // --- Only allow GET ---
+    if (request.method !== "GET") {
+      return new Response("Map Worker alive", {
+        status: 200,
+        headers: { "Access-Control-Allow-Origin": "*" }
+      });
+    }
+
+    const url = new URL(request.url);
+
+    const minLon = parseFloat(url.searchParams.get("minLon") ?? "");
+    const minLat = parseFloat(url.searchParams.get("minLat") ?? "");
+    const maxLon = parseFloat(url.searchParams.get("maxLon") ?? "");
+    const maxLat = parseFloat(url.searchParams.get("maxLat") ?? "");
+
+    const year = url.searchParams.get("year");   // historic year
+    const month = url.searchParams.get("month"); // historic month
+
+    if (
+      Number.isNaN(minLon) ||
+      Number.isNaN(minLat) ||
+      Number.isNaN(maxLon) ||
+      Number.isNaN(maxLat)
+    ) {
+      return new Response("Missing or invalid bounds", {
+        status: 400,
+        headers: { "Access-Control-Allow-Origin": "*" }
+      });
+    }
+
+    const bbox = { minLon, minLat, maxLon, maxLat };
+
+    // --- Fetch live data from Supabase ---
+    const liveFeatures = await fetchLiveSupabase(env, bbox);
+
+    // --- Fetch historic data from R2 (if year+month provided) ---
+    let historicFeatures = [];
+    if (year && month) {
+      historicFeatures = await fetchHistoricMonth(env, year, month, bbox);
+    }
+
+    // --- Merge live + historic ---
+    const merged = [...liveFeatures, ...historicFeatures];
+
+    const geojson = {
+      type: "FeatureCollection",
+      features: merged
+    };
+
+    return new Response(JSON.stringify(geojson), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "public, max-age=15"
+      }
+    });
+  }
+};
+
+/* ------------------------------------------------------------------
+   LIVE DATA (Supabase RPC)
+------------------------------------------------------------------ */
+async function fetchLiveSupabase(env, bbox) {
+  const supabaseUrl = `${env.SUPABASE_URL}/rest/v1/rpc/events_in_bbox`;
+
+  const res = await fetch(supabaseUrl, {
+    method: "POST",
+    headers: {
+      apikey: env.SUPABASE_KEY,
+      Authorization: `Bearer ${env.SUPABASE_KEY}`,
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      min_lon: bbox.minLon,
+      min_lat: bbox.minLat,
+      max_lon: bbox.maxLon,
+      max_lat: bbox.maxLat
+    })
+  });
+
+  const rawBody = await res.text();
+  if (!res.ok) return [];
+
+  let rows;
+  try {
+    rows = JSON.parse(rawBody);
+  } catch {
+    return [];
+  }
+
+  if (!Array.isArray(rows)) return [];
+
+  return rows
+    .filter(r => r.geometry_wgs84)
+    .map(r => ({
+      type: "Feature",
+      geometry: r.geometry_wgs84,
+      properties: {
+        event_reference: r.event_reference,
+        permit_reference_number: r.permit_reference_number,
+        permit_status: r.permit_status,
+        event_time: r.event_time,
+        ...r.properties
+      }
+    }));
+}
+
+/* ------------------------------------------------------------------
+   HISTORIC DATA (R2 NDJSON.gz)
+------------------------------------------------------------------ */
+async function fetchHistoricMonth(env, year, month, bbox) {
+  const key = `${year}/${year}-${month}.ndjson.gz`;
+
+  const obj = await env.ARCHIVE.get(key);
+  if (!obj) return [];
+
+  const gzData = await obj.arrayBuffer();
+  const ndjson = gunzipSync(new Uint8Array(gzData)).toString("utf8");
+
+  const lines = ndjson.split("\n");
+  const permits = new Map();
+
+  for (const line of lines) {
+    if (!line.trim()) continue;
+
+    let event;
+    try {
+      event = JSON.parse(line);
+    } catch {
+      continue;
+    }
+
+    const permitRef = event.permit_reference;
+    if (!permitRef) continue;
+
+    if (!permits.has(permitRef)) {
+      permits.set(permitRef, {
+        permit_reference: permitRef,
+        promoter: null,
+        geometry: null,          // OSGB36 geometry from SM
+        start_date: null,
+        end_date: null,
+        work_category: null,
+        status: null
+      });
+    }
+
+    const p = permits.get(permitRef);
+
+    switch (event.event_type) {
+      case "permit_granted_event":
+        p.promoter = event.promoter;
+        p.geometry = event.geometry; // still OSGB36 here
+        p.start_date = event.proposed_start_date;
+        p.end_date = event.proposed_end_date;
+        p.work_category = event.work_category;
+        break;
+
+      case "work_start_event":
+        p.status = "in_progress";
+        p.start_date = event.actual_start_date || p.start_date;
+        break;
+
+      case "work_stop_event":
+        p.status = "completed";
+        p.end_date = event.actual_end_date || p.end_date;
+        break;
+
+      case "permit_refused_event":
+        p.status = "refused";
+        break;
+
+      case "permit_submitted_event":
+        p.status = "submitted";
+        break;
+
+      case "work_extension_event":
+        p.end_date = event.new_end_date;
+        break;
+    }
+  }
+
+  const features = [];
+  for (const permit of permits.values()) {
+    if (!permit.geometry) continue;
+
+    const wgsGeometry = convertGeometry(permit.geometry);
+    if (!wgsGeometry) continue;
+
+    if (!geometryInBBox(wgsGeometry, bbox)) continue;
+
+    features.push({
+      type: "Feature",
+      geometry: wgsGeometry,
+      properties: {
+        permit_reference: permit.permit_reference,
+        promoter: permit.promoter,
+        start_date: permit.start_date,
+        end_date: permit.end_date,
+        work_category: permit.work_category,
+        status: permit.status
+      }
+    });
+  }
+
+  return features;
+}
+
+/* ------------------------------------------------------------------
+   OSGB36 → WGS84 conversion
+------------------------------------------------------------------ */
+function osgbToWgs84(easting, northing) {
+  const a = 6377563.396;
+  const b = 6356256.909;
+  const F0 = 0.9996012717;
+  const lat0 = 49 * Math.PI / 180;
+  const lon0 = -2 * Math.PI / 180;
+  const N0 = -100000;
+  const E0 = 400000;
+  const e2 = (a * a - b * b) / (a * a);
+  const n = (a - b) / (a + b);
+
+  let lat = lat0;
+  let M = 0;
+
+  do {
+    lat = (northing - N0 - M) / (a * F0) + lat;
+    const Ma = (1 + n + (5 / 4) * n * n + (5 / 4) * n * n * n) * (lat - lat0);
+    const Mb = (3 * n + 3 * n * n + (21 / 8) * n * n * n) *
+      Math.sin(lat - lat0) * Math.cos(lat + lat0);
+    const Mc = ((15 / 8) * n * n + (15 / 8) * n * n * n) *
+      Math.sin(2 * (lat - lat0)) * Math.cos(2 * (lat + lat0));
+    const Md = (35 / 24) * n * n * n *
+      Math.sin(3 * (lat - lat0)) * Math.cos(3 * (lat + lat0));
+    M = b * F0 * (Ma - Mb + Mc - Md);
+  } while (northing - N0 - M >= 0.00001);
+
+  const cosLat = Math.cos(lat);
+  const sinLat = Math.sin(lat);
+  const nu = a * F0 / Math.sqrt(1 - e2 * sinLat * sinLat);
+  const rho = a * F0 * (1 - e2) / Math.pow(1 - e2 * sinLat * sinLat, 1.5);
+  const eta2 = nu / rho - 1;
+
+  const tanLat = Math.tan(lat);
+  const secLat = 1 / cosLat;
+
+  const dE = easting - E0;
+
+  const latWgs =
+    lat -
+    (tanLat / (2 * rho * nu)) * dE * dE +
+    (tanLat / (24 * rho * nu * nu * nu)) *
+      (5 + 3 * tanLat * tanLat + eta2 - 9 * tanLat * tanLat * eta2) *
+      dE * dE * dE * dE;
+
+  const lonWgs =
+    lon0 +
+    (secLat / nu) * dE -
+    (secLat / (6 * nu * nu * nu)) *
+      (1 + 2 * tanLat * tanLat + eta2) * dE * dE * dE +
+    (secLat / (120 * nu * nu * nu * nu * nu)) *
+      (5 + 28 * tanLat * tanLat + 24 * tanLat * tanLat * tanLat * tanLat) *
+      dE * dE * dE * dE * dE;
+
+  return [lonWgs * 180 / Math.PI, latWgs * 180 / Math.PI];
+}
+
+/* ------------------------------------------------------------------
+   Geometry conversion OSGB36 → WGS84
+------------------------------------------------------------------ */
+function convertGeometry(geometry) {
+  if (!geometry) return null;
+
+  switch (geometry.type) {
+    case "Point": {
+      const [e, n] = geometry.coordinates;
+      return {
+        type: "Point",
+        coordinates: osgbToWgs84(e, n)
+      };
+    }
+
+    case "LineString": {
+      return {
+        type: "LineString",
+        coordinates: geometry.coordinates.map(([e, n]) =>
+          osgbToWgs84(e, n)
+        )
+      };
+    }
+
+    case "Polygon": {
+      return {
+        type: "Polygon",
+        coordinates: geometry.coordinates.map(ring =>
+          ring.map(([e, n]) => osgbToWgs84(e, n))
+        )
+      };
+    }
+
+    case "MultiPolygon": {
+      return {
+        type: "MultiPolygon",
+        coordinates: geometry.coordinates.map(poly =>
+          poly.map(ring =>
+            ring.map(([e, n]) => osgbToWgs84(e, n))
+          )
+        )
+      };
+    }
+
+    default:
+      return null;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Bounding box filter for WGS84 geometry
+------------------------------------------------------------------ */
+function geometryInBBox(geometry, bbox) {
+  const { minLon, minLat, maxLon, maxLat } = bbox;
+
+  switch (geometry.type) {
+    case "Point": {
+      const [lon, lat] = geometry.coordinates;
+      return lon >= minLon && lon <= maxLon && lat >= minLat && lat <= maxLat;
+    }
+
+    case "LineString": {
+      return geometry.coordinates.some(([lon, lat]) =>
+        lon >= minLon && lon <= maxLon && lat >= minLat && lat <= maxLat
+      );
+    }
+
+    case "Polygon": {
+      return geometry.coordinates[0].some(([lon, lat]) =>
+        lon >= minLon && lon <= maxLon && lat >= minLat && lat <= maxLat
+      );
+    }
+
+    case "MultiPolygon": {
+      return geometry.coordinates.some(poly =>
+        poly[0].some(([lon, lat]) =>
+          lon >= minLon && lon <= maxLon && lat >= minLat && lat <= maxLat
+        )
+      );
+    }
+
+    default:
+      return false;
+  }
+}

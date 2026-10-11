@@ -104,7 +104,7 @@ async function fetchVisibleRoadworks() {
       iconAnchor: [12, 41],
     }),
     "two-way signals": L.icon({
-      iconUrl: '/icons/tsa-icaon.jpg',
+      iconUrl: '/icons/tsa-icon.jpg',
       iconSize: [32, 32],
   
     }),

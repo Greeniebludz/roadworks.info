@@ -80,7 +80,7 @@ async function fetchVisibleRoadworks() {
     
     }),
     "road closure": L.icon({
-    iconUrl: '/icons/ne-icon.jpg',
+    iconUrl: '/icons/ne-icon.png',
             iconSize: [32, 32],
     }),
 
@@ -113,12 +113,12 @@ async function fetchVisibleRoadworks() {
     }),
 
     "give and take": L.icon({
-     iconUrl: '/icons/rwa-icon.png',
+     iconUrl: '/icons/rwa-tbc-icon.png',
       iconSize: [32, 32],
     }),
 
     "lane closure": L.icon({
-      iconUrl: '/icons/rwa-icon.png',
+      iconUrl: '/icons/rwa-tbc-icon.png',
       iconSize: [32, 32],
     }),
 

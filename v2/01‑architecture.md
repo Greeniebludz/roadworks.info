@@ -1,76 +1,92 @@
 Roadworks.info — V2 Architecture Overview
-Roadworks.info V2 is a fully Cloudflare‑native platform for ingesting, processing, storing, and visualising UK roadworks data.
-The entire system runs on Cloudflare’s global edge network using Workers, Queues, R2, KV, and D1.
+Roadworks.info V2 is a fully Cloudflare‑native platform for ingesting, processing, storing, and serving UK roadworks data.
+The system is designed for reliability, replayability, low‑latency global delivery, and long‑term historic storage — without relying on external databases or hosting.
 
-No external databases.
-No third‑party hosting.
-No dependencies outside the Cloudflare ecosystem.
+V2 replaces the original monolithic design with a modular, event‑driven architecture built on Workers, Queues, R2, D1, and Basin services.
 
 1. Architectural Goals
-100% Cloudflare-native  
-Workers, R2, KV, D1, Queues — nothing else.
+Cloudflare‑native execution  
+Workers, Queues, R2, D1, KV, Basin Catalog, Basin SQL.
 
-Event-driven ingestion  
-Every Street Manager update is processed deterministically.
+Event‑driven ingestion pipeline  
+Raw events are captured immediately and processed asynchronously.
 
-Historic-first storage  
-Raw and processed events are archived permanently in R2.
+Current‑state + historic separation  
+D1 stores the latest processed state.
+R2 + Iceberg (via Basin Catalog) store raw and historic data.
 
-Simple, predictable data model  
-D1 for structured metadata, R2 for bulk historic storage.
+Replayability  
+The entire system can be rebuilt from raw R2 data.
 
-Fast, lightweight frontend  
-Served directly from Workers with zero framework bloat.
+Low-latency global delivery  
+Frontend and API Workers run at the edge.
 
-2. High-Level Architecture
-The system consists of:
+Cost‑efficient scaling  
+Workers, Queues, R2, and Basin are billed independently of the website plan.
+
+2. High-Level System Components
+The V2 architecture consists of:
 
 Ingestion Worker
 
 Processing Worker (Queue consumer)
 
-D1 Database (current state + metadata)
+D1 Database (current-state model)
 
 R2 Historic Archive (raw + weekly snapshots)
 
-Frontend Worker + Leaflet UI
+Basin Catalog + Iceberg (historic table format)
 
-Everything runs inside Cloudflare.
+Basin SQL (analytics, not live map queries)
+
+Frontend/API Worker (public map + dashboard)
+
+Scheduled Workers (polling, archival, DLQ sweeps)
+
+Each component is isolated, testable, and independently scalable.
 
 3. Data Flow Overview
 Step 1 — Street Manager → Ingestion Worker
-Receives push or poll updates.
+Receives SNS-style pushes or scheduled polling.
 
 Validates payload.
 
-Stores raw event in R2 (daily bucket).
+Stores raw event in R2.
 
-Enqueues event for processing.
+Enqueues processing job.
 
-Step 2 — Queue → Processor Worker
-Applies reducer logic to build final-state roadwork objects.
+Step 2 — Cloudflare Queue → Processing Worker
+Loads raw event from R2.
 
-Converts geometry (WKT → GeoJSON) using Worker-side libraries.
+Applies reducer logic.
+
+Validates and converts geometry.
 
 Writes final-state record to D1.
 
-Step 3 — Weekly Archive → R2
-Scheduled Worker compresses the week’s raw events.
+Writes metadata to D1.
 
-Stores them under:
+Sends failures to DLQ.
 
-Code
-r2://roadworks-archive/YYYY/MM/DD/all_events_raw.json.gz
-Step 4 — Frontend Worker → Browser
+Step 3 — Weekly Archival → R2 + Iceberg
+Scheduled Worker batches raw events.
+
+Writes Iceberg‑formatted snapshots to R2.
+
+Basin Catalog manages metadata.
+
+Basin SQL enables historic analytics.
+
+Step 4 — Frontend/API Worker → Browser
 Serves static HTML/CSS/JS.
 
 Provides API endpoints for:
 
-current roadworks
+current events (D1)
 
-historic lookups
+historic summaries (Basin SQL)
 
-geometry
+raw event lookup (R2)
 
 Leaflet renders the map.
 
@@ -82,40 +98,71 @@ Writes raw events to R2
 
 Enqueues processing jobs
 
-Handles malformed data gracefully
+Handles malformed data
 
-4.2 Processor Worker
+Responds quickly (no heavy work)
+
+4.2 Processing Worker
 Consumes queue messages
+
+Loads raw event from R2
 
 Applies reducer logic
 
 Converts geometry
 
-Writes final-state records to D1
+Writes final-state record to D1
 
-Ensures idempotency
+Writes metadata
 
-4.3 D1 Database
-Tables include:
+Sends failures to DLQ
 
-current_events — final-state roadworks
+Idempotent by design
 
-event_metadata — timestamps, hashes, audit
+4.3 D1 Database (Current-State Model)
+Stores:
 
-geometry_cache — optional precomputed GeoJSON
+latest processed roadwork state
 
-D1 provides structured SQL storage without external dependencies.
+metadata (hashes, timestamps, lineage)
+
+optional geometry cache
+
+D1 is chosen because:
+
+it is Cloudflare-native
+
+it is extremely fast for reads
+
+it is cheap
+
+it handles your concurrency needs
+
+it simplifies the architecture
+
+Supabase/PostGIS remains a future option if advanced geospatial queries are required.
 
 4.4 R2 Historic Archive
-Stores raw events
+Stores:
 
-Stores weekly snapshots
+raw events
 
-Provides long-term durability
+weekly snapshots
 
-Enables future analytics and replay
+Iceberg tables (via Basin Catalog)
 
-4.5 Frontend Worker
+R2 is the authoritative historic store.
+
+4.5 Basin Catalog + Iceberg
+Iceberg is a table format, not a compute engine.
+
+Basin Catalog manages Iceberg metadata.
+
+Basin SQL provides historic analytics.
+
+Basin SQL is not used for live map queries.
+
+4.6 Frontend/API Worker
 Serves static assets
 
 Provides API endpoints
@@ -124,38 +171,108 @@ Handles caching
 
 Integrates with Leaflet
 
-5. Deployment Model
-dev — preview
+Reads from D1 for current-state queries
 
-staging — test ingestion
+Reads from Basin SQL for historic summaries
+
+Reads from R2 for raw event lookup
+
+4.7 Scheduled Workers
+Poll Street Manager
+
+Sweep DLQ
+
+Perform weekly archival
+
+Reconcile ingestion failures
+
+Evict stale data if needed
+
+5. Database Strategy
+Current-State Database: D1
+D1 is locked in for V2 because:
+
+your dataset is small
+
+your queries are simple
+
+your concurrency is modest
+
+your geometry is lightweight
+
+your cost sensitivity is high
+
+your architecture benefits from Cloudflare-native simplicity
+
+Historic Database: R2 + Iceberg
+Raw and historic data live in R2.
+Iceberg tables provide:
+
+schema evolution
+
+partitioning
+
+metadata
+
+replayability
+
+analytics via Basin SQL
+
+Future Upgrade Path: Supabase PostGIS
+Supabase becomes relevant only if you introduce:
+
+proximity search
+
+polygon intersection
+
+route-based queries
+
+vector tiles
+
+complex spatial filtering
+
+heavy analytics
+
+multi-region concurrency
+
+V2 does not require this.
+
+6. Observability & Monitoring
+Worker logs
+
+Queue metrics
+
+R2 access logs
+
+Basin Catalog metadata
+
+DLQ inspection
+
+Optional Logpush for operational logs
+(Logpush is not a business archive)
+
+7. Deployment Model
+dev — local + preview
+
+staging — test ingestion + processing
 
 prod — live roadworks.info
 
 All deployed via Wrangler.
 
-6. Observability
-Worker logs
-
-Queue metrics
-
-R2 usage
-
-D1 query logs
-
-Optional Sentry for frontend.
-
-7. Future Extensions
-historic timeline playback
-
-alerts (email/webhook)
-
-postcode search
-
-analytics dashboards
-
-mobile UI
-
 8. Summary
-Roadworks.info V2 is a fully Cloudflare-native system designed for speed, reliability, and long-term historic storage — without any external databases or services.
+Roadworks.info V2 is a modern, Cloudflare-native, event-driven system built for speed, reliability, and long-term historic storage.
 
-This architecture defines the foundation for all V2 components.
+Key design choices:
+
+D1 for current-state
+
+R2 + Iceberg for historic
+
+Basin SQL for analytics
+
+Workers + Queues for ingestion and processing
+
+Frontend Worker for global delivery
+
+This architecture is simple, scalable, cheap, and future-proof — and it positions roadworks.info as a high-performance public data platform.

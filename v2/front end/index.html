@@ -142,7 +142,7 @@
   // Load GeoJSON from your API Worker
   async function loadRoadworks() {
     try {
-      const res = await fetch("https://archive-map-worker.jamesgreen-928.workers.dev/api/current");
+      const res = await fetch("https://sm-map-api.jamesgreen-928.workers.dev/");
       const geojson = await res.json();
 
       L.geoJSON(geojson, {

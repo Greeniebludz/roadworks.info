@@ -142,22 +142,49 @@
   // Load GeoJSON from your API Worker
   async function loadRoadworks() {
     try {
-      const res = await fetch("https://sm-map-api.jamesgreen-928.workers.dev/api/current");
-      const geojson = await res.json();
+     const res = await fetch("https://sm-map-api.jamesgreen-928.workers.dev/api/current");
+const geojson = await res.json();
 
-      L.geoJSON(geojson, {
-        style: (feature) => {
-          switch (feature.properties.geometry_type) {
-            case "LineString": return { color: "#ff6600", weight: 3 };
-            case "Polygon":    return { color: "#3388ff", fillOpacity: 0.2 };
-            default:           return { color: "#3388ff" };
-          }
-        },
-        pointToLayer: (f, latlng) => L.circleMarker(latlng, { radius: 6 }),
-        onEachFeature: (f, layer) => layer.bindPopup(
-          `<b>${f.properties.permit_reference}</b><br>${f.properties.geometry_type}`
-        ),
-      }).addTo(map);
+const centerMarkers = [];
+
+const roadworksLayer = L.geoJSON(geojson, {
+  style: (feature) => {
+    switch (feature.properties.geometry_type) {
+      case "LineString": return { color: "#ff6600", weight: 3, opacity: 0.8 };
+      case "Polygon":    return { color: "#3388ff", weight: 2, fillColor: "#3388ff", fillOpacity: 0.2 };
+      default:           return { color: "#3388ff" };
+    }
+  },
+  pointToLayer: (feature, latlng) =>
+    L.circleMarker(latlng, { radius: 6, color: "#3388ff", fillOpacity: 0.7 }),
+
+  onEachFeature: (feature, layer) => {
+    const p = feature.properties;
+    const popup = `<b>${p.permit_reference ?? p.event_reference}</b><br>` +
+                  `Status: ${p.permit_status ?? "—"}<br>` +
+                  `Type: ${p.geometry_type ?? "—"}<br>` +
+                  `Time: ${p.event_time ?? "—"}`;
+
+    layer.bindPopup(popup);
+
+    // Add a center pin for LineStrings and Polygons
+    if (feature.properties.geometry_type !== "Point") {
+      const center = layer.getBounds().getCenter();
+      const marker = L.circleMarker(center, {
+        radius: 5,
+        color: "#333",
+        fillColor: "#fff",
+        fillOpacity: 1,
+        weight: 2
+      }).bindPopup(popup);
+      centerMarkers.push(marker);
+    }
+  }
+}).addTo(map);
+
+// Add center markers on top
+centerMarkers.forEach(m => m.addTo(map));
+
 
     } catch (err) {
       console.error("Failed to load GeoJSON:", err);

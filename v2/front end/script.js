@@ -60,7 +60,7 @@
 
   // Side panel click handler
   layer.on("click", () => {
-    const panel = document.getElementById("infoPanel");
+    const panel = document.getElementById("callout");
     panel.classList.remove("hidden");
     panel.classList.remove("collapsed");
 

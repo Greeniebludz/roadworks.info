@@ -49,7 +49,7 @@
   const p = feature.properties || {};
   const tmType = p.object_data?.traffic_management_type ?? "—";
 
-  // Existing popup
+  // Popup
   const popup = `<b>${p.permit_reference ?? p.event_reference}</b><br>` +
                 `Status: ${p.permit_status ?? "—"}<br>` +
                 `Type: ${p.geometry_type ?? "—"}<br>` +
@@ -58,7 +58,7 @@
 
   layer.bindPopup(popup);
 
-  // NEW: Side panel click handler
+  // Side panel click handler
   layer.on("click", () => {
     const panel = document.getElementById("infoPanel");
     panel.classList.remove("hidden");
@@ -103,16 +103,16 @@
       ${p.work_status ? `<div><strong>Work Status:</strong> ${p.work_status}</div>` : ""}
     `;
   });
+
+  // Center marker for non-point geometries
+  if (p.geometry_type !== "Point") {
+    const center = layer.getBounds().getCenter();
+    const marker = L.marker(center, { icon: getIcon(feature) })
+      .bindPopup(popup);
+    centerMarkers.push(marker);
+  }
 }
 
-
-          if (feature.properties.geometry_type !== "Point") {
-            const center = layer.getBounds().getCenter();
-            const marker = L.marker(center, { icon: getIcon(feature) })
-              .bindPopup(popup);
-            centerMarkers.push(marker);
-          }
-        }
       }).addTo(map);
 
       centerMarkers.forEach(m => m.addTo(map));

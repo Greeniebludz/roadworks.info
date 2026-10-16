@@ -1,4 +1,3 @@
-<script>
   const MAPTILER_KEY = "84APRuB9gcvyT3xzXkKa";
 
   const map = L.map('map').setView([51.4545, -0.9781], 12);
@@ -83,4 +82,4 @@
     const expanded = callout.classList.toggle('expanded');
     toggle.textContent = expanded ? '▲' : '▼';
   });
-</script>
+

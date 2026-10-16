@@ -24,7 +24,7 @@
         "road closure": L.icon({ iconUrl: '/icons/road-closure-icon.png', iconSize: [32, 32] }),
       };
 
-      const defaultIcon = L.icon({ iconUrl: '/icons/default-icon.png', iconSize: [32, 32] });
+      const defaultIcon = L.icon({ iconUrl: '/icons/c-icon.png', iconSize: [32, 32] });
 
       function getIcon(feature) {
         const tmType = feature.properties.object_data?.traffic_management_type;

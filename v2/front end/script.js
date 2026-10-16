@@ -45,76 +45,65 @@
         pointToLayer: (feature, latlng) =>
           L.marker(latlng, { icon: getIcon(feature) }),
 
-       onEachFeature: (feature, layer) => {
-  const p = feature.properties || {};
-  const tmType = p.object_data?.traffic_management_type ?? "—";
+               onEachFeature: (feature, layer) => {
+          const p = feature.properties || {};
+          const d = p.object_data || {};
+          const tmType = d.traffic_management_type ?? "—";
 
-  // Popup
-  const popup = `<b>${p.permit_reference ?? p.event_reference}</b><br>` +
-                `Status: ${p.permit_status ?? "—"}<br>` +
-                `Type: ${p.geometry_type ?? "—"}<br>` +
-                `TM: ${tmType}<br>` +
-                `Time: ${p.event_time ?? "—"}`;
+          const popup = `<b>${p.permit_reference ?? p.event_reference}</b><br>` +
+                        `Status: ${p.permit_status ?? "—"}<br>` +
+                        `Type: ${p.geometry_type ?? "—"}<br>` +
+                        `TM: ${tmType}<br>` +
+                        `Time: ${p.event_time ?? "—"}`;
 
-  layer.bindPopup(popup);
+          layer.bindPopup(popup);
 
-  // Side panel click handler
-    layer.on("click", () => {
-    const panel = document.getElementById("info-callout");
-    panel.classList.remove("hidden");
-    panel.classList.remove("collapsed");
+          // Shared callout handler
+          function showCallout() {
+            const panel = document.getElementById("callout-details");
+            panel.classList.remove("hidden");
 
-    const d = p.object_data || {};
-    const tmType = d.traffic_management_type ?? "—";
+            const friendlyStart = d.proposed_start_date
+              ? new Date(d.proposed_start_date).toLocaleString() : null;
+            const friendlyEnd = d.proposed_end_date
+              ? new Date(d.proposed_end_date).toLocaleString() : null;
 
-    const friendlyStart = d.proposed_start_date
-      ? new Date(d.proposed_start_date).toLocaleString()
-      : null;
+            panel.innerHTML = `
+              <h2>${d.promoter_organisation || "Unknown Promoter"}</h2>
+              <h3 style="margin-top:4px;">
+                ${tmType}
+                <span style="color:#888; font-size:12px;">(what does this mean?)</span>
+              </h3>
+              <p>
+                ${d.works_location_type ? `<div><strong>Location Type:</strong> ${d.works_location_type}</div>` : ""}
+                ${d.work_category ? `<div><strong>Work Category:</strong> ${d.work_category}</div>` : ""}
+              </p>
+              <hr/>
+              ${friendlyStart ? `<p><strong>Start:</strong> ${friendlyStart}</p>` : ""}
+              ${friendlyEnd ? `<p><strong>End:</strong> ${friendlyEnd}</p>` : ""}
+              <hr/>
+              ${d.street_name ? `<div><strong>Street:</strong> ${d.street_name}</div>` : ""}
+              ${d.town ? `<div><strong>Town:</strong> ${d.town}</div>` : ""}
+              ${d.highway_authority ? `<div><strong>Highway Authority:</strong> ${d.highway_authority}</div>` : ""}
+              <hr/>
+              ${d.permit_reference_number ? `<div><strong>Permit Ref:</strong> ${d.permit_reference_number}</div>` : ""}
+              ${d.permit_status ? `<div><strong>Permit Status:</strong> ${d.permit_status}</div>` : ""}
+              ${d.work_status ? `<div><strong>Work Status:</strong> ${d.work_status}</div>` : ""}
+            `;
+          }
 
-    const friendlyEnd = d.proposed_end_date
-      ? new Date(d.proposed_end_date).toLocaleString()
-      : null;
+          // Callout on the shape itself
+          layer.on("click", showCallout);
 
-    panel.innerHTML = `
-      <h2>${d.promoter_organisation || "Unknown Promoter"}</h2>
-
-      <h3 style="margin-top:4px;">
-        ${tmType}
-        <span style="color:#888; font-size:12px;">(what does this mean?)</span>
-      </h3>
-
-      <p>
-        ${d.works_location_type ? `<div><strong>Location Type:</strong> ${d.works_location_type}</div>` : ""}
-        ${d.work_category ? `<div><strong>Work Category:</strong> ${d.work_category}</div>` : ""}
-      </p>
-
-      <hr/>
-
-      ${friendlyStart ? `<p><strong>Start:</strong> ${friendlyStart}</p>` : ""}
-      ${friendlyEnd ? `<p><strong>End:</strong> ${friendlyEnd}</p>` : ""}
-
-      <hr/>
-
-      ${d.street_name ? `<div><strong>Street:</strong> ${d.street_name}</div>` : ""}
-      ${d.town ? `<div><strong>Town:</strong> ${d.town}</div>` : ""}
-      ${d.highway_authority ? `<div><strong>Highway Authority:</strong> ${d.highway_authority}</div>` : ""}
-
-      <hr/>
-
-      ${d.permit_reference_number ? `<div><strong>Permit Ref:</strong> ${d.permit_reference_number}</div>` : ""}
-      ${d.permit_status ? `<div><strong>Permit Status:</strong> ${d.permit_status}</div>` : ""}
-      ${d.work_status ? `<div><strong>Work Status:</strong> ${d.work_status}</div>` : ""}
-    `;
-  });
-
-  // Center marker for non-point geometries
-  if (p.geometry_type !== "Point") {
-    const center = layer.getBounds().getCenter();
-    const marker = L.marker(center, { icon: getIcon(feature) })
-      .bindPopup(popup);
-    centerMarkers.push(marker);
-  }
-}
+          // Center marker for non-point geometries — also gets callout
+          if (p.geometry_type !== "Point") {
+            const center = layer.getBounds().getCenter();
+            const marker = L.marker(center, { icon: getIcon(feature) })
+              .bindPopup(popup)
+              .on("click", showCallout);
+            centerMarkers.push(marker);
+          }
+        }
 
       }).addTo(map);
 

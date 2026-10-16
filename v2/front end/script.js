@@ -45,17 +45,66 @@
         pointToLayer: (feature, latlng) =>
           L.marker(latlng, { icon: getIcon(feature) }),
 
-        onEachFeature: (feature, layer) => {
-          const p = feature.properties;
-          const tmType = p.object_data?.traffic_management_type ?? "—";
+       onEachFeature: (feature, layer) => {
+  const p = feature.properties || {};
+  const tmType = p.object_data?.traffic_management_type ?? "—";
 
-          const popup = `<b>${p.permit_reference ?? p.event_reference}</b><br>` +
-                        `Status: ${p.permit_status ?? "—"}<br>` +
-                        `Type: ${p.geometry_type ?? "—"}<br>` +
-                        `TM: ${tmType}<br>` +
-                        `Time: ${p.event_time ?? "—"}`;
+  // Existing popup
+  const popup = `<b>${p.permit_reference ?? p.event_reference}</b><br>` +
+                `Status: ${p.permit_status ?? "—"}<br>` +
+                `Type: ${p.geometry_type ?? "—"}<br>` +
+                `TM: ${tmType}<br>` +
+                `Time: ${p.event_time ?? "—"}`;
 
-          layer.bindPopup(popup);
+  layer.bindPopup(popup);
+
+  // NEW: Side panel click handler
+  layer.on("click", () => {
+    const panel = document.getElementById("infoPanel");
+    panel.classList.remove("hidden");
+    panel.classList.remove("collapsed");
+
+    const friendlyStart = p.proposed_start_date
+      ? new Date(p.proposed_start_date).toLocaleString()
+      : null;
+
+    const friendlyEnd = p.proposed_end_date
+      ? new Date(p.proposed_end_date).toLocaleString()
+      : null;
+
+    panel.innerHTML = `
+      <h2>${p.promoter_organisation || "Unknown Promoter"}</h2>
+
+      <h3 style="margin-top:4px;">
+        ${tmType}
+        <span style="color:#888; font-size:12px;">(what does this mean?)</span>
+      </h3>
+
+      <p>
+        ${p.works_location_type ? `<div><strong>Location Type:</strong> ${p.works_location_type}</div>` : ""}
+        ${p.work_category ? `<div><strong>Work Category:</strong> ${p.work_category}</div>` : ""}
+      </p>
+
+      <hr/>
+
+      ${friendlyStart ? `<p><strong>Start:</strong> ${friendlyStart}</p>` : ""}
+      ${friendlyEnd ? `<p><strong>End:</strong> ${friendlyEnd}</p>` : ""}
+
+      <hr/>
+
+      ${p.street_name ? `<div><strong>Street:</strong> ${p.street_name}</div>` : ""}
+      ${p.town ? `<div><strong>Town:</strong> ${p.town}</div>` : ""}
+      ${p.highway_authority ? `<div><strong>Highway Authority:</strong> ${p.highway_authority}</div>` : ""}
+
+      <hr/>
+
+      ${p.permit_reference_number ? `<div><strong>Permit Ref:</strong> ${p.permit_reference_number}</div>` : ""}
+      ${p.permit_status ? `<div><strong>Permit Status:</strong> ${p.permit_status}</div>` : ""}
+      ${p.work_status ? `<div><strong>Work Status:</strong> ${p.work_status}</div>` : ""}
+    `;
+  });
+}
+
 
           if (feature.properties.geometry_type !== "Point") {
             const center = layer.getBounds().getCenter();

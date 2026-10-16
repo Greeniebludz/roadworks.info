@@ -59,21 +59,24 @@
   layer.bindPopup(popup);
 
   // Side panel click handler
-  layer.on("click", () => {
+    layer.on("click", () => {
     const panel = document.getElementById("info-callout");
     panel.classList.remove("hidden");
     panel.classList.remove("collapsed");
 
-    const friendlyStart = p.proposed_start_date
-      ? new Date(p.proposed_start_date).toLocaleString()
+    const d = p.object_data || {};
+    const tmType = d.traffic_management_type ?? "—";
+
+    const friendlyStart = d.proposed_start_date
+      ? new Date(d.proposed_start_date).toLocaleString()
       : null;
 
-    const friendlyEnd = p.proposed_end_date
-      ? new Date(p.proposed_end_date).toLocaleString()
+    const friendlyEnd = d.proposed_end_date
+      ? new Date(d.proposed_end_date).toLocaleString()
       : null;
 
     panel.innerHTML = `
-      <h2>${p.promoter_organisation || "Unknown Promoter"}</h2>
+      <h2>${d.promoter_organisation || "Unknown Promoter"}</h2>
 
       <h3 style="margin-top:4px;">
         ${tmType}
@@ -81,8 +84,8 @@
       </h3>
 
       <p>
-        ${p.works_location_type ? `<div><strong>Location Type:</strong> ${p.works_location_type}</div>` : ""}
-        ${p.work_category ? `<div><strong>Work Category:</strong> ${p.work_category}</div>` : ""}
+        ${d.works_location_type ? `<div><strong>Location Type:</strong> ${d.works_location_type}</div>` : ""}
+        ${d.work_category ? `<div><strong>Work Category:</strong> ${d.work_category}</div>` : ""}
       </p>
 
       <hr/>
@@ -92,15 +95,15 @@
 
       <hr/>
 
-      ${p.street_name ? `<div><strong>Street:</strong> ${p.street_name}</div>` : ""}
-      ${p.town ? `<div><strong>Town:</strong> ${p.town}</div>` : ""}
-      ${p.highway_authority ? `<div><strong>Highway Authority:</strong> ${p.highway_authority}</div>` : ""}
+      ${d.street_name ? `<div><strong>Street:</strong> ${d.street_name}</div>` : ""}
+      ${d.town ? `<div><strong>Town:</strong> ${d.town}</div>` : ""}
+      ${d.highway_authority ? `<div><strong>Highway Authority:</strong> ${d.highway_authority}</div>` : ""}
 
       <hr/>
 
-      ${p.permit_reference_number ? `<div><strong>Permit Ref:</strong> ${p.permit_reference_number}</div>` : ""}
-      ${p.permit_status ? `<div><strong>Permit Status:</strong> ${p.permit_status}</div>` : ""}
-      ${p.work_status ? `<div><strong>Work Status:</strong> ${p.work_status}</div>` : ""}
+      ${d.permit_reference_number ? `<div><strong>Permit Ref:</strong> ${d.permit_reference_number}</div>` : ""}
+      ${d.permit_status ? `<div><strong>Permit Status:</strong> ${d.permit_status}</div>` : ""}
+      ${d.work_status ? `<div><strong>Work Status:</strong> ${d.work_status}</div>` : ""}
     `;
   });
 

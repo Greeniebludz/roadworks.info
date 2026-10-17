@@ -8861,18 +8861,19 @@ __name(interpolateShifts, "interpolateShifts");
 function transformOstn15(easting, northing) {
   const shifts = interpolateShifts(easting, northing);
   if (!shifts) return null;
-  const etrs89E = easting + shifts.eastShift;
-  const etrs89N = northing + shifts.northShift;
+  const etrs89E = easting - shifts.eastShift;   // changed + to -
+  const etrs89N = northing - shifts.northShift;   // changed + to -
   const [lng, lat] = lib_default(ETRS89_TM, WGS842, [etrs89E, etrs89N]);
   return { lng, lat };
 }
+
 __name(transformOstn15, "transformOstn15");
 function convertWktToGeoJson(wkt) {
   if (!wkt || typeof wkt !== "string") return null;
   const match2 = wkt.match(/^(\w+)\s*\((.*)\)$/);
   if (!match2) return null;
   const type = match2[1].toUpperCase();
-  const coordStr = match2[2];
+    const coordStr = match2[2].replace(/[()]/g, "");
   const points = coordStr.split(",").map((pair) => {
     const [easting, northing] = pair.trim().split(/\s+/).map(Number);
     const result = transformOstn15(easting, northing);
@@ -8908,26 +8909,79 @@ function convertWktToGeoJson(wkt) {
   return JSON.stringify({ ...geometry, bbox });
 }
 __name(convertWktToGeoJson, "convertWktToGeoJson");
+function computeGeometryMeta(geom, latitude, longitude) {
+  if (geom && geom.type && geom.coordinates) {
+    // convertWktToGeoJson already computed bbox — use it if present
+    if (geom.bbox && geom.bbox.length === 4) {
+      return {
+        geometryType: geom.type,
+        bboxMinLng: geom.bbox[0],
+        bboxMinLat: geom.bbox[1],
+        bboxMaxLng: geom.bbox[2],
+        bboxMaxLat: geom.bbox[3],
+      };
+    }
+    // Fallback: compute from coordinates
+    const coords = flattenCoords(geom.coordinates, geom.type);
+    if (coords.length === 0) {
+      return { geometryType: geom.type, bboxMinLng: null, bboxMinLat: null, bboxMaxLng: null, bboxMaxLat: null };
+    }
+    let minLng = Infinity, maxLng = -Infinity, minLat = Infinity, maxLat = -Infinity;
+    for (const [lng, lat] of coords) {
+      if (lng < minLng) minLng = lng;
+      if (lng > maxLng) maxLng = lng;
+      if (lat < minLat) minLat = lat;
+      if (lat > maxLat) maxLat = lat;
+    }
+    return { geometryType: geom.type, bboxMinLng: minLng, bboxMinLat: minLat, bboxMaxLng: maxLng, bboxMaxLat: maxLat };
+  }
+  if (latitude != null && longitude != null) {
+    return { geometryType: "Point", bboxMinLng: longitude, bboxMinLat: latitude, bboxMaxLng: longitude, bboxMaxLat: latitude };
+  }
+  return { geometryType: null, bboxMinLng: null, bboxMinLat: null, bboxMaxLng: null, bboxMaxLat: null };
+}
+
+function flattenCoords(coords, type) {
+  const result = [];
+  const depth = { Point: 0, MultiPoint: 1, LineString: 1, MultiLineString: 2, Polygon: 2, MultiPolygon: 3 }[type] ?? 1;
+  function walk(node, currentDepth) {
+    if (currentDepth === depth) {
+      if (Array.isArray(node) && node.length >= 2) result.push([node[0], node[1]]);
+      return;
+    }
+    if (Array.isArray(node)) for (const child of node) walk(child, currentDepth + 1);
+  }
+  walk(coords, 0);
+  return result;
+}
+
 var index_default = {
   async queue(batch, env, ctx) {
-    const stmt = env.DB.prepare(
-      `INSERT INTO events (event_time, permit_status, permit_reference, properties, longitude, latitude, geometry, raw_payload)
-			 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+        const stmt = env.DB.prepare(
+      `INSERT OR IGNORE INTO events (event_reference, event_time, permit_status, permit_reference, properties, longitude, latitude, geometry, raw_payload, geometry_type, bbox_min_lng, bbox_min_lat, bbox_max_lng, bbox_max_lat)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     );
+
     const statements = [];
     const messagesToAck = [];
-    for (const message of batch.messages) {
-      const smEvent = message.body;
+        for (const message of batch.messages) {
+            const smEvent = typeof message.body === "string" ? JSON.parse(message.body) : message.body;
       const raw = JSON.stringify(smEvent);
-      const eventTime = smEvent.event_time || smEvent.time || null;
-      const permitStatus = smEvent.permit_status || smEvent.status || null;
-      const permitRef = smEvent.permit_reference || smEvent.reference || null;
-      const properties = smEvent.properties || smEvent.location || null;
-      const wkt = smEvent.works_location_coordinates || null;
+      const obj = smEvent.object_data || {};
+          
+      const snsEventRef = smEvent.event_reference || null;
+      
+
+      const eventTime = smEvent.event_time || null;
+      const permitStatus = obj.permit_status || null;
+      const permitRef = obj.permit_reference_number || null;
+      const properties = JSON.stringify(smEvent);
+      const wkt = obj.works_location_coordinates || null;
       let geoJson = null;
       let longitude = null;
       let latitude = null;
       let conversionError = false;
+
       if (wkt) {
         try {
           geoJson = convertWktToGeoJson(wkt);
@@ -8953,8 +9007,14 @@ var index_default = {
         message.retry();
         continue;
       }
-      statements.push(
+      let parsedGeom = null;
+      if (geoJson) {
+        try { parsedGeom = JSON.parse(geoJson); } catch { parsedGeom = null; }
+      }
+      const meta = computeGeometryMeta(parsedGeom, latitude, longitude);
+            statements.push(
         stmt.bind(
+          snsEventRef,
           eventTime,
           permitStatus,
           permitRef,
@@ -8962,9 +9022,15 @@ var index_default = {
           longitude,
           latitude,
           geoJson,
-          raw
+          raw,
+          meta.geometryType,
+          meta.bboxMinLng,
+          meta.bboxMinLat,
+          meta.bboxMaxLng,
+          meta.bboxMaxLat
         )
       );
+
       messagesToAck.push(message);
     }
     try {
@@ -8983,4 +9049,3 @@ var index_default = {
 export {
   index_default as default
 };
-//# sourceMappingURL=index.js.map

@@ -135,7 +135,10 @@ function renderFeatures(features) {
     onEachFeature: (feature, layer) => {
       const p = feature.properties;
 
-      layer.on("click", () => showCallout(p.public_id));
+      layer.on("click", () => {
+        const id = p.public_id;
+        if (id) showCallout(id);
+      });
 
       if (feature.geometry.type !== "Point") {
         try {

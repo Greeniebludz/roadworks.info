@@ -200,7 +200,7 @@ function renderFeatures(features) {
       const p = feature.properties || {};
 
       const popup =
-        `<b>${p.promoter_organisation ?? "—"}</b><br>` +
+        `<b>${p.public_id ?? "—"}</b><br>` +
         `Status: ${p.status ?? "—"}<br>` +
         `Live: ${p.is_live ? "Yes" : "No"}<br>` +
         `Effective: ${p.effective_from ? new Date(p.effective_from).toLocaleDateString() : "—"} → ${p.effective_to ? new Date(p.effective_to).toLocaleDateString() : "open"}`;
@@ -233,7 +233,7 @@ function renderFeatures(features) {
 
 // --- Callout panel ---
 async function showCallout(publicId) {
-  const panel = document.getElementById("callout-details");
+  const panel = document.getElementById("sidebar-callout-details");
   const toggle = document.getElementById("callout-toggle");
   panel.classList.remove("hidden");
   toggle.style.display = "block";

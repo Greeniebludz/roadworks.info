@@ -200,9 +200,7 @@ function renderFeatures(features) {
       const p = feature.properties || {};
 
       const popup =
-        `<b>${
-          ent.promoter_organisation || payload.work_reference_number || publicId
-        }</b><br>` +
+        `<b>${p.ent.promoter_organisation || publicId}</b><br>` +
         `Status: ${p.status ?? "—"}<br>` +
         `Live: ${p.is_live ? "Yes" : "No"}<br>` +
         `Effective: ${p.effective_from ? new Date(p.effective_from).toLocaleDateString() : "—"} → ${p.effective_to ? new Date(p.effective_to).toLocaleDateString() : "open"}`;

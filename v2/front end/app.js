@@ -2,87 +2,86 @@ const API_BASE = 'https://api.roadworks.info';
 const MAPTILER_KEY = '84APRuB9gcvyT3xzXkKa';
 const CLUSTER_ZOOM = 11;
 
-// --- Icons ---
-const icons = {
-  "two-way signals": L.icon({ iconUrl: '/icons/tsa-icon.png', iconSize: [32, 32] }),
-  "some carriageway incursion": L.icon({ iconUrl: '/icons/c-icon.png', iconSize: [32, 32] }),
-  "give and take": L.icon({ iconUrl: '/icons/rwa-tbc-icon.png', iconSize: [32, 32] }),
-  "lane closure": L.icon({ iconUrl: '/icons/rwa-tbc-icon.png', iconSize: [32, 32] }),
-  "no carriageway incursion": L.icon({ iconUrl: '/icons/c-icon.png', iconSize: [32, 32] }),
-  "road closure": L.icon({ iconUrl: '/icons/road-closure-icon.png', iconSize: [32, 32] }),
-};
-const defaultIcon = L.icon({ iconUrl: '/icons/c-icon.png', iconSize: [32, 32] });
-
-// --- Map setup ---
-const map = L.map('map').setView([51.4545, -0.9781], 12);
+const map = L.map("map").setView([51.4545, -0.9781], 12);
 
 L.tileLayer(
   `https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
-  { attribution: '&copy; MapTiler &copy; OpenStreetMap contributors', maxZoom: 19 }
+  { attribution: "&copy; MapTiler &copy; OpenStreetMap contributors" }
 ).addTo(map);
 
+// --- Custom TSRGD-style icons (from v2) ---
+const icons = {
+  "two-way signals": L.icon({ iconUrl: "/icons/tsa-icon.png", iconSize: [32, 32] }),
+  "some carriageway incursion": L.icon({ iconUrl: "/icons/c-icon.png", iconSize: [32, 32] }),
+  "give and take": L.icon({ iconUrl: "/icons/rwa-tbc-icon.png", iconSize: [32, 32] }),
+  "lane closure": L.icon({ iconUrl: "/icons/rwa-tbc-icon.png", iconSize: [32, 32] }),
+  "no carriageway incursion": L.icon({ iconUrl: "/icons/c-icon.png", iconSize: [32, 32] }),
+  "road closure": L.icon({ iconUrl: "/icons/road-closure-icon.png", iconSize: [32, 32] }),
+};
+
+const defaultIcon = L.icon({
+  iconUrl: "/icons/c-icon.png",
+  iconSize: [32, 32],
+});
+
+// --- Layers ---
 let featuresLayer = null;
 let clusterLayer = null;
-let currentMode = null;
 let isLoading = false;
 
-// --- Loading indicator ---
-function showLoading() {
-  document.getElementById('loading').style.display = 'block';
-}
-function hideLoading() {
-  document.getElementById('loading').style.display = 'none';
+// --- Sidebar callout elements ---
+const calloutBody = document.getElementById("callout-details");
+const calloutToggle = document.getElementById("callout-toggle");
+const calloutBox = document.getElementById("info-callout");
+
+// --- Toggle behaviour ---
+calloutBox.addEventListener("click", () => {
+  const expanded = calloutBox.classList.toggle("expanded");
+  calloutToggle.textContent = expanded ? "▲" : "▼";
+});
+
+// --- Helper: choose icon based on TM type ---
+function getIconFromFeature(feature) {
+  const tm = feature.properties?.traffic_management_type;
+  return icons[tm] || defaultIcon;
 }
 
-// --- Status bar ---
-function updateStatus(mode, count) {
-  const bar = document.getElementById('status-bar');
-  if (mode === 'clusters') {
-    bar.textContent = `Zoom ${map.getZoom()} — showing ${count} cluster cells`;
-  } else {
-    bar.textContent = `Zoom ${map.getZoom()} — showing ${count} features`;
-  }
-}
-
-// --- Convert API response to GeoJSON ---
-function featuresToGeoJSON(features) {
+// --- Convert API features → GeoJSON ---
+function toGeoJSON(features) {
   return {
-    type: 'FeatureCollection',
-    features: (features || []).map(f => ({
-      type: 'Feature',
+    type: "FeatureCollection",
+    features: features.map((f) => ({
+      type: "Feature",
       geometry: f.geometry,
       properties: {
         public_id: f.public_id,
         status: f.status,
+        is_live: f.is_live,
         effective_from: f.effective_from,
         effective_to: f.effective_to,
-        is_live: f.is_live,
-        rep_lon: f.rep_lon,
-        rep_lat: f.rep_lat,
-      }
-    }))
+        traffic_management_type: f.payload?.traffic_management_type,
+        promoter_organisation: f.payload?.promoter_organisation,
+        street_name: f.payload?.street_name,
+        town: f.payload?.town,
+        area_name: f.payload?.area_name,
+        highway_authority: f.payload?.highway_authority,
+      },
+    })),
   };
 }
 
-// --- Load features from API ---
+// --- Load features from v3 API ---
 async function loadFeatures() {
   if (isLoading) return;
   isLoading = true;
-  showLoading();
 
-  const zoom = map.getZoom();
   const bounds = map.getBounds();
-  const min_lon = bounds.getWest();
-  const min_lat = bounds.getSouth();
-  const max_lon = bounds.getEast();
-  const max_lat = bounds.getNorth();
-
   const params = new URLSearchParams({
-    zoom: String(zoom),
-    min_lon: min_lon.toFixed(6),
-    min_lat: min_lat.toFixed(6),
-    max_lon: max_lon.toFixed(6),
-    max_lat: max_lat.toFixed(6),
+    zoom: map.getZoom(),
+    min_lon: bounds.getWest().toFixed(6),
+    min_lat: bounds.getSouth().toFixed(6),
+    max_lon: bounds.getEast().toFixed(6),
+    max_lat: bounds.getNorth().toFixed(6),
   });
 
   try {
@@ -90,117 +89,107 @@ async function loadFeatures() {
     const data = await res.json();
 
     // Remove old layers
-    if (featuresLayer) { map.removeLayer(featuresLayer); featuresLayer = null; }
-    if (clusterLayer) { map.removeLayer(clusterLayer); clusterLayer = null; }
+    if (featuresLayer) map.removeLayer(featuresLayer);
+    if (clusterLayer) map.removeLayer(clusterLayer);
 
-    if (data.serving_mode === 'clusters') {
+    if (data.serving_mode === "clusters") {
       renderClusters(data.clusters);
-      updateStatus('clusters', data.clusters.length);
-      currentMode = 'clusters';
     } else {
       renderFeatures(data.features);
-      updateStatus('features', data.features.length);
-      currentMode = 'features';
     }
   } catch (err) {
-    console.error('Failed to load features:', err);
+    console.error("Failed to load features:", err);
   } finally {
-    hideLoading();
     isLoading = false;
   }
 }
 
-// --- Render clusters ---
+// --- Render clusters (v3) ---
 function renderClusters(clusters) {
   clusterLayer = L.layerGroup();
 
-  for (const cell of clusters) {
+  clusters.forEach((cell) => {
     const latlng = [cell.centroid_lat, cell.centroid_lon];
     const statusKeys = Object.keys(cell.statuses || {});
     const isMixed = statusKeys.length > 1;
-    const isPlanned = statusKeys.length === 1 && statusKeys[0] === 'planned';
+    const isPlanned = statusKeys.length === 1 && statusKeys[0] === "planned";
 
-    const className = isMixed ? 'cluster-count mixed' : isPlanned ? 'cluster-count planned' : 'cluster-count';
+    const className = isMixed
+      ? "cluster-count mixed"
+      : isPlanned
+      ? "cluster-count planned"
+      : "cluster-count";
 
     const marker = L.marker(latlng, {
       icon: L.divIcon({
-        className: '',
+        className: "",
         html: `<div class="${className}">${cell.count}</div>`,
         iconSize: [30, 30],
-      })
+      }),
     });
 
-    const statusBreakdown = statusKeys
-      .map(s => `${s}: ${cell.statuses[s]}`)
-      .join(', ');
-
-    marker.bindPopup(`<b>${cell.count} road works</b><br>${statusBreakdown}`);
+    marker.bindPopup(`<b>${cell.count} road works</b>`);
     marker.addTo(clusterLayer);
-  }
+  });
 
   clusterLayer.addTo(map);
 }
 
-// --- Render features ---
+// --- Render features (v3 + v2 behaviour) ---
 function renderFeatures(features) {
-  const geojson = featuresToGeoJSON(features);
+  const geojson = toGeoJSON(features);
   const centerMarkers = [];
 
   featuresLayer = L.geoJSON(geojson, {
     style: (feature) => {
-      if (feature.geometry?.type === 'LineString') return { color: '#ff6600', weight: 3, opacity: 0.8 };
-      if (feature.geometry?.type === 'Polygon') return { color: '#3388ff', weight: 2, fillColor: '#3388ff', fillOpacity: 0.2 };
-      return { color: '#3388ff' };
+      const type = feature.geometry?.type;
+      if (type === "LineString") return { color: "#ff6600", weight: 3 };
+      if (type === "Polygon")
+        return { color: "#3388ff", weight: 2, fillOpacity: 0.2 };
+      return { color: "#3388ff" };
     },
 
     pointToLayer: (feature, latlng) =>
-      L.marker(latlng, { icon: defaultIcon }),
+      L.marker(latlng, { icon: getIconFromFeature(feature) }),
 
     onEachFeature: (feature, layer) => {
-      const p = feature.properties || {};
+      const p = feature.properties;
 
-      const popup = `<b>${p.public_id ?? 'Unknown'}</b><br>` +
-                    `Status: ${p.status ?? '—'}<br>` +
-                    `Live: ${p.is_live ? 'Yes' : 'No'}<br>` +
-                    `Effective: ${p.effective_from ? new Date(p.effective_from).toLocaleDateString() : '—'} → ${p.effective_to ? new Date(p.effective_to).toLocaleDateString() : 'open'}`;
+      const popup =
+        `<b>${p.public_id}</b><br>` +
+        `Status: ${p.status}<br>` +
+        `TM: ${p.traffic_management_type || "—"}<br>` +
+        `Live: ${p.is_live ? "Yes" : "No"}`;
 
       layer.bindPopup(popup);
 
-      layer.on('click', () => {
-        if (p.public_id) showCallout(p.public_id);
-      });
+      layer.on("click", () => showCallout(p.public_id));
 
-      if (feature.geometry?.type !== 'Point' && feature.geometry?.type !== null) {
+      // Center marker for non-point geometries
+      if (feature.geometry?.type !== "Point") {
         try {
           const center = layer.getBounds().getCenter();
-          const marker = L.marker(center, { icon: defaultIcon })
+          const marker = L.marker(center, {
+            icon: getIconFromFeature(feature),
+          })
             .bindPopup(popup)
-            .on('click', () => {
-              if (p.public_id) showCallout(p.public_id);
-            });
+            .on("click", () => showCallout(p.public_id));
+
           centerMarkers.push(marker);
-        } catch (e) {}
+        } catch {}
       }
-    }
+    },
   }).addTo(map);
 
-  centerMarkers.forEach(m => m.addTo(map));
+  centerMarkers.forEach((m) => m.addTo(map));
 }
 
-// --- Callout panel ---
+// --- Fetch timeline + show v2-style callout ---
 async function showCallout(publicId) {
-  const panel = document.getElementById('callout-details');
-  const toggle = document.getElementById('callout-toggle');
-  panel.classList.remove('hidden');
-  toggle.style.display = 'block';
-  panel.innerHTML = '<p>Loading details…</p>';
+  calloutBody.innerHTML = "Loading…";
 
   try {
     const res = await fetch(`${API_BASE}/api/timeline/${publicId}`);
-    if (!res.ok) {
-      panel.innerHTML = `<p>Unable to load details for ${publicId}</p>`;
-      return;
-    }
     const data = await res.json();
 
     const events = data.timeline || [];
@@ -209,51 +198,50 @@ async function showCallout(publicId) {
     const entity = data.entity || {};
 
     const friendlyStart = entity.effective_from
-      ? new Date(entity.effective_from).toLocaleString() : null;
+      ? new Date(entity.effective_from).toLocaleString()
+      : null;
     const friendlyEnd = entity.effective_to
-      ? new Date(entity.effective_to).toLocaleString() : null;
+      ? new Date(entity.effective_to).toLocaleString()
+      : null;
 
-    const sources = (data.attribution?.sources || []).join(', ');
+    calloutBody.innerHTML = `
+      <h2>${payload.promoter_organisation || publicId}</h2>
+      <h3>${payload.traffic_management_type || "Road works"}</h3>
 
-    panel.innerHTML = `
-      <h2>${payload.promoter_organisation || payload.work_reference_number || publicId}</h2>
-      <h3>${payload.traffic_management_type || 'Road works'}</h3>
       <p>
-        ${payload.works_location_type ? `<div><strong>Location Type:</strong> ${payload.works_location_type}</div>` : ""}
-        ${payload.work_category ? `<div><strong>Work Category:</strong> ${payload.work_category}</div>` : ""}
+        ${payload.work_category ? `<div><strong>Category:</strong> ${payload.work_category}</div>` : ""}
         ${payload.activity_type ? `<div><strong>Activity:</strong> ${payload.activity_type}</div>` : ""}
       </p>
+
       <hr/>
+
       ${friendlyStart ? `<p><strong>Start:</strong> ${friendlyStart}</p>` : ""}
       ${friendlyEnd ? `<p><strong>End:</strong> ${friendlyEnd}</p>` : ""}
+
       <hr/>
+
       ${payload.street_name ? `<div><strong>Street:</strong> ${payload.street_name}</div>` : ""}
       ${payload.town ? `<div><strong>Town:</strong> ${payload.town}</div>` : ""}
       ${payload.area_name ? `<div><strong>Area:</strong> ${payload.area_name}</div>` : ""}
       ${payload.highway_authority ? `<div><strong>Highway Authority:</strong> ${payload.highway_authority}</div>` : ""}
+
       <hr/>
-      <div><strong>Status:</strong> ${entity.status || '—'}</div>
-      <div><strong>Live:</strong> ${entity.is_live ? 'Yes' : 'No'}</div>
+
+      <div><strong>Status:</strong> ${entity.status}</div>
+      <div><strong>Live:</strong> ${entity.is_live ? "Yes" : "No"}</div>
+
       <hr/>
-      <div><strong>Events:</strong> ${events.length} (from ${sources || 'unknown'})</div>
-      ${data.attribution?.stale_warnings?.length ? `<div style="color:#e65100;"><strong>⚠ Stale data:</strong> ${data.attribution.stale_warnings.map(w => w.source).join(', ')}</div>` : ''}
+
+      <div><strong>Events:</strong> ${events.length}</div>
     `;
   } catch (err) {
-    panel.innerHTML = `<p>Error loading details: ${err.message}</p>`;
+    calloutBody.innerHTML = `<p>Error loading details: ${err.message}</p>`;
   }
 }
 
-// --- Callout toggle ---
-document.getElementById('callout-toggle').addEventListener('click', () => {
-  const panel = document.getElementById('callout-details');
-  const toggle = document.getElementById('callout-toggle');
-  const expanded = panel.classList.toggle('expanded');
-  toggle.textContent = expanded ? '▼' : '▲';
-});
-
-// --- Reload on map move (debounced) ---
+// --- Debounced reload ---
 let moveTimer = null;
-map.on('moveend zoomend', () => {
+map.on("moveend zoomend", () => {
   clearTimeout(moveTimer);
   moveTimer = setTimeout(loadFeatures, 300);
 });

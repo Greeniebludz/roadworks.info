@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>roadworks.info</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <!-- Leaflet CSS -->
     <link
       rel="stylesheet"
@@ -11,18 +12,14 @@
     />
     <!-- Your CSS -->
     <link rel="stylesheet" href="style.css" />
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Your JS -->
-    <script src="script.js"></script>
   </head>
 
   <body>
     <div id="map"></div>
-    <div id="loading">Loading road works…</div>
-    <div id="status-bar"></div>
-
     <div class="title-banner">roadworks.info</div>
+    <div id="loading">Loading road works…</div>
+
+    <div id="status-bar"></div>
 
     <div class="sidebar">
       <div class="search-bar">
@@ -34,6 +31,7 @@
           <span>Roadworks overview</span>
           <span id="callout-toggle">▼</span>
         </div>
+        <div class="title-banner">roadworks.info</div>
 
         <div class="callout-body" id="sidebar-callout-details">
           Live and planned roadworks across the UK. Click on a pin to see
@@ -41,5 +39,9 @@
         </div>
       </div>
     </div>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Your JS -->
+    <script src="script.js"></script>
   </body>
 </html>

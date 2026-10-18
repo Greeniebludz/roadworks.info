@@ -1,36 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Road Works Map — roadworks.info</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>roadworks.info</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-  <!-- Your CSS -->
-  <link rel="stylesheet" href="style.css" />
+  <body>
+    <div id="map"></div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <div class="title-banner">roadworks.info</div>
 
-  <!-- Your JS -->
-  <script defer src="app.js"></script>
-</head>
-
-<body>
-  <div id="map"></div>
-  <div id="loading">Loading road works…</div>
-  <div id="status-bar"></div>
-  <div id="callout-toggle" style="display:none;">▲</div>
-  <div id="callout-details" class="hidden"></div>
-  <div class="callout" id="info-callout">
-      <div class="callout-header">
-        <span>Roadworks overview</span>
-        <span id="callout-toggle">▼</span>
+    <div class="sidebar">
+      <div class="search-bar">
+        <input type="text" placeholder="Search road, town, or reference…" />
       </div>
-      <div class="callout-body" id="sidebar-callout-details">
-        Live and planned roadworks across the UK.
-        Click on a pin to see details, timings, and affected routes.
-</body>
+
+      <div class="callout" id="info-callout">
+        <div class="callout-header">
+          <span>Roadworks overview</span>
+          <span id="callout-toggle">▼</span>
+        </div>
+
+        <div class="callout-body" id="sidebar-callout-details">
+          Live and planned roadworks across the UK. Click on a pin to see
+          details.
+        </div>
+      </div>
+    </div>
+
+    <div id="loading">Loading road works…</div>
+    <div id="status-bar"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>

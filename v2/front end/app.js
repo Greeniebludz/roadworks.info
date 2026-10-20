@@ -222,7 +222,7 @@ function renderFeatures(features) {
         try {
           const center = layer.getBounds().getCenter();
           const marker = L.marker(center, {
-            icon: icons[p.tm] || defaultIcon,
+            icon: icons[p.tm],
           }).on("click", () => showCallout(p.public_id));
           centerMarkers.push(marker);
         } catch {}

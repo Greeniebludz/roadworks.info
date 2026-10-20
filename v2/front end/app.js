@@ -1,4 +1,6 @@
-const API_BASE = "https://search.roadworks.info";
+const API_BASE = "https://search.roadworks.info"; // features + search
+const TIMELINE_BASE = "https://api.roadworks.info"; // timeline (old Worker)
+
 const MAPTILER_KEY = "84APRuB9gcvyT3xzXkKa";
 
 /* Map */
@@ -244,7 +246,7 @@ async function showCallout(publicId) {
 
   /* ... rest of the function ... */
 
-  const res = await fetch(`${API_BASE}/api/timeline/${publicId}`);
+  const res = await fetch(`${TIMELINE_BASE}/api/timeline/${publicId}`);
   const data = await res.json();
 
   const events = data.timeline || [];

@@ -54,9 +54,16 @@ sidebarBox.addEventListener("click", () => {
 async function loadFeatures() {
   const bounds = map.getBounds();
 
-  const date = document.getElementById("dateFilter")?.value || "";
-  const dateParam = date ? `&date=${encodeURIComponent(date)}` : "";
+  // Read date inputs
+  const from = document.getElementById("dateFrom")?.value || "";
+  const to = document.getElementById("dateTo")?.value || "";
 
+  // Build date query params
+  let dateParam = "";
+  if (from) dateParam += `&from=${encodeURIComponent(from)}`;
+  if (to) dateParam += `&to=${encodeURIComponent(to)}`;
+
+  // Build bbox + zoom params
   const params = new URLSearchParams({
     zoom: map.getZoom(),
     min_lon: bounds.getWest().toFixed(6),
@@ -65,6 +72,7 @@ async function loadFeatures() {
     max_lat: bounds.getNorth().toFixed(6),
   });
 
+  // Fetch with date filters included
   const res = await fetch(`${API_BASE}/api/features?${params}${dateParam}`);
   const data = await res.json();
 
@@ -229,4 +237,5 @@ map.on("moveend zoomend", () => {
 
 /* Initial load */
 loadFeatures();
-document.getElementById("dateFilter").addEventListener("change", loadFeatures);
+document.getElementById("dateFrom").addEventListener("change", loadFeatures);
+document.getElementById("dateTo").addEventListener("change", loadFeatures);

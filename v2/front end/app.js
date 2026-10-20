@@ -208,7 +208,7 @@ function renderFeatures(features) {
 
   const layer = L.geoJSON(geojson, {
     pointToLayer: (feature, latlng) =>
-      L.marker(latlng, { icon: icons[feature.properties.tm] }),
+      L.marker(latlng, { icon: getIcon(feature.properties.tm) }),
 
     onEachFeature: (feature, layer) => {
       const p = feature.properties;
@@ -222,7 +222,7 @@ function renderFeatures(features) {
         try {
           const center = layer.getBounds().getCenter();
           const marker = L.marker(center, {
-            icon: icons[p.tm],
+            icon: getIcon(p.tm),
           }).on("click", () => showCallout(p.public_id));
           centerMarkers.push(marker);
         } catch {}

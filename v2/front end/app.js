@@ -98,7 +98,7 @@ const icons = {
     iconSize: [32, 32],
   }),
   "road closure": L.icon({
-    iconUrl: "/icons/rc-icon.png",
+    iconUrl: "/icons/ne-icon.png",
     iconSize: [32, 32],
   }),
 };

@@ -101,6 +101,27 @@ const icons = {
     iconUrl: "/icons/ne-icon.png",
     iconSize: [32, 32],
   }),
+  "multi-way signals": L.icon({
+    iconUrl: "/icons/tsa-icon.png",
+    iconSize: [32, 32],
+  }),
+  "stop/go boards": L.icon({
+    iconUrl: "/icons/c-icon.png",
+    iconSize: [32, 32],
+  }),
+  "temp obstruction 15 minute delay": L.icon({
+    iconUrl: "/icons/ws-icon.png",
+    iconSize: [32, 32],
+  }),
+  "priority working": L.icon({
+    iconUrl: "/icons/c-icon.png",
+    iconSize: [32, 32],
+  }),
+  "contra-flow": L.icon({ iconUrl: "/icons/c-icon.png", iconSize: [32, 32] }),
+  "convoy workings": L.icon({
+    iconUrl: "/icons/c-icon.png",
+    iconSize: [32, 32],
+  }),
 };
 const defaultIcon = L.icon({
   iconUrl: "/icons/c-icon.png",

@@ -8,6 +8,66 @@ L.tileLayer(
   { attribution: "&copy; MapTiler &copy; OpenStreetMap contributors" },
 ).addTo(map);
 
+/*Seachbar*/
+const SEARCH_BASE = "https://search.roadworks.info";
+
+let searchTimer = null;
+
+document.getElementById("searchInput").addEventListener("input", (e) => {
+  clearTimeout(searchTimer);
+  const q = e.target.value.trim();
+
+  if (q.length < 2) {
+    document.getElementById("searchResults").innerHTML = "";
+    return;
+  }
+
+  searchTimer = setTimeout(async () => {
+    const res = await fetch(
+      `${SEARCH_BASE}/api/search?q=${encodeURIComponent(q)}&limit=10`,
+    );
+    const data = await res.json();
+    const container = document.getElementById("searchResults");
+
+    if (!data.results || data.results.length === 0) {
+      container.innerHTML = "<div>No results found</div>";
+      return;
+    }
+
+    container.innerHTML = data.results
+      .map(
+        (r) => `
+      <div class="search-result" data-lon="${r.rep_lon}" data-lat="${r.rep_lat}" data-id="${r.permit_reference}">
+        <strong>${r.street_name || "Unknown street"}</strong>
+        ${r.town ? `<br/>${r.town}` : ""}
+        ${r.area_name ? `<br/>${r.area_name}` : ""}
+        <br/><small>${r.permit_reference}</small>
+      </div>`,
+      )
+      .join("");
+
+    // Click handler for each result
+    container.querySelectorAll(".search-result").forEach((el) => {
+      el.addEventListener("click", () => {
+        const lon = parseFloat(el.dataset.lon);
+        const lat = parseFloat(el.dataset.lat);
+        const id = el.dataset.id;
+
+        // Center the map on the result
+        map.setView([lat, lon], 16);
+
+        // Clear search
+        document.getElementById("searchResults").innerHTML = "";
+        document.getElementById("searchInput").value = "";
+
+        // Optionally trigger the popout by calling the timeline endpoint
+        // showPopout(id);
+      });
+      el.style.cursor = "pointer";
+    });
+  }, 300);
+});
+
 /* Icons */
 const icons = {
   "two-way signals": L.icon({

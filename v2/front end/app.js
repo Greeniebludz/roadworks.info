@@ -111,7 +111,7 @@ function renderFeatures(features) {
       type: "Feature",
       geometry: f.geometry,
       properties: {
-        public_id: f.public_id,
+        public_id: f.source_id,
         status: f.status,
         is_live: f.is_live,
         effective_from: f.effective_from,

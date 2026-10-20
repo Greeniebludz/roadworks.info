@@ -127,6 +127,39 @@ const defaultIcon = L.icon({
   iconUrl: "/icons/c-icon.png",
   iconSize: [32, 32],
 });
+function setDateRange(from, to) {
+  document.getElementById("dateFrom").value = from;
+  document.getElementById("dateTo").value = to;
+  loadFeatures();
+}
+
+document.getElementById("quickToday").addEventListener("click", () => {
+  const today = new Date().toISOString().split("T")[0];
+  setDateRange(today, today);
+});
+
+document.getElementById("quickLastWeek").addEventListener("click", () => {
+  const today = new Date();
+  const lastWeekStart = new Date(today);
+  lastWeekStart.setDate(today.getDate() - 7);
+
+  const from = lastWeekStart.toISOString().split("T")[0];
+  const to = today.toISOString().split("T")[0];
+
+  setDateRange(from, to);
+});
+
+document.getElementById("quickThisWeek").addEventListener("click", () => {
+  const today = new Date();
+  const day = today.getDay(); // 0 = Sunday
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - ((day + 6) % 7));
+
+  const from = monday.toISOString().split("T")[0];
+  const to = today.toISOString().split("T")[0];
+
+  setDateRange(from, to);
+});
 
 /* Sidebar callout */
 const sidebarPanel = document.getElementById("sidebar-callout-details");

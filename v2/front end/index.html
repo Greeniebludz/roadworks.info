@@ -10,6 +10,7 @@
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     />
+
     <!-- Your CSS -->
     <link rel="stylesheet" href="style.css" />
   </head>
@@ -21,7 +22,7 @@
     <div id="loading">Loading road works…</div>
 
     <!-- SEARCH BAR UNDER TITLE -->
-    <div class="search-bar">
+    <div class="top-search">
       <input
         type="text"
         id="searchInput"
@@ -40,22 +41,35 @@
           <span id="callout-toggle">▼</span>
         </div>
 
-        <div class="callout-body" id="sidebar-callout-details">
-          <!-- DATE FILTER INSIDE CALLOUT -->
+        <div class="callout-body">
+          <!-- STATIC DATE FILTER -->
           <div class="date-filter">
             <label><strong>Date range:</strong></label>
+
+            <!-- Quick buttons -->
+            <div class="quick-dates">
+              <button id="quickToday">Today</button>
+              <button id="quickLastWeek">Last Week</button>
+              <button id="quickThisWeek">This Week</button>
+            </div>
+
+            <!-- Actual date inputs -->
             <input type="date" id="dateFrom" />
             <input type="date" id="dateTo" />
           </div>
 
-          Live and planned roadworks across the UK. Click on a pin to see
-          details.
+          <!-- DYNAMIC CONTENT -->
+          <div id="sidebar-callout-details">
+            Live and planned roadworks across the UK. Click on a pin to see
+            details.
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <!-- Your JS -->
     <script src="app.js"></script>
   </body>

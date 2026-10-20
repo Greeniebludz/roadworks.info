@@ -208,7 +208,7 @@ function renderFeatures(features) {
 
   const layer = L.geoJSON(geojson, {
     pointToLayer: (feature, latlng) =>
-      L.marker(latlng, { icon: icons[feature.properties.tm] || defaultIcon }),
+      L.marker(latlng, { icon: icons[feature.properties.tm] }),
 
     onEachFeature: (feature, layer) => {
       const p = feature.properties;

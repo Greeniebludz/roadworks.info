@@ -173,8 +173,11 @@ async function showCallout(publicId) {
 
   const events = data.timeline || [];
   const latest = events[events.length - 1];
-  const payload = latest?.payload || {};
-  const ent = payload.entity || {};
+  const rawPayload = latest?.payload || {};
+  const parsed =
+    typeof rawPayload === "string" ? JSON.parse(rawPayload) : rawPayload;
+  const ent = parsed.object_data || parsed || {};
+
   const entity = data.entity || {};
 
   const friendlyStart = entity.effective_from

@@ -19,23 +19,21 @@
 
     <div class="title-banner">roadworks.info</div>
     <div id="loading">Loading road works…</div>
-    
 
+    <!-- SEARCH BAR UNDER TITLE -->
+    <div class="top-search">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search road, town, or reference…"
+      />
+      <div id="searchResults"></div>
     </div>
 
+    <!-- SIDEBAR -->
     <div class="sidebar">
-      <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search road, town, or reference…" />
-        <div id="searchResults"></div>
-      </div>
+      <div id="status-bar"></div>
 
-      <div class="sidebar">
-    <div class="date-filter">
-      <label><strong>Date range:</strong></label>
-      <input type="date" id="dateFrom" />
-      <input type="date" id="dateTo" />
-    </div>
- <div id="status-bar"></div>
       <div class="callout" id="info-callout">
         <div class="callout-header">
           <span>Roadworks overview</span>
@@ -43,11 +41,19 @@
         </div>
 
         <div class="callout-body" id="sidebar-callout-details">
+          <!-- DATE FILTER INSIDE CALLOUT -->
+          <div class="date-filter">
+            <label><strong>Date range:</strong></label>
+            <input type="date" id="dateFrom" />
+            <input type="date" id="dateTo" />
+          </div>
+
           Live and planned roadworks across the UK. Click on a pin to see
           details.
         </div>
       </div>
     </div>
+
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!-- Your JS -->

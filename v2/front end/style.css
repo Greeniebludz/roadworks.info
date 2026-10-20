@@ -41,6 +41,37 @@ body {
   z-index: 2000;
   pointer-events: none;
 }
+.top-search {
+  width: 100%;
+  max-width: 350px;
+  margin: 10px auto;
+  padding: 10px;
+}
+
+.top-search input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.date-filter {
+  margin-bottom: 12px;
+  padding: 10px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.date-filter input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
 
 /* Sidebar */
 .sidebar {

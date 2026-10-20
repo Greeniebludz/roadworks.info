@@ -53,6 +53,10 @@ sidebarBox.addEventListener("click", () => {
 /* Load features */
 async function loadFeatures() {
   const bounds = map.getBounds();
+
+  const date = document.getElementById("dateFilter")?.value || "";
+  const dateParam = date ? `&date=${encodeURIComponent(date)}` : "";
+
   const params = new URLSearchParams({
     zoom: map.getZoom(),
     min_lon: bounds.getWest().toFixed(6),
@@ -61,7 +65,7 @@ async function loadFeatures() {
     max_lat: bounds.getNorth().toFixed(6),
   });
 
-  const res = await fetch(`${API_BASE}/api/features?${params}`);
+  const res = await fetch(`${API_BASE}/api/features?${params}${dateParam}`);
   const data = await res.json();
 
   if (window.featuresLayer) map.removeLayer(window.featuresLayer);
@@ -73,7 +77,6 @@ async function loadFeatures() {
     renderFeatures(data.features);
   }
 }
-
 /* Render clusters */
 function renderClusters(clusters) {
   const layer = L.layerGroup();
@@ -226,3 +229,4 @@ map.on("moveend zoomend", () => {
 
 /* Initial load */
 loadFeatures();
+document.getElementById("dateFilter").addEventListener("change", loadFeatures);

@@ -41,6 +41,32 @@ body {
   z-index: 2000;
   pointer-events: none;
 }
+
+/* Sidebar */
+.sidebar {
+  position: absolute;
+  top: 80px;
+  left: 20px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 3000; /* Above map */
+}
+
+/* Search bar */
+.search-bar {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+.search-bar input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+}
 #searchContainer {
   position: absolute;
   top: 10px;
@@ -67,32 +93,6 @@ body {
 }
 .search-result:hover {
   background: #f0f7ff;
-}
-
-/* Sidebar */
-.sidebar {
-  position: absolute;
-  top: 80px;
-  left: 20px;
-  width: 280px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 3000; /* Above map */
-}
-
-/* Search bar */
-.search-bar {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 8px;
-  padding: 8px 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-.search-bar input {
-  width: 100%;
-  border: none;
-  outline: none;
-  font-size: 0.9rem;
 }
 
 /* Sidebar callout */

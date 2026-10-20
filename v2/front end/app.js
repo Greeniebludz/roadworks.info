@@ -1,4 +1,4 @@
-const API_BASE = "https://api.roadworks.info";
+const API_BASE = "https://search.roadworks.info";
 const MAPTILER_KEY = "84APRuB9gcvyT3xzXkKa";
 
 /* Map */
@@ -69,6 +69,11 @@ document.getElementById("searchInput").addEventListener("input", (e) => {
 });
 
 /* Icons */
+function getIcon(tm) {
+  const key = (tm || "").toLowerCase();
+  return icons[key] || defaultIcon;
+}
+
 const icons = {
   "two-way signals": L.icon({
     iconUrl: "/icons/tsa-icon.png",

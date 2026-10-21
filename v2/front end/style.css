@@ -61,7 +61,7 @@ body {
 }
 
 #searchResults {
-  display: none; /* hidden until results exist */
+  display: block; /* hidden until results exist */
   position: absolute;
   top: calc(100% + 4px);
   left: 0;

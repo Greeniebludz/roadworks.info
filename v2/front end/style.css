@@ -178,11 +178,9 @@ body {
    DATE FILTER (UNIFIED)
 -------------------------------------------------- */
 .date-filter {
-  margin: 10px 0;
-  padding: 10px;
-  background: #fff;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  margin-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 .date-filter label {

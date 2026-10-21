@@ -178,16 +178,18 @@ body {
    DATE FILTER (UNIFIED)
 -------------------------------------------------- */
 .date-filter {
-  margin-bottom: 0;
+  margin-bottom: 1px solid #eee;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
 
 .date-filter label {
   display: block;
-  margin-bottom: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
   font-size: 14px;
-  color: #333;
+  font-weight: 600;
 }
 
 .date-filter input[type="date"] {
@@ -197,6 +199,15 @@ body {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
+}
+/* Put the two date inputs side-by-side */
+.date-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.date-input-row input[type="date"] {
+  flex: 1;
 }
 
 /* Quick date buttons */

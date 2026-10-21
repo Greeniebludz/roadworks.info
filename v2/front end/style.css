@@ -47,7 +47,7 @@ body {
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  width: 350px;
+  width: 280px;
   z-index: 3000;
 }
 

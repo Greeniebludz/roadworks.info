@@ -7,7 +7,12 @@ const MAPTILER_KEY = "84APRuB9gcvyT3xzXkKa";
 const map = L.map("map").setView([51.4545, -0.9781], 12);
 L.tileLayer(
   `https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
-  { attribution: "&copy; MapTiler &copy; OpenStreetMap contributors" },
+  {
+    detectRetina: false,
+    useCache: true,
+    cacheMaxAge: 86400, // 24 hours
+    attribution: "&copy; MapTiler &copy; OpenStreetMap contributors",
+  },
 ).addTo(map);
 
 /*Seachbar*/

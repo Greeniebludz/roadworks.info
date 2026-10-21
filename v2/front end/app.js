@@ -79,48 +79,48 @@ function getIcon(tm) {
 const icons = {
   "two-way signals": L.icon({
     iconUrl: "/icons/tsa-icon.png",
-    iconSize: [32, 32],
+    iconSize: [40, 40],
   }),
   "some carriageway incursion": L.icon({
     iconUrl: "/icons/c-icon.png",
-    iconSize: [32, 32],
+    iconSize: [40, 40],
   }),
   "give and take": L.icon({
     iconUrl: "/icons/rwa-tbc-icon.png",
-    iconSize: [32, 32],
+    iconSize: [40, 40],
   }),
   "lane closure": L.icon({
     iconUrl: "/icons/rwa-tbc-icon.png",
-    iconSize: [32, 32],
+    iconSize: [40, 40],
   }),
   "no carriageway incursion": L.icon({
     iconUrl: "/icons/c-icon.png",
-    iconSize: [32, 32],
+    iconSize: [40, 40],
   }),
   "road closure": L.icon({
     iconUrl: "/icons/ne-icon.png",
-    iconSize: [32, 32],
+    iconSize: [40, 40],
   }),
   "multi-way signals": L.icon({
     iconUrl: "/icons/tsa-icon.png",
-    iconSize: [32, 32],
+    iconSize: [40, 40],
   }),
   "stop/go boards": L.icon({
     iconUrl: "/icons/c-icon.png",
-    iconSize: [32, 32],
+    iconSize: [40, 40],
   }),
   "temp obstruction 15 minute delay": L.icon({
     iconUrl: "/icons/ws-icon.png",
-    iconSize: [32, 32],
+    iconSize: [40, 40],
   }),
   "priority working": L.icon({
     iconUrl: "/icons/c-icon.png",
-    iconSize: [32, 32],
+    iconSize: [40, 40],
   }),
-  "contra-flow": L.icon({ iconUrl: "/icons/c-icon.png", iconSize: [32, 32] }),
+  "contra-flow": L.icon({ iconUrl: "/icons/c-icon.png", iconSize: [40, 40] }),
   "convoy workings": L.icon({
     iconUrl: "/icons/c-icon.png",
-    iconSize: [32, 32],
+    iconSize: [40, 40],
   }),
 };
 const defaultIcon = L.icon({

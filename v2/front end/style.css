@@ -178,7 +178,7 @@ body {
    DATE FILTER (UNIFIED)
 -------------------------------------------------- */
 .date-filter {
-  margin-bottom: 1px solid #eee;
+  margin-bottom: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }

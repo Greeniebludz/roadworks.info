@@ -1,9 +1,12 @@
-/* Reset */
+/* --------------------------------------------------
+   RESET
+-------------------------------------------------- */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
 html,
 body {
   height: 100%;
@@ -16,7 +19,9 @@ body {
     sans-serif;
 }
 
-/* Map */
+/* --------------------------------------------------
+   MAP
+-------------------------------------------------- */
 #map {
   position: absolute;
   inset: 0;
@@ -25,7 +30,9 @@ body {
   z-index: 1;
 }
 
-/* Title banner */
+/* --------------------------------------------------
+   TITLE BANNER
+-------------------------------------------------- */
 .title-banner {
   position: absolute;
   top: 20px;
@@ -41,7 +48,10 @@ body {
   z-index: 2000;
   pointer-events: none;
 }
-/* Search bar under title */
+
+/* --------------------------------------------------
+   TOP SEARCH BAR
+-------------------------------------------------- */
 .top-search {
   position: absolute;
   top: 20px;
@@ -61,51 +71,131 @@ body {
 }
 
 #searchResults {
-  display: block; /* hidden until results exist */
+  display: block;
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-
   background: white;
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-
   max-height: 300px;
   overflow-y: auto;
 }
 
-.date-filter {
-  margin-bottom: 12px;
-  padding: 10px;
-  background: #fff;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+/* --------------------------------------------------
+   SIDEBAR
+-------------------------------------------------- */
+.sidebar {
+  position: absolute;
+  top: 80px;
+  left: 20px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 3000;
 }
 
-.date-filter input[type="date"] {
+/* --------------------------------------------------
+   SEARCH BAR (SIDEBAR)
+-------------------------------------------------- */
+.search-bar {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.search-bar input {
   width: 100%;
-  padding: 8px;
-  margin-top: 6px;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+}
+
+/* --------------------------------------------------
+   SEARCH CONTAINER (GLOBAL)
+-------------------------------------------------- */
+#searchContainer {
+  position: absolute;
+  top: 10px;
+  left: 60px;
+  z-index: 1000;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+#searchInput {
+  padding: 8px 12px;
+  width: 280px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
 }
 
-/* Date filter inside callout */
+.search-result {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.search-result:hover {
+  background: #f0f7ff;
+}
+
+/* --------------------------------------------------
+   CALLOUT
+-------------------------------------------------- */
+.callout {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.callout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+
+.callout-body {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  display: none;
+}
+
+.callout.expanded .callout-body {
+  display: block;
+}
+
+/* --------------------------------------------------
+   DATE FILTER (UNIFIED)
+-------------------------------------------------- */
 .date-filter {
-  margin-bottom: 12px;
+  margin: 10px 0;
   padding: 10px;
   background: #fff;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
+.date-filter label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
 .date-filter input[type="date"] {
   width: 100%;
   padding: 8px;
-  margin-top: 6px;
+  margin-bottom: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
@@ -132,128 +222,9 @@ body {
   background: #e9e9e9;
 }
 
-/* Sidebar */
-.sidebar {
-  position: absolute;
-  top: 80px;
-  left: 20px;
-  width: 280px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 3000; /* Above map */
-}
-
-/* Search bar */
-.search-bar {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 8px;
-  padding: 8px 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-.search-bar input {
-  width: 100%;
-  border: none;
-  outline: none;
-  font-size: 0.9rem;
-}
-#searchContainer {
-  position: absolute;
-  top: 10px;
-  left: 60px;
-  z-index: 1000;
-  background: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-#searchInput {
-  padding: 8px 12px;
-  width: 280px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-}
-#searchResults {
-  max-height: 300px;
-  overflow-y: auto;
-}
-.search-result {
-  padding: 8px 12px;
-  border-bottom: 1px solid #eee;
-}
-.search-result:hover {
-  background: #f0f7ff;
-}
-
-/* Sidebar callout */
-.callout {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-}
-.callout-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
-}
-.callout-body {
-  margin-top: 10px;
-  font-size: 0.85rem;
-  line-height: 1.4;
-  display: none;
-}
-.date-filter {
-  margin-top: 10px;
-  padding: 10px;
-  background: #fff;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-}
-
-.date-filter label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 14px;
-  color: #333;
-}
-
-.date-filter input[type="date"] {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.callout.expanded .callout-body {
-  display: block;
-}
-
-/* Cluster markers */
-.cluster-count {
-  background: #ff6600;
-  color: #fff;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
-  text-align: center;
-  font-size: 12px;
-  font-weight: bold;
-  border: 2px solid #fff;
-}
-.cluster-count.planned {
-  background: #2196f3;
-}
-.cluster-count.mixed {
-  background: #9c27b0;
-}
-
-/* Loading + status */
+/* --------------------------------------------------
+   LOADING + STATUS
+-------------------------------------------------- */
 #loading {
   position: fixed;
   top: 10px;
@@ -267,6 +238,7 @@ body {
   z-index: 4000;
   display: none;
 }
+
 #status-bar {
   position: fixed;
   top: 10px;

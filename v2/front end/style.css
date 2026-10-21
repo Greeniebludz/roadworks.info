@@ -43,10 +43,13 @@ body {
 }
 /* Search bar under title */
 .top-search {
+  position: absolute;
+  top: 70px;
+  left: 75%;
+  transform: translateX(-50%);
   width: 100%;
   max-width: 350px;
-  margin: 10px auto;
-  padding: 10px;
+  z-index: 3000;
   border: 2px solid red;
 }
 

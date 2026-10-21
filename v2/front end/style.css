@@ -195,6 +195,7 @@ body {
 
 .date-filter label {
   display: block;
+  width: 80%;
   padding-bottom: 6px;
   margin-bottom: 10px;
   border-bottom: 1px solid #eee;
@@ -207,7 +208,7 @@ body {
   padding: 8px;
   margin-bottom: 8px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 2px;
   font-size: 14px;
 }
 /* Put the two date inputs side-by-side */

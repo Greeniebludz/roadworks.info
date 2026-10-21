@@ -189,13 +189,13 @@ body {
 }
 
 .date-filter {
+  width: 80%;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
 
 .date-filter label {
   display: block;
-  width: 80%;
   padding-bottom: 6px;
   margin-bottom: 10px;
   border-bottom: 1px solid #eee;

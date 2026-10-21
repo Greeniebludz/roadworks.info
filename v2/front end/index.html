@@ -31,6 +31,22 @@
       <div id="searchResults"></div>
     </div>
 
+    <!-- STATIC DATE FILTER -->
+    <div class="date-filter">
+      <label><strong>Date range:</strong></label>
+
+      <!-- Quick buttons -->
+      <div class="quick-dates">
+        <button id="quickToday">Today</button>
+        <button id="quickLastWeek">Last Week</button>
+        <button id="quickThisWeek">This Week</button>
+      </div>
+
+      <!-- Actual date inputs -->
+      <input type="date" id="dateFrom" />
+      <input type="date" id="dateTo" />
+    </div>
+
     <!-- SIDEBAR -->
     <div class="sidebar">
       <div id="status-bar"></div>
@@ -42,22 +58,6 @@
         </div>
 
         <div class="callout-body">
-          <!-- STATIC DATE FILTER -->
-          <div class="date-filter">
-            <label><strong>Date range:</strong></label>
-
-            <!-- Quick buttons -->
-            <div class="quick-dates">
-              <button id="quickToday">Today</button>
-              <button id="quickLastWeek">Last Week</button>
-              <button id="quickThisWeek">This Week</button>
-            </div>
-
-            <!-- Actual date inputs -->
-            <input type="date" id="dateFrom" />
-            <input type="date" id="dateTo" />
-          </div>
-
           <!-- DYNAMIC CONTENT -->
           <div id="sidebar-callout-details">
             Live and planned roadworks across the UK. Click on a pin to see

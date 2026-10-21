@@ -189,7 +189,6 @@ body {
 }
 
 .date-filter {
-  width: 80%;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -204,7 +203,7 @@ body {
 }
 
 .date-filter input[type="date"] {
-  width: 80%;
+  width: 100%;
   padding: 8px;
   margin-bottom: 8px;
   border: 1px solid #ccc;
@@ -218,6 +217,7 @@ body {
 }
 
 .date-input-row input[type="date"] {
+  width: 80%;
   flex: 1;
 }
 

@@ -41,6 +41,7 @@ body {
   z-index: 2000;
   pointer-events: none;
 }
+/* Search bar under title */
 .top-search {
   width: 100%;
   max-width: 350px;
@@ -72,21 +73,6 @@ body {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
-}
-/* Search bar under title */
-.top-search {
-  width: 100%;
-  max-width: 350px;
-  margin: 10px auto;
-  padding: 10px;
-}
-
-.top-search input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 15px;
 }
 
 /* Date filter inside callout */

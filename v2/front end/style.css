@@ -44,21 +44,36 @@ body {
 /* Search bar under title */
 .top-search {
   position: absolute;
-  top: 70px;
-  left: 75%;
+  top: 20px;
+  left: 50%;
   transform: translateX(-50%);
-  width: 100%;
-  max-width: 350px;
+  width: 350px;
   z-index: 3000;
-  border: 2px solid red;
 }
 
 .top-search input {
   width: 100%;
-  padding: 10px;
-  border-radius: 6px;
+  padding: 10px 12px;
   border: 1px solid #ccc;
+  border-radius: 8px;
   font-size: 15px;
+  background: white;
+}
+
+#searchResults {
+  display: none; /* hidden until results exist */
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .date-filter {

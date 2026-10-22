@@ -351,7 +351,7 @@ async function showCallout(publicId) {
 
     <hr/>
 
-    <div><strong>Permit reference:</strong> ${publicId}</div>
+    <div><strong>Permit reference:</strong> ${permitReference}</div>
   `;
 }
 

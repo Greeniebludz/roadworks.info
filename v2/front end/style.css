@@ -313,3 +313,22 @@ body {
       0 0 32px rgba(255, 0, 0, 0.6);
   }
 }
+
+/* --------------------------------------------------
+   LIVE MARKER ANIMATION
+-------------------------------------------------- */
+.live-marker {
+  animation: livePulse 2s infinite;
+}
+
+@keyframes livePulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px #00ff66) drop-shadow(0 0 8px #00ff66);
+  }
+
+  50% {
+    filter: drop-shadow(0 0 8px #00ff66) drop-shadow(0 0 16px #00ff66)
+      drop-shadow(0 0 24px #00ff66);
+  }
+}

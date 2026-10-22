@@ -333,8 +333,8 @@ async function showCallout(publicId) {
 
     <hr/>
     <p> When is this work happening? <p>
-    ${friendlyStart ? `<div><strong>Start:</strong> ${friendlyStart}</div>` : ""}
-    ${friendlyEnd ? `<div><strong>End:</strong> ${friendlyEnd}</div>` : ""}
+    ${friendlyStart ? `<div>🕒<strong>Start:</strong> ${friendlyStart}</div>` : ""}
+    ${friendlyEnd ? `<div>🕒<strong>End:</strong> ${friendlyEnd}</div>` : ""}
     <p> <i> The start and end dates can change. <i> <p>
 
     <hr/>

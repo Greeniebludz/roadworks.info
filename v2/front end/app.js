@@ -138,8 +138,6 @@ function setDateRange(from, to) {
   loadFeatures();
 }
 
-document.getElementById("quickToday").click();
-
 document.getElementById("quickToday").addEventListener("click", () => {
   const today = new Date().toISOString().split("T")[0];
   setDateRange(today, today);
@@ -390,6 +388,15 @@ map.on("moveend zoomend", () => {
   clearTimeout(moveTimer);
   moveTimer = setTimeout(loadFeatures, 300);
 });
+
+/* Default to today */
+const today = new Date().toISOString().split("T")[0];
+setDateRange(today, today);
+
+/* Date filter listeners */
+document.getElementById("dateFrom").addEventListener("change", loadFeatures);
+
+document.getElementById("dateTo").addEventListener("change", loadFeatures);
 
 /* Initial load */
 loadFeatures();

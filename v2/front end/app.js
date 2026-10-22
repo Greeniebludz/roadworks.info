@@ -138,6 +138,8 @@ function setDateRange(from, to) {
   loadFeatures();
 }
 
+document.getElementById("quickToday").click();
+
 document.getElementById("quickToday").addEventListener("click", () => {
   const today = new Date().toISOString().split("T")[0];
   setDateRange(today, today);

@@ -324,15 +324,25 @@ async function showCallout(publicId) {
     ? new Date(entity.effective_to).toLocaleString()
     : null;
 
+  const isUrgent =
+    ent.work_category_ref === "immediate_urgent" ||
+    ent.work_category_ref === "immediate_emergency";
+
   sidebarPanel.innerHTML = `
     <p> Who is responsible for this work? <p>  
     <h2>🦺${ent.promoter_organisation || publicId}</h2>
     ${ent.promoter_organisation || publicId}
 ${
-  entity.status === "urgent"
+  isUrgent
     ? `
-🚨 URGENT WORKS
-`
+      <div class="urgent-alert">
+        🚨 ${
+          ent.work_category_ref === "immediate_emergency"
+            ? "EMERGENCY WORKS"
+            : "URGENT WORKS"
+        }
+      </div>
+    `
     : ""
 }
     <p> <i> How to contact the responsible promotor <i> <p>

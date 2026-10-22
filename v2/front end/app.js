@@ -331,7 +331,6 @@ async function showCallout(publicId) {
   sidebarPanel.innerHTML = `
     <p> Who is responsible for this work? <p>  
     <h2>🦺${ent.promoter_organisation || publicId}</h2>
-    ${ent.promoter_organisation || publicId}
 ${
   isUrgent
     ? `

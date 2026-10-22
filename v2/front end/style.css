@@ -271,3 +271,29 @@ body {
   z-index: 4000;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
+.urgent-alert {
+  background: linear-gradient(90deg, #c62828, #e53935);
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 10px 0;
+
+  animation: urgentPulse 2s infinite;
+}
+
+@keyframes urgentPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 8px rgba(255, 0, 0, 0.4),
+      0 0 16px rgba(255, 0, 0, 0.2);
+  }
+
+  50% {
+    box-shadow:
+      0 0 16px rgba(255, 0, 0, 0.9),
+      0 0 32px rgba(255, 0, 0, 0.6);
+  }
+}

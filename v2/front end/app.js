@@ -330,6 +330,8 @@ async function showCallout(publicId) {
     <p> <i> How to contact the responsible promotor <i> <p>
     <h3>Traffic management: ${ent.traffic_management_type || "Road works"}</h3>
 
+    <hr/>
+
     ${ent.work_category ? `<div><strong>Category:</strong> ${ent.work_category}</div>` : ""}
     ${ent.activity_type ? `<div><strong>Activity:</strong> ${ent.activity_type}</div>` : ""}
 

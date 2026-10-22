@@ -179,7 +179,7 @@ body {
    DATE FILTER (UNIFIED)
 -------------------------------------------------- */
 .date-filter-container {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgb(149, 207, 158);
   padding: 12px;
   border-radius: 8px;
   border-bottom-left-radius: 0;

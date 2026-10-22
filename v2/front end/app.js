@@ -341,6 +341,7 @@ async function showCallout(publicId) {
 
     ${ent.street_name ? `<div>📍<strong>Street:</strong> ${ent.street_name}</div>` : ""}
     ${ent.town ? `<div>📍<strong>Town:</strong> ${ent.town}</div>` : ""}
+    <p> Holding place for USRN </p>
     ${ent.highway_authority ? `<div>🏢<strong>Authority:</strong> ${ent.highway_authority}</div>` : ""}
 
     <hr/>
@@ -351,6 +352,14 @@ async function showCallout(publicId) {
     <hr/>
 
     <div><strong>📋Permit reference:</strong> ${entity.permit_reference}</div>
+
+    <hr/>
+    
+    <p> Holding place for Permit Conditions </p>
+    <p> Holding place for Works location (geo description) </p>
+    <p> Holding place for Is traffic sensitive </p>
+    <p> Holding place for close footway </p>
+    <p> Holding place for	Is TTRO required </p>
   `;
 }
 

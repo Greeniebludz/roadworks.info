@@ -266,8 +266,19 @@ function renderFeatures(features) {
   const centerMarkers = [];
 
   const layer = L.geoJSON(geojson, {
-    pointToLayer: (feature, latlng) =>
-      L.marker(latlng, { icon: getIcon(feature.properties.tm) }),
+    pointToLayer: (feature, latlng) => {
+      const marker = L.marker(latlng, {
+        icon: getIcon(feature.properties.tm),
+      });
+
+      if (feature.properties.is_live) {
+        marker.on("add", () => {
+          marker.getElement()?.classList.add("live-marker");
+        });
+      }
+
+      return marker;
+    },
 
     onEachFeature: (feature, layer) => {
       const p = feature.properties;
@@ -282,7 +293,16 @@ function renderFeatures(features) {
           const center = layer.getBounds().getCenter();
           const marker = L.marker(center, {
             icon: getIcon(p.tm),
-          }).on("click", () => showCallout(p.public_id));
+          });
+
+          if (p.is_live) {
+            marker.on("add", () => {
+              marker.getElement()?.classList.add("live-marker");
+            });
+          }
+
+          marker.on("click", () => showCallout(p.public_id));
+
           centerMarkers.push(marker);
         } catch {}
       }

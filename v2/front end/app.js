@@ -332,14 +332,15 @@ async function showCallout(publicId) {
     <p> <i> What does this traffic management mean? <i> <p>
 
     <hr/>
-
-    ${ent.work_category ? `<div><strong>Category:</strong> ${ent.work_category}</div>` : ""}
-    ${ent.activity_type ? `<div><strong>Activity:</strong> ${ent.activity_type}</div>` : ""}
+    <p> When is this work happening? <p>
+    ${friendlyStart ? `<div><strong>Start:</strong> ${friendlyStart}</div>` : ""}
+    ${friendlyEnd ? `<div><strong>End:</strong> ${friendlyEnd}</div>` : ""}
+    <p> <i> The start and end dates can change. <i> <p>
 
     <hr/>
 
-    ${friendlyStart ? `<div><strong>Start:</strong> ${friendlyStart}</div>` : ""}
-    ${friendlyEnd ? `<div><strong>End:</strong> ${friendlyEnd}</div>` : ""}
+    ${ent.work_category ? `<div><strong>Category:</strong> ${ent.work_category}</div>` : ""}
+    ${ent.activity_type ? `<div><strong>Activity:</strong> ${ent.activity_type}</div>` : ""}
 
     <hr/>
 

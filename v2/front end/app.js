@@ -325,6 +325,7 @@ async function showCallout(publicId) {
     : null;
 
   sidebarPanel.innerHTML = `
+    <h4> Who is responsible for this work? </h4>  
     <h2>${ent.promoter_organisation || publicId}</h2>
     <h3>${ent.traffic_management_type || "Road works"}</h3>
 

@@ -339,10 +339,10 @@ async function showCallout(publicId) {
 
     <hr/>
 
-    ${ent.street_name ? `<div><strong>Street:</strong> ${ent.street_name}</div>` : ""}
-    ${ent.town ? `<div><strong>Town:</strong> ${ent.town}</div>` : ""}
-    ${ent.area_name ? `<div><strong>Area:</strong> ${ent.area_name}</div>` : ""}
-    ${ent.highway_authority ? `<div><strong>Authority:</strong> ${ent.highway_authority}</div>` : ""}
+    ${ent.street_name ? `<div>📍<strong>Street:</strong> ${ent.street_name}</div>` : ""}
+    ${ent.town ? `<div>📍<strong>Town:</strong> ${ent.town}</div>` : ""}
+    ${ent.area_name ? `<div>🗺️<strong>Area:</strong> ${ent.area_name}</div>` : ""}
+    ${ent.highway_authority ? `<div>🏢<strong>Authority:</strong> ${ent.highway_authority}</div>` : ""}
 
     <hr/>
 

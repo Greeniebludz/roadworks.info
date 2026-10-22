@@ -339,11 +339,6 @@ async function showCallout(publicId) {
 
     <hr/>
 
-    ${ent.work_category ? `<div><strong>Category:</strong> ${ent.work_category}</div>` : ""}
-    ${ent.activity_type ? `<div><strong>Activity:</strong> ${ent.activity_type}</div>` : ""}
-
-    <hr/>
-
     ${ent.street_name ? `<div><strong>Street:</strong> ${ent.street_name}</div>` : ""}
     ${ent.town ? `<div><strong>Town:</strong> ${ent.town}</div>` : ""}
     ${ent.area_name ? `<div><strong>Area:</strong> ${ent.area_name}</div>` : ""}
@@ -356,7 +351,7 @@ async function showCallout(publicId) {
 
     <hr/>
 
-    <div><strong>Events:</strong> ${events.length}</div>
+    <div><strong>Permit reference:</strong> ${publicId}</div>
   `;
 }
 

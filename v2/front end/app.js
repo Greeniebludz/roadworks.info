@@ -202,6 +202,14 @@ async function loadFeatures() {
   const res = await fetch(`${API_BASE}/api/features?${params}${dateParam}`);
   const data = await res.json();
 
+  // Log the number of features returned
+  console.log("Features returned:", data.features.length);
+
+  const target = data.features.find((f) => f.public_id === "1p0hykpbculc0");
+
+  console.log("Target feature:", target);
+  // Remove existing layers
+
   if (window.featuresLayer) map.removeLayer(window.featuresLayer);
   if (window.clusterLayer) map.removeLayer(window.clusterLayer);
 
@@ -428,5 +436,3 @@ document.getElementById("dateTo").addEventListener("change", loadFeatures);
 loadFeatures();
 document.getElementById("dateFrom").addEventListener("change", loadFeatures);
 document.getElementById("dateTo").addEventListener("change", loadFeatures);
-
-console.log(data.features.find((f) => f.public_id === "1p0hykpbculc0"));

@@ -413,7 +413,7 @@ ${
   `;
 
   console.log("Timeline URL:");
-  console.log(`${TIMELINE_BASE}/api/timeline/${entity.source_id}`);
+  console.log(`${TIMELINE_BASE}/api/timeline/${entity.entity_id}`);
 }
 
 /* Reload on move */

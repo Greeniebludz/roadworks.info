@@ -429,5 +429,4 @@ loadFeatures();
 document.getElementById("dateFrom").addEventListener("change", loadFeatures);
 document.getElementById("dateTo").addEventListener("change", loadFeatures);
 
-console.log("Features URL:");
-console.log(`${API_BASE}/api/features?${params}${dateParam}`);
+console.log(data.features.find((f) => f.public_id === "1p0hykpbculc0"));

@@ -434,5 +434,8 @@ document.getElementById("dateTo").addEventListener("change", loadFeatures);
 
 /* Initial load */
 loadFeatures();
-document.getElementById("dateFrom").addEventListener("change", loadFeatures);
-document.getElementById("dateTo").addEventListener("change", loadFeatures);
+console.log("loadFeatures STARTED"); // ← add this
+const bounds = map.getBounds();
+// ... existing code ...
+console.log("fetching:", `${API_BASE}/api/features?${params}${dateParam}`); // ← add this before fetch
+const res = await fetch(`${API_BASE}/api/features?${params}${dateParam}`);

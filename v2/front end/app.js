@@ -399,6 +399,11 @@ ${
     <p> Holding place for Is traffic sensitive </p>
     <p> Holding place for close footway </p>
     <p> Holding place for	Is TTRO required </p>
+
+    <hr/>
+
+    console.log("Timeline URL:");
+console.log(`${TIMELINE_BASE}/api/timeline/${entity.public_id}`);
   `;
 }
 
@@ -422,3 +427,6 @@ document.getElementById("dateTo").addEventListener("change", loadFeatures);
 loadFeatures();
 document.getElementById("dateFrom").addEventListener("change", loadFeatures);
 document.getElementById("dateTo").addEventListener("change", loadFeatures);
+
+console.log("Features URL:");
+console.log(`${API_BASE}/api/features?${params}${dateParam}`);

@@ -374,7 +374,7 @@ ${
     <p> <i> What does this traffic management mean? <i> <p>
 
     <hr/>
-    <p> When is this work happening? <p>
+    <H3> When is this work happening? </H3>
     ${friendlyStart ? `<div>📅🕒<strong>Start:</strong> ${friendlyStart}</div>` : ""}
     ${friendlyEnd ? `<div>📅🕒<strong>End:</strong> ${friendlyEnd}</div>` : ""}
     <p> <i> The start and end dates can change. <i> <p>

@@ -386,7 +386,7 @@ ${
     <hr/>
      <H3> Where is this work happening? </H3>
     ${ent.street_name ? `<div>📍<strong>Street:</strong> ${ent.street_name}</div>` : ""}
-    ${ent.town ? `<div>📍<strong>Town:</strong> ${ent.town}</div>` : ""}
+    ${ent.town ? `<div>📍<strong>Town:</strong><h3>${ent.town}</h3></div>` : ""}
     ${ent.usrn ? `<div> <strong> USRN:</strong> ${ent.usrn}</div>` : ""}
     ${ent.highway_authority ? `<div>🏢<strong>Authority:</strong> ${ent.highway_authority}</div>` : ""}
 

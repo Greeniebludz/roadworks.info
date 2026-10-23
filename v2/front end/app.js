@@ -367,7 +367,8 @@ ${
     `
     : ""
 }
-    <p> <i> How to contact the responsible promotor <i> <p>
+    <p> Are responsible for this work <p>
+    <p> <i> (How to contact the responsible promotor) <i> <p>
     <h3>🚦Traffic management: ${ent.traffic_management_type || "Road works"}</h3>
     <p> <i> What does this traffic management mean? <i> <p>
 

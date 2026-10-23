@@ -205,7 +205,7 @@ async function loadFeatures() {
   // Log the number of features returned
   console.log("Features returned:", data.features.length);
 
-  const target = data.features.find((f) => f.public_id === "1p0hykpbculc0");
+  const target = data.features.find((f) => f.source_id === "29ufbrzdu23o0");
 
   console.log("Target feature:", target);
   // Remove existing layers

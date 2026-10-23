@@ -4,7 +4,7 @@ const TIMELINE_BASE = "https://search.roadworks.info"; // features + search
 const MAPTILER_KEY = "84APRuB9gcvyT3xzXkKa";
 
 /* Map */
-const map = L.map("map").setView([51.4545, -0.9781], 8);
+const map = L.map("map").setView([51.4545, -0.9781], 16);
 L.tileLayer(
   `https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
   {

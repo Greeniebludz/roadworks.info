@@ -419,6 +419,36 @@ map.on("moveend zoomend", () => {
   moveTimer = setTimeout(loadFeatures, 300);
 });
 
+/* Archive */
+
+const ARCHIVE_BASE = "https://archive.roadworks.info";
+
+async function loadArchive() {
+  const bounds = map.getBounds();
+  const params = new URLSearchParams({
+    min_lon: bounds.getWest().toFixed(6),
+    min_lat: bounds.getSouth().toFixed(6),
+    max_lon: bounds.getEast().toFixed(6),
+    max_lat: bounds.getNorth().toFixed(6),
+  });
+
+  const res = await fetch(`${ARCHIVE_BASE}/api/archive-features?${params}`);
+  const data = await res.json();
+
+  console.log("Archive features:", data.features.length);
+
+  if (window.archiveLayer) map.removeLayer(window.archiveLayer);
+  window.archiveLayer = L.geoJSON(data, {
+    pointToLayer: (f, ll) =>
+      L.marker(ll, { icon: getIcon(f.properties.traffic_management_type) }),
+    onEachFeature: (f, layer) => {
+      layer.on("click", () =>
+        showCallout(f.properties.public_id || f.properties.source_id),
+      );
+    },
+  }).addTo(map);
+}
+
 /* Default to today */
 const today = new Date().toISOString().split("T")[0];
 setDateRange(today, today);

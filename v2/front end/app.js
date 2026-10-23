@@ -177,22 +177,16 @@ sidebarBox.addEventListener("click", () => {
 });
 
 async function loadFeatures() {
-  console.log("loadFeatures STARTED"); // ← add this
+  console.log("loadFeatures STARTED");
   const bounds = map.getBounds();
-  // ... existing code ...
-  console.log("fetching:", `${API_BASE}/api/features?${params}${dateParam}`); // ← add this before fetch
-  const res = await fetch(`${API_BASE}/api/features?${params}${dateParam}`);
 
-  // Read date inputs
   const from = document.getElementById("dateFrom")?.value || "";
   const to = document.getElementById("dateTo")?.value || "";
 
-  // Build date query params
   let dateParam = "";
   if (from) dateParam += `&from=${encodeURIComponent(from)}`;
   if (to) dateParam += `&to=${encodeURIComponent(to)}`;
 
-  // Build bbox + zoom params
   const params = new URLSearchParams({
     zoom: map.getZoom(),
     min_lon: bounds.getWest().toFixed(6),
@@ -201,13 +195,14 @@ async function loadFeatures() {
     max_lat: bounds.getNorth().toFixed(6),
   });
 
-  // Log the number of features returned
+  console.log("fetching:", `${API_BASE}/api/features?${params}${dateParam}`);
+  const res = await fetch(`${API_BASE}/api/features?${params}${dateParam}`);
+  const data = await res.json();
+
   console.log("Features returned:", data.features.length);
 
   const target = data.features.find((f) => f.source_id === "29ufbrzdu23o0");
-
   console.log("Target feature:", target);
-  // Remove existing layers
 
   if (window.featuresLayer) map.removeLayer(window.featuresLayer);
   if (window.clusterLayer) map.removeLayer(window.clusterLayer);
@@ -218,6 +213,7 @@ async function loadFeatures() {
     renderFeatures(data.features);
   }
 }
+
 /* Render clusters */
 function renderClusters(clusters) {
   const layer = L.layerGroup();

@@ -390,7 +390,7 @@ ${
 
     <hr/>
 
-    <div><strong>📋Permit reference:</strong> ${entity.permit_reference}</div>
+    <div><strong>📋Permit reference:</strong> ${entity.public_id}</div>
 
     <hr/>
     

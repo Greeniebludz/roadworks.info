@@ -402,9 +402,10 @@ ${
 
     <hr/>
 
-    console.log("Timeline URL:");
-console.log(`${TIMELINE_BASE}/api/timeline/${entity.public_id}`);
   `;
+
+  console.log("Timeline URL:");
+  console.log(`${TIMELINE_BASE}/api/timeline/${entity.public_id}`);
 }
 
 /* Reload on move */

@@ -372,8 +372,8 @@ ${
     <p> <i> (How to contact the responsible promotor) <i> <p>
     <h2>🦺${ent.promoter_organisation || publicId}</h2>
     
+    <hr/>
     <h3> What impact will this work have? work? </h3>
-    <p> <i> How will this work affect traffic? <i> <p>
     <h3>🚦Traffic management: ${ent.traffic_management_type || "Road works"}</h3>
     
 

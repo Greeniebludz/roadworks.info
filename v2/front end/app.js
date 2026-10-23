@@ -398,7 +398,7 @@ ${
 
     <hr/>
 
-    <div><strong>📋Permit reference:</strong> ${entity.upstream_id}</div>
+    <div><strong>📋Permit reference:</strong> ${entity.source_id}</div>
 
     <hr/>
     

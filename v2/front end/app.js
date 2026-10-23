@@ -398,7 +398,7 @@ ${
 
     <hr/>
 
-    <div><strong>📋Permit reference:</strong> ${entity.permit_reference_number}</div>
+    <div><strong>📋Permit reference:</strong> ${entity.permit_reference}</div>
 
     <hr/>
     
@@ -413,7 +413,7 @@ ${
   `;
 
   console.log("Timeline URL:");
-  console.log(`${TIMELINE_BASE}/api/timeline/${entity.entity_id}`);
+  console.log(`${TIMELINE_BASE}/api/timeline/${entity.permit_reference}`);
 }
 
 /* Reload on move */

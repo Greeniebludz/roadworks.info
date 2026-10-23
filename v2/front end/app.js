@@ -176,9 +176,12 @@ sidebarBox.addEventListener("click", () => {
   sidebarToggle.textContent = expanded ? "▲" : "▼";
 });
 
-/* Load features */
 async function loadFeatures() {
+  console.log("loadFeatures STARTED"); // ← add this
   const bounds = map.getBounds();
+  // ... existing code ...
+  console.log("fetching:", `${API_BASE}/api/features?${params}${dateParam}`); // ← add this before fetch
+  const res = await fetch(`${API_BASE}/api/features?${params}${dateParam}`);
 
   // Read date inputs
   const from = document.getElementById("dateFrom")?.value || "";
@@ -434,8 +437,3 @@ document.getElementById("dateTo").addEventListener("change", loadFeatures);
 
 /* Initial load */
 loadFeatures();
-console.log("loadFeatures STARTED"); // ← add this
-const bounds = map.getBounds();
-// ... existing code ...
-console.log("fetching:", `${API_BASE}/api/features?${params}${dateParam}`); // ← add this before fetch
-const res = await fetch(`${API_BASE}/api/features?${params}${dateParam}`);

@@ -370,7 +370,7 @@ ${
   <hr/>
     <h3> Who is responsible for this work? </h3>
     <p> <i> (How to contact the responsible promotor) <i> <p>
-    <h2>🦺${ent.promoter_organisation || publicId}</h2>
+    <h1>🦺${ent.promoter_organisation || publicId}</h1>
     
     <hr/>
     <h3> What impact will this work have? work? </h3>

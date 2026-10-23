@@ -353,7 +353,7 @@ async function showCallout(publicId) {
 
   sidebarPanel.innerHTML = `
   
-    <h2>🦺${ent.promoter_organisation || publicId}</h2>
+    
 ${
   isUrgent
     ? `
@@ -367,6 +367,7 @@ ${
     `
     : ""
 }
+    <h2>🦺${ent.promoter_organisation || publicId}</h2>
     <p> Are responsible for this work <p>
     <p> <i> (How to contact the responsible promotor) <i> <p>
     <h3>🚦Traffic management: ${ent.traffic_management_type || "Road works"}</h3>

@@ -376,20 +376,20 @@ ${
     <h3> What impact will this work have? work? </h3>
     <h3>🚦Traffic management: ${ent.traffic_management_type || "Road works"}</h3>
     
-
     <hr/>
-    <h3> When is this work happening? </h3>
-    ${friendlyStart ? `<div>📅🕒<strong>Start:</strong> ${friendlyStart}</div>` : ""}
-    ${friendlyEnd ? `<div>📅🕒<strong>End:</strong> ${friendlyEnd}</div>` : ""}
-    <p> <i> The start and end dates can change. <i> <p>
-
-    <hr/>
-     <H3> Where is this work happening? </H3>
+    
+    <H3> Where is this work happening? </H3>
     ${ent.street_name ? `<div>📍<strong>Street:</strong> <h3>${ent.street_name}</h3></div>` : ""}
     ${ent.town ? `<div>📍<strong>Town:</strong>${ent.town}</div>` : ""}
     ${ent.usrn ? `<div> <strong> USRN:</strong> ${ent.usrn}</div>` : ""}
     ${ent.highway_authority ? `<div>🏢<strong>Authority:</strong> ${ent.highway_authority}</div>` : ""}
 
+    <hr/>
+     
+    <h3> When is this work happening? </h3>
+    ${friendlyStart ? `<div>📅🕒<strong>Start:</strong> ${friendlyStart}</div>` : ""}
+    ${friendlyEnd ? `<div>📅🕒<strong>End:</strong> ${friendlyEnd}</div>` : ""}
+    <p> <i> The start and end dates can change. <i> <p>
     <hr/>
 
     <div><strong>Status:</strong> ${entity.status}</div>

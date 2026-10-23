@@ -367,16 +367,17 @@ ${
     `
     : ""
 }
-    <H3> Who is responsible for this work? </H3>
+    <h3> Who is responsible for this work? </h3>
     <p> <i> (How to contact the responsible promotor) <i> <p>
     <h2>🦺${ent.promoter_organisation || publicId}</h2>
     
-    
+    <h3> What impact will this work have? work? </h3>
+    <p> <i> How will this work affect traffic? <i> <p>
     <h3>🚦Traffic management: ${ent.traffic_management_type || "Road works"}</h3>
-    <p> <i> What does this traffic management mean? <i> <p>
+    
 
     <hr/>
-    <H3> When is this work happening? </H3>
+    <h3> When is this work happening? </h3>
     ${friendlyStart ? `<div>📅🕒<strong>Start:</strong> ${friendlyStart}</div>` : ""}
     ${friendlyEnd ? `<div>📅🕒<strong>End:</strong> ${friendlyEnd}</div>` : ""}
     <p> <i> The start and end dates can change. <i> <p>

@@ -367,9 +367,11 @@ ${
     `
     : ""
 }
-    <h2>🦺${ent.promoter_organisation || publicId}</h2>
-    <p> Are responsible for this work <p>
+    <H3> Who is responsible for this work? </H3>
     <p> <i> (How to contact the responsible promotor) <i> <p>
+    <h2>🦺${ent.promoter_organisation || publicId}</h2>
+    
+    
     <h3>🚦Traffic management: ${ent.traffic_management_type || "Road works"}</h3>
     <p> <i> What does this traffic management mean? <i> <p>
 
@@ -380,7 +382,7 @@ ${
     <p> <i> The start and end dates can change. <i> <p>
 
     <hr/>
-
+     <H3> Where is this work happening? </H3>
     ${ent.street_name ? `<div>📍<strong>Street:</strong> ${ent.street_name}</div>` : ""}
     ${ent.town ? `<div>📍<strong>Town:</strong> ${ent.town}</div>` : ""}
     ${ent.usrn ? `<div> <strong> USRN:</strong> ${ent.usrn}</div>` : ""}

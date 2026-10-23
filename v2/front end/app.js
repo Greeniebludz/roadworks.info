@@ -423,28 +423,26 @@ map.on("moveend zoomend", () => {
 
 const ARCHIVE_BASE = "https://archive.roadworks.info";
 
-async function loadArchive() {
+async function loadHistorical(from, to) {
   const bounds = map.getBounds();
   const params = new URLSearchParams({
     min_lon: bounds.getWest().toFixed(6),
     min_lat: bounds.getSouth().toFixed(6),
     max_lon: bounds.getEast().toFixed(6),
     max_lat: bounds.getNorth().toFixed(6),
+    from: from,
+    to: to,
+    limit: "1000",
   });
-
-  const res = await fetch(`${ARCHIVE_BASE}/api/archive-features?${params}`);
+  const res = await fetch(`${ARCHIVE_BASE}/api/historical-features?${params}`);
   const data = await res.json();
-
-  console.log("Archive features:", data.features.length);
-
+  console.log("Historical features:", data.count);
   if (window.archiveLayer) map.removeLayer(window.archiveLayer);
   window.archiveLayer = L.geoJSON(data, {
     pointToLayer: (f, ll) =>
       L.marker(ll, { icon: getIcon(f.properties.traffic_management_type) }),
     onEachFeature: (f, layer) => {
-      layer.on("click", () =>
-        showCallout(f.properties.public_id || f.properties.source_id),
-      );
+      layer.on("click", () => showCallout(f.properties.permit_reference));
     },
   }).addTo(map);
 }

@@ -201,10 +201,6 @@ async function loadFeatures() {
     max_lat: bounds.getNorth().toFixed(6),
   });
 
-  // Fetch with date filters included
-  const res = await fetch(`${API_BASE}/api/features?${params}${dateParam}`);
-  const data = await res.json();
-
   // Log the number of features returned
   console.log("Features returned:", data.features.length);
 

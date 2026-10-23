@@ -393,7 +393,8 @@ ${
 
     <hr/>
 
-    <div><strong>📋Permit reference:</strong> ${entity.source_id}</div>
+    <div><strong>📋Permit reference:</strong> ${ent.permit_reference_number}</div>
+
 
     <hr/>
     

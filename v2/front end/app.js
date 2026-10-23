@@ -381,7 +381,7 @@ ${
 
     ${ent.street_name ? `<div>📍<strong>Street:</strong> ${ent.street_name}</div>` : ""}
     ${ent.town ? `<div>📍<strong>Town:</strong> ${ent.town}</div>` : ""}
-    <p> Holding place for USRN </p>
+    ${ent.usrn ? `<div> <strong> USRN:</strong> ${ent.usrn}</div>` : ""}
     ${ent.highway_authority ? `<div>🏢<strong>Authority:</strong> ${ent.highway_authority}</div>` : ""}
 
     <hr/>

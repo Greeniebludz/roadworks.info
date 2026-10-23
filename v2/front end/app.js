@@ -1,5 +1,5 @@
-const API_BASE = "https://search.roadworks.info"; // features + search
-const TIMELINE_BASE = "https://api.roadworks.info"; // timeline (old Worker)
+const API_BASE = "https://api.roadworks.info"; // timeline (old Worker)
+const TIMELINE_BASE = "https://search.roadworks.info"; // features + search
 
 const MAPTILER_KEY = "84APRuB9gcvyT3xzXkKa";
 

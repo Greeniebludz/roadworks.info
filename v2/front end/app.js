@@ -352,7 +352,7 @@ async function showCallout(publicId) {
     ent.work_category_ref === "immediate_emergency";
 
   sidebarPanel.innerHTML = `
-    <p> Who is responsible for this work? <p>  
+  
     <h2>🦺${ent.promoter_organisation || publicId}</h2>
 ${
   isUrgent

@@ -197,33 +197,48 @@ body {
   animation: slideInFromLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.callout-header {
+/* The side handle tab hanging off the right edge */
+#callout-toggle {
+  position: absolute;
+  right: -24px; /* Pulls it outside the right edge */
+  top: 10px; /* Aligned neatly near the top */
+  width: 24px;
+  height: 44px; /* Pill-shaped vertical handle */
+  background-color: #2e7d32; /* Matches your green theme */
+  color: white;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  font-weight: 600;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 3px 2px 6px rgba(0, 0, 0, 0.15);
+  font-size: 11px;
+  z-index: 10;
+  user-select: none;
+  transition:
+    background-color 0.2s ease,
+    width 0.2s ease;
 }
 
+#callout-toggle:hover {
+  background-color: #1b4d2c; /* Darkens slightly on hover */
+  width: 28px;
+}
+
+/* The body containing all the details (hidden by default) */
 .callout-body {
-  margin-top: 10px;
+  margin-top: 4px;
   font-size: 0.85rem;
   line-height: 1.4;
   display: none;
+  max-height: 70vh; /* Prevents it from going off-screen vertically on mobile */
+  overflow-y: auto; /* Scrollable if details are long */
 }
 
+/* When expanded, show the body */
 .callout.expanded .callout-body {
   display: block;
-}
-hr.sidebar-divider {
-  border: 0;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0),
-    rgba(0, 0, 0, 0.15),
-    rgba(0, 0, 0, 0)
-  );
-  margin: 20px 0;
 }
 
 /* --------------------------------------------------

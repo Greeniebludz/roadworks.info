@@ -373,7 +373,7 @@ ${
     <h1>🦺${ent.promoter_organisation || publicId}</h1>
     
     <hr/>
-    <h3> What impact will this work have? work? </h3>
+    <h3> What impact will this work have?</h3>
     <h3>🚦Traffic management: ${ent.traffic_management_type || "Road works"}</h3>
     
     <hr/>
@@ -381,8 +381,8 @@ ${
     <H3> Where is this work happening? </H3>
     ${ent.street_name ? `<div>📍<strong>Street:</strong> <strong>${ent.street_name}</strong></div>` : ""}
     ${ent.town ? `<div>📍<strong>Town:</strong>${ent.town}</div>` : ""}
-    ${ent.usrn ? `<div> <strong> USRN:</strong> ${ent.usrn}</div>` : ""}
     ${ent.highway_authority ? `<div>🏢<strong>Authority:</strong> ${ent.highway_authority}</div>` : ""}
+    ${ent.usrn ? `<div> <strong> USRN:</strong> ${ent.usrn}</div>` : ""}
 
     <hr/>
      

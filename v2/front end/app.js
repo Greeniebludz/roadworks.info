@@ -198,7 +198,7 @@ const sidebarToggle = document.getElementById("callout-toggle");
 
 sidebarBox.addEventListener("click", () => {
   const expanded = sidebarBox.classList.toggle("expanded");
-  sidebarToggle.textContent = expanded ? "▲" : "▼";
+  sidebarToggle.textContent = expanded ? "◀" : "▶";
 });
 
 async function loadFeatures() {
@@ -395,7 +395,7 @@ ${
   <hr/>
     <h3> Who is responsible for this work? </h3>
     <p> <i> (How to contact the responsible promotor) <i> <p>
-    
+
     <h1>🦺${ent.promoter_organisation || publicId}</h1>
     
     <hr class="sidebar-divider">

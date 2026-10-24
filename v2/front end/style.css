@@ -124,8 +124,8 @@ body {
 -------------------------------------------------- */
 .sidebar {
   position: absolute;
-  top: 80px;
-  left: 20px;
+  top: 10px;
+  left: 10px;
   width: 350px;
   display: flex;
   flex-direction: column;

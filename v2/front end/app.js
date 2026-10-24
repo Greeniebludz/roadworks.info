@@ -165,12 +165,28 @@ document.getElementById("quickLastWeek").addEventListener("click", () => {
 
 document.getElementById("quickThisWeek").addEventListener("click", () => {
   const today = new Date();
-  const day = today.getDay(); // 0 = Sunday
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - ((day + 6) % 7));
 
-  const from = monday.toISOString().split("T")[0];
-  const to = today.toISOString().split("T")[0];
+  // 'from' is today's date
+  const from = today.toISOString().split("T")[0];
+
+  // 'to' is today + 7 days
+  const futureDate = new Date();
+  futureDate.setDate(today.getDate() + 7);
+  const to = futureDate.toISOString().split("T")[0];
+
+  setDateRange(from, to);
+});
+
+document.getElementById("quickThisMonth").addEventListener("click", () => {
+  const today = new Date();
+
+  // 'from' is today's date
+  const from = today.toISOString().split("T")[0];
+
+  // 'to' is today + 28 days
+  const futureDate = new Date();
+  futureDate.setDate(today.getDate() + 28);
+  const to = futureDate.toISOString().split("T")[0];
 
   setDateRange(from, to);
 });

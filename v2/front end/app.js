@@ -409,13 +409,14 @@ ${
     ${ent.highway_authority ? `<div>🏢<strong>Authority:</strong> ${ent.highway_authority}</div>` : ""}
     ${ent.usrn ? `<div> <strong> USRN:</strong> ${ent.usrn}</div>` : ""}
 
-    <hr/>
+    <hr class="sidebar-divider">
      
     <h3> When is this work happening? </h3>
     ${friendlyStart ? `<div>📅<strong>Start:</strong> ${friendlyStart}🕒</div>` : ""}
     ${friendlyEnd ? `<div>📅<strong>End:</strong> ${friendlyEnd}🕒</div>` : ""}
     <p> <i> The start and end dates can change. <i> <p>
-    <hr/>
+
+    <hr class="sidebar-divider">
 
     <div><strong>Status:</strong> ${entity.status}</div>
 

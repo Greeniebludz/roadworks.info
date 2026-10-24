@@ -229,7 +229,9 @@ hr.sidebar-divider {
    DATE FILTER (UNIFIED)
 -------------------------------------------------- */
 .date-filter-container {
-  background: rgb(175, 250, 0);
+  background-color: #ebf5ed; /* Soft mint background */
+  border: 1px solid #d1e7dd; /* Subtle matching border */
+  border-left: 5px solid #2e7d32; /* Strong green accent stripe */
   padding: 12px;
   border-radius: 8px;
   border-bottom-left-radius: 0;

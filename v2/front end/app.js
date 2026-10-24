@@ -401,7 +401,7 @@ ${
     <h3> What impact will this work have?</h3>
     <h3>🚦Traffic management: ${ent.traffic_management_type || "Road works"}</h3>
     
-    <hr/>
+    <hr class="sidebar-divider">
     
     <H3> Where is this work happening? </H3>
     ${ent.street_name ? `<div>📍<strong>Street:</strong> ${ent.street_name}></div>` : ""}

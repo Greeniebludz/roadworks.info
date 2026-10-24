@@ -395,6 +395,7 @@ ${
   <hr/>
     <h3> Who is responsible for this work? </h3>
     <p> <i> (How to contact the responsible promotor) <i> <p>
+    
     <h1>🦺${ent.promoter_organisation || publicId}</h1>
     
     <hr class="sidebar-divider">

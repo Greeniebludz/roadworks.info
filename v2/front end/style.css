@@ -194,6 +194,7 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Soft lift off your grey UI */
   margin-bottom: 16px;
   cursor: pointer;
+  animation: slideInFromLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .callout-header {
@@ -367,5 +368,19 @@ hr.sidebar-divider {
 
   100% {
     box-shadow: 0 0 0 8px rgba(0, 255, 100, 0);
+  }
+}
+
+/* --------------------------------------------------
+   Call out animation from left
+-------------------------------------------------- */
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
   }
 }

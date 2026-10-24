@@ -387,15 +387,12 @@ ${
     <hr/>
      
     <h3> When is this work happening? </h3>
-    ${friendlyStart ? `<div>📅🕒<strong>Start:</strong> ${friendlyStart}</div>` : ""}
-    ${friendlyEnd ? `<div>📅🕒<strong>End:</strong> ${friendlyEnd}</div>` : ""}
+    ${friendlyStart ? `<div>📅<strong>Start:</strong> ${friendlyStart}🕒</div>` : ""}
+    ${friendlyEnd ? `<div>📅<strong>End:</strong> ${friendlyEnd}🕒</div>` : ""}
     <p> <i> The start and end dates can change. <i> <p>
     <hr/>
 
     <div><strong>Status:</strong> ${entity.status}</div>
-
-
-    <div><strong>Live:</strong> ${entity.is_live ? "Yes" : "No"}</div>
 
     <hr/>
 

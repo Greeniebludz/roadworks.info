@@ -130,14 +130,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-
+  transition: transform 0.3s ease;
   z-index: 3000;
 }
 /* When the sidebar is collapsed */
 .sidebar.collapsed {
-  transform: translateX(
-    -370px
-  ); /* Slides the entire sidebar off-screen to the left */
+  transform: translateX(calc(-100% + 10px));
 }
 /* --------------------------------------------------
    SEARCH BAR (SIDEBAR)

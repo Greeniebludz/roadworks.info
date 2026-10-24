@@ -9,6 +9,15 @@
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      // 1. Turn off the default top-left zoom control when initializing the map
+const map = L.map('map', {
+    zoomControl: false
+});
+
+// 2. Add the zoom control back, positioned at the bottom right
+L.control.zoom({
+    position: 'bottomright'
+}).addTo(map);
     />
 
     <!-- Your CSS -->

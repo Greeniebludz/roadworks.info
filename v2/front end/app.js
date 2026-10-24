@@ -4,7 +4,10 @@ const TIMELINE_BASE = "https://api.roadworks.info"; // timeline (old Worker)
 const MAPTILER_KEY = "84APRuB9gcvyT3xzXkKa";
 
 /* Map */
-const map = L.map("map").setView([51.4545, -0.9781], 16);
+const map = L.map("map", {
+  zoomConrol: false,
+}).setView([51.4545, -0.9781], 16);
+
 L.tileLayer(
   `https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,
   {
@@ -14,6 +17,12 @@ L.tileLayer(
     attribution: "&copy; MapTiler &copy; OpenStreetMap contributors",
   },
 ).addTo(map);
+
+L.control
+  .zoom({
+    position: "bottomright",
+  })
+  .addTo(map);
 
 /*Seachbar*/
 const SEARCH_BASE = "https://search.roadworks.info";

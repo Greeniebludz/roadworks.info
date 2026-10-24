@@ -188,6 +188,7 @@ body {
    CALLOUT
 -------------------------------------------------- */
 .callout {
+  position: relative;
   background-color: #ebf5ed; /* Soft mint background */
   border: 1px solid #d1e7dd; /* Subtle matching border */
   border-left: 5px solid #2e7d32; /* Strong green accent stripe */

@@ -346,7 +346,7 @@ async function showCallout(publicId) {
   /* Auto-expand the callout so the user sees the content */
   if (sidebarBox && !sidebarBox.classList.contains("expanded")) {
     sidebarBox.classList.add("expanded");
-    if (sidebarToggle) sidebarToggle.textContent = "▲";
+    if (sidebarToggle) sidebarToggle.textContent = "◀";
   }
 
   sidebarPanel.innerHTML = "Loading…";

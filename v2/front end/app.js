@@ -5,7 +5,7 @@ const MAPTILER_KEY = "84APRuB9gcvyT3xzXkKa";
 
 /* Map */
 const map = L.map("map", {
-  zoomConrol: false,
+  zoomControl: false,
 }).setView([51.4545, -0.9781], 16);
 
 L.tileLayer(

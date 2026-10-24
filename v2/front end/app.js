@@ -397,14 +397,15 @@ ${
     <p> <i> (How to contact the responsible promotor) <i> <p>
     <h1>🦺${ent.promoter_organisation || publicId}</h1>
     
-    <hr/>
+    <hr class="sidebar-divider">
+
     <h3> What impact will this work have?</h3>
     <h3>🚦Traffic management: ${ent.traffic_management_type || "Road works"}</h3>
     
     <hr class="sidebar-divider">
     
     <H3> Where is this work happening? </H3>
-    ${ent.street_name ? `<div>📍<strong>Street:</strong> ${ent.street_name}></div>` : ""}
+    ${ent.street_name ? `<div>📍<strong>Street:</strong> ${ent.street_name}</div>` : ""}
     ${ent.town ? `<div>📍<strong>Town:</strong> ${ent.town}</div>` : ""}
     ${ent.highway_authority ? `<div>🏢<strong>Authority:</strong> ${ent.highway_authority}</div>` : ""}
     ${ent.usrn ? `<div> <strong> USRN:</strong> ${ent.usrn}</div>` : ""}

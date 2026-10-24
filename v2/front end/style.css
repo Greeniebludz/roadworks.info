@@ -185,7 +185,7 @@ body {
    CALLOUT
 -------------------------------------------------- */
 .callout {
-  background: rgb(149, 207, 158);
+  background: rgb(175, 250, 0);
   border-radius: 8px;
   padding: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -225,7 +225,7 @@ hr.sidebar-divider {
    DATE FILTER (UNIFIED)
 -------------------------------------------------- */
 .date-filter-container {
-  background: rgb(149, 207, 158);
+  background: rgb(175, 250, 0);
   padding: 12px;
   border-radius: 8px;
   border-bottom-left-radius: 0;

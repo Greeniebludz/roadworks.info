@@ -54,7 +54,7 @@ body {
 .sponsor-banner {
   position: absolute;
   top: 10px;
-  left: 75%;
+  right: 10px;
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.308);
   color: #fff;
@@ -64,6 +64,10 @@ body {
   letter-spacing: 0.05em;
   z-index: 2000;
   pointer-events: none;
+}
+.sponsor-banner:hover {
+  background-color: #d0d0d0;
+  cursor: pointer;
 }
 /* --------------------------------------------------
    TOP SEARCH BAR

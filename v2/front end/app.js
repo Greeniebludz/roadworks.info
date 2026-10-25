@@ -192,14 +192,23 @@ document.getElementById("quickThisMonth").addEventListener("click", () => {
 });
 
 /* Sidebar callout */
-const sidebarPanel = document.getElementById("sidebar-callout-details");
-const sidebarBox = document.getElementById("info-callout");
-const sidebarToggle = document.getElementById("callout-toggle");
+const callout = document.getElementById("info-callout");
+const calloutToggle = document.getElementById("callout-toggle");
 
-sidebarBox.addEventListener("click", () => {
-  const expanded = sidebarBox.classList.toggle("expanded");
-  sidebarToggle.textContent = expanded ? "◀" : "▶";
+calloutToggle.addEventListener("click", (e) => {
+  e.stopPropagation();
+
+  const expanded = callout.classList.toggle("expanded");
+
+  calloutToggle.textContent = expanded ? "◀" : "▶";
 });
+const datePanel = document.getElementById("date-filter-panel");
+const dateToggle = document.getElementById("date-filter-toggle");
+
+dateToggle.addEventListener("click", () => {
+  datePanel.classList.toggle("expanded");
+});
+sidebarToggle.textContent = expanded ? "◀" : "▶";
 
 async function loadFeatures() {
   console.log("loadFeatures STARTED");

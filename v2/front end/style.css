@@ -124,7 +124,7 @@ body {
 -------------------------------------------------- */
 .sidebar {
   position: absolute;
-  top: 10px;
+  top: 50px;
   left: 10px;
   width: 350px;
   display: flex;
@@ -149,7 +149,7 @@ hr.sidebar-divider {
   margin: 20px 0;
 }
 /* --------------------------------------------------
-   SEARCH BAR (SIDEBAR)
+   SEARCH BAR 
 -------------------------------------------------- */
 .search-bar {
   background: rgba(255, 255, 255, 0.95);

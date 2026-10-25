@@ -215,7 +215,7 @@ hr.sidebar-divider {
 #callout-toggle {
   position: absolute;
   right: -24px; /* Pulls it outside the right edge */
-  top: 10px; /* Aligned neatly near the top */
+  top: 50%; /* Aligned neatly near the top */
   width: 24px;
   height: 44px; /* Pill-shaped vertical handle */
   background-color: #2e7d32; /* Matches your green theme */
@@ -293,8 +293,8 @@ hr.sidebar-divider {
 }
 #date-filter-toggle {
   position: relative;
-  right: 12px; /* Pinned to the bottom right */
-  bottom: 12px; /* Hangs slightly off the bottom edge */
+  right: -12px; /* Pinned to the bottom right */
+  bottom: -12px; /* Hangs slightly off the bottom edge */
   width: 36px;
   height: 18px; /* Neat pill handle */
   background-color: #2e7d32; /* Matches green theme */
@@ -313,6 +313,7 @@ hr.sidebar-divider {
 
 #date-filter-toggle:hover {
   background-color: #1b4d2c; /* Darkens slightly on hover */
+  width: 28px;
 }
 /* Put the two date inputs side-by-side */
 .date-input-row {

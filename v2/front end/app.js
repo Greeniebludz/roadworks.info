@@ -207,7 +207,8 @@ const datePanel = document.getElementById("date-filter-panel");
 const dateToggle = document.getElementById("date-filter-toggle");
 
 dateToggle.addEventListener("click", () => {
-  datePanel.classList.toggle("expanded");
+  const expanded = datePanel.classList.toggle("expanded");
+  dateToggle.textContent = expanded ? "▲" : "▼";
 });
 
 async function loadFeatures() {

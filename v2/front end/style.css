@@ -264,8 +264,6 @@ hr.sidebar-divider {
   border-left: 5px solid #2e7d32; /* Strong green accent stripe */
   padding: 12px;
   border-radius: 8px;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   margin-bottom: 0;
   overflow: hidden;
@@ -296,7 +294,7 @@ hr.sidebar-divider {
 #date-filter-toggle {
   position: relative;
   right: 12px; /* Pinned to the bottom right */
-  bottom: 8px; /* Hangs slightly off the bottom edge */
+  bottom: 12px; /* Hangs slightly off the bottom edge */
   width: 36px;
   height: 18px; /* Neat pill handle */
   background-color: #2e7d32; /* Matches green theme */

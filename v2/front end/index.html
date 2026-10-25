@@ -41,42 +41,35 @@
     </div>
 
     <div class="sidebar">
-      <!-- DATE FILTER CONTAINER -->
+      <!-- DATE FILTER -->
       <div class="date-filter-container">
-        <!-- The collapsible content panel -->
         <div id="date-filter-panel">
           <div class="date-filter">
             <label><strong>Select date range below:</strong></label>
-
-            <!-- Quick buttons -->
             <div class="quick-dates">
               <button id="quickLastWeek">Last Week</button>
               <button id="quickToday">Today</button>
               <button id="quickThisWeek">This Week</button>
               <button id="quickThisMonth">This Month</button>
             </div>
-            <!-- Actual date inputs -->
             <div class="date-input-row">
               <input type="date" id="dateFrom" />
               <input type="date" id="dateTo" />
             </div>
           </div>
         </div>
-
         <div class="date-filter-footer">
           <div id="date-filter-toggle">▼</div>
         </div>
       </div>
-    </div>
 
-    <!-- WORKS CALLOUT -->
-    <div class="sidebar">
+      <!-- WORKS CALLOUT BOX -->
       <div class="callout" id="info-callout">
         <div id="callout-toggle">▶</div>
-
         <div id="sidebar-callout-details" class="callout-body"></div>
       </div>
     </div>
+
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 

@@ -208,7 +208,6 @@ const dateToggle = document.getElementById("date-filter-toggle");
 dateToggle.addEventListener("click", () => {
   datePanel.classList.toggle("expanded");
 });
-sidebarToggle.textContent = expanded ? "◀" : "▶";
 
 async function loadFeatures() {
   console.log("loadFeatures STARTED");

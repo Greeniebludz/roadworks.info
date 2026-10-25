@@ -294,7 +294,7 @@ hr.sidebar-divider {
   font-size: 14px;
 }
 #date-filter-toggle {
-  position: absolute;
+  position: relative;
   right: 12px; /* Pinned to the bottom right */
   bottom: 8px; /* Hangs slightly off the bottom edge */
   width: 36px;

@@ -192,6 +192,7 @@ document.getElementById("quickThisMonth").addEventListener("click", () => {
 });
 
 /* Sidebar callout */
+const calloutPanel = document.getElementById("sidebar-callout-details");
 const callout = document.getElementById("info-callout");
 const calloutToggle = document.getElementById("callout-toggle");
 
@@ -352,12 +353,15 @@ function renderFeatures(features) {
 /* Callout */
 async function showCallout(publicId) {
   /* Auto-expand the callout so the user sees the content */
-  if (sidebarBox && !sidebarBox.classList.contains("expanded")) {
-    sidebarBox.classList.add("expanded");
-    if (sidebarToggle) sidebarToggle.textContent = "◀";
+  if (callout && !callout.classList.contains("expanded")) {
+    callout.classList.add("expanded");
+
+    if (calloutToggle) {
+      calloutToggle.textContent = "◀";
+    }
   }
 
-  sidebarPanel.innerHTML = "Loading…";
+  calloutPanel.innerHTML = "Loading…";
 
   /* ... rest of the function ... */
 
@@ -384,7 +388,7 @@ async function showCallout(publicId) {
     ent.work_category_ref === "immediate_urgent" ||
     ent.work_category_ref === "immediate_emergency";
 
-  sidebarPanel.innerHTML = `
+  calloutPanel.innerHTML = `
   
     
 ${

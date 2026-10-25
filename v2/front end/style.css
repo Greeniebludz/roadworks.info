@@ -208,7 +208,6 @@ hr.sidebar-divider {
   border-radius: 8px; /* Modern smooth corners */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Soft lift off your grey UI */
   margin-bottom: 16px;
-  cursor: pointer;
   animation: slideInFromLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 

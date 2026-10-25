@@ -293,6 +293,30 @@ hr.sidebar-divider {
   border-radius: 2px;
   font-size: 14px;
 }
+#date-filter-toggle {
+  position: absolute;
+  left: 12px; /* Pinned to the bottom left */
+  bottom: -10px; /* Hangs slightly off the bottom edge */
+  width: 36px;
+  height: 18px; /* Neat pill handle */
+  background-color: #2e7d32; /* Matches green theme */
+  color: white;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  font-size: 10px;
+  z-index: 10;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+#date-filter-toggle:hover {
+  background-color: #1b4d2c; /* Darkens slightly on hover */
+}
 /* Put the two date inputs side-by-side */
 .date-input-row {
   display: flex;

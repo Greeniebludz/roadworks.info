@@ -124,7 +124,6 @@ body {
 -------------------------------------------------- */
 .sidebar {
   position: absolute;
-  top: 50px;
   left: 10px;
   width: 350px;
   display: flex;
@@ -132,6 +131,12 @@ body {
   gap: 12px;
   transition: transform 0.3s ease;
   z-index: 3000;
+}
+.sidebar-top {
+  top: 10px; /* Sits right near the top of the map */
+}
+.sidebar-bottom {
+  top: 240px; /* Pushed further down the screen independently */
 }
 /* When the sidebar is collapsed */
 .sidebar.collapsed {
